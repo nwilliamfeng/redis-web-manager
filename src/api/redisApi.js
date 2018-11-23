@@ -1,23 +1,30 @@
-export class ApiHelper {
+import {ApiHelper} from './apiHelper'
 
-    static async get(url) {
-        const response =await fetch(url)
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-        return response.json();
+ class RedisApi {
+
+    /**
+     * 获取配置
+     */
+     async getConfigs(){ 
+        const json = await ApiHelper.get('/config/getlist');
+        const { Data, Message,Code } = json;
+        if (Code===2)
+            throw new Error(Message);       
+        return Data.map(x =>{return { name:x.Name, ip:x.IP, port:x.Port }});
     }
 
-    static async post(url, data, headers = { 'Content-Type': 'application/json' }) {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
-        return await response.json();
-    }
 
+    /**
+     * 连接
+     * @param name 
+     */
+     async connect(name) {
+        const json = await ApiHelper.post('/config/connect',name);
+        const { Data, Message,Code } = json;
+        if (Code===2)
+            throw new Error(Message);
+        return Data;
+    }
 }
+
+export const redisApi =new RedisApi();
