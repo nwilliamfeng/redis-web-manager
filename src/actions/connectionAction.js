@@ -10,9 +10,9 @@ export const connectionActions={
 
 
 
-const loadConnectionList=()=>{
+ function loadConnectionList(){
     return async dispatch=>{
-        const lst =await redisApi.getConfigs();
-        console.log(lst);
+        const connections =await redisApi.getConfigs();
+        dispatch({type:connectionConstants.LOAD_CONNECTION_LIST,connections});
     }
 }
