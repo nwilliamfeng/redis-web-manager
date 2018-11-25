@@ -19,7 +19,7 @@ import {ApiHelper} from './apiHelper'
      * @param name 
      */
      async connect(name) {
-        const json = await ApiHelper.post('/config/connect',name);
+        const json = await ApiHelper.get(`/redis/connect?name=${name}`);
         const { Data, Message,Code } = json;
         if (Code===2)
             throw new Error(Message);

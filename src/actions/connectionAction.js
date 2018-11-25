@@ -3,9 +3,10 @@ import {redisApi} from '../api'
 
 
 export const connectionActions={
+
     loadConnectionList,
 
-    
+    selectConnection,
 }
 
 
@@ -15,4 +16,8 @@ export const connectionActions={
         const connections =await redisApi.getConfigs();
         dispatch({type:connectionConstants.LOAD_CONNECTION_LIST,connections});
     }
+}
+
+function selectConnection(connectionName){
+    return {type:connectionConstants.SELECT_CONNECTION,connectionName};
 }

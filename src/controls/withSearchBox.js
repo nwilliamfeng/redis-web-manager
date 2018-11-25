@@ -27,7 +27,7 @@ const menuStyle = {
 
 const DefaultSearchInput = props => <div className="form-group  right-inner-addon">
     <SearchIcon aria-hidden="true"><FontAwesomeIcon icon={faSearch} /></SearchIcon>
-    <input type="search" className="form-control input-xs" placeholder="联系人" style={{ height: 28 }} {...props} />
+    <input type="search" className="form-control input-xs" placeholder="键值" style={{ height: 28 }} {...props} />
 </div>
 
 const DefaultMenuItem = (item, highlighted) => <MenuItemDiv key={item.id} highlighted={highlighted}>

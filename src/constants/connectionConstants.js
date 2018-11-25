@@ -5,4 +5,7 @@ export const connectionConstants={
     LOAD_CONNECTION_LIST :'LOAD_CONNECTION_LIST',
 
 
+    SELECT_CONNECTION:'SELECT_CONNECTION',
+
+
 }

@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import { connectionActions } from '../actions'
 import { ContextMenu, MenuItem } from "react-contextmenu"
 import {Connection} from './Connection'
-import {Ul,Li} from './Ul'
+import {Ul,Li} from './parts'
+import {contextMenuIds} from './contextMenuIds'
 
-const CONNECTION_CONTEXTMENU_ID = 'Connection_CONTEXTMENU_ID'
 
  
 
@@ -14,7 +14,7 @@ const ConnectionContextMenu = ({ dispatch }) => {
     const handleConnectClick = (e, data, target) => {
         alert('abc');
     }
-    return <ContextMenu id={CONNECTION_CONTEXTMENU_ID}>
+    return <ContextMenu id={contextMenuIds.CONNECTION_CONTEXTMENU_ID}>
         <MenuItem onClick={handleConnectClick}>连接</MenuItem>
     </ContextMenu>
 }
@@ -32,14 +32,15 @@ class ConnectionList extends Component {
 
 
     render() {
+        console.log('render connection-list');
         const { connections, dispatch } = this.props;
 
         return <React.Fragment>
             {connections &&
                 <Ul>
-                    {connections.map(x => <Li>{x.name}</Li>)}
+                    {connections.map(x => <Connection key={x.name} item={x}/>)}
                 </Ul>}
-            <ConnectionContextMenu dispatch={dispatch} contextMenuId={CONNECTION_CONTEXTMENU_ID} />
+            <ConnectionContextMenu dispatch={dispatch} contextMenuId={contextMenuIds.CONNECTION_CONTEXTMENU_ID}/>
         </React.Fragment>
     }
 }

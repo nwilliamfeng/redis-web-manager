@@ -67,7 +67,7 @@ class Shell extends Component {
         return <ShellDiv>
             <Background img={BackgroundImg} />
             <Container>
-                <VerticalSplit size={241} minSize={241} maxSize={290}>
+                <VerticalSplit size={240}  minSize={240} maxSize={290}>
                     <ListRegion>
                         <SearchBoxContainer>
                             <KeySearch />
