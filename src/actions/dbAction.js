@@ -6,7 +6,7 @@ export const dbActions = {
 
     getDbList,
 
-
+    selectDB,
 }
 
 
@@ -19,6 +19,6 @@ function getDbList(connectionName) {
     }
 }
 
-// function selectConnection(connectionName){
-//     return {type:connectionConstants.SELECT_CONNECTION,connectionName};
-// }
+function selectDB(connection, dbIdx){
+    return {type:dbConstants.SELECT_DB,connection,dbIdx};
+}

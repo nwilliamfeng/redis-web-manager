@@ -1,99 +1,111 @@
 import React, { Component } from 'react'
-import { Ul, Li, LiIcon, NameDiv, FlexDiv, EmptyDiv } from './parts'
+import { Ul, Li, LiIcon, NameDiv, FlexDiv, EmptyDiv, FlexContainerDiv, LoadingImg } from './parts'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from './contextMenuIds'
-import { connectionActions, dbActions } from '../actions'
+import { keyActions,dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { withExpand } from '../controls'
+import { withExpand,withSelectByClick } from '../controls'
 
 
-const Content = props => <FlexDiv>
-    <EmptyDiv/>
-    <LiIcon src={require('../assets/imgs/db.png')} />
-    <NameDiv>{props.name}</NameDiv>
-    {/* {props.dbs && props.dbs.length>0 && <div>{`[${props.dbs.length}项]`}</div>} */}
-</FlexDiv>
+const Content = props => {
+    const {name,isLoading}=props;
+    return <FlexDiv>
+        <FlexContainerDiv>
+            <EmptyDiv />
+            <LiIcon src={require('../assets/imgs/db.png')} />
+            <NameDiv>{`DB${name}`}</NameDiv>
+            {/* {props.dbs && props.dbs.length>0 && <div>{`[${props.dbs.length}项]`}</div>} */}
+        </FlexContainerDiv>
+        {isLoading === true && <LoadingImg />}
+    </FlexDiv>
+}
 
-const ExpandContent = withExpand(props => <Content {...props} />)
+const ExpandContent =withSelectByClick( withExpand(props => <Content {...props} />))
 
 class DB extends Component {
 
     constructor(props) {
+        console.log('create db '+props.dbIdx);
         super(props);
-        this.state = { keyLoaded: false, keys: [] };
-
+        this.state = { keyLoaded: false, keys: [],isLoading:false };
     }
 
     handleClick = () => {
-        // const { dispatch, item } = this.props;
-        // dispatch(connectionActions.selectConnection(item.name));
+        const { dispatch, connection,dbIdx } = this.props;
+        dispatch(dbActions.selectDB(connection,dbIdx));
+      
     }
 
     handleDoubleClick = () => {
-        // const {dbLoaded} =this.state;
-        // if(dbLoaded===false){
-        //     const { dispatch,item } = this.props;
-        //     dispatch(dbActions.getDbList(item.name));
-        // }
+        const {keyLoaded} =this.state;
+        const {dbIdx,connection}=this.props;
+        if(keyLoaded===false){
+            const { dispatch,item } = this.props;
+            dispatch(keyActions.getKeyList(connection,dbIdx));
+        }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        // const {dbLoaded} =this.state;
-        // if(dbLoaded===false){
-        //     const {dbs,connection,item}=nextProps;
-        //     if(dbs!=null && connection===item.name){
-        //         console.log('set dbs '+item.name);
-        //         this.setState({dbLoaded:true,dbs});
-        //     }
-        // }
+        const {keyLoaded} =this.state;
+       
+        if(keyLoaded===false){
+            const {keys,connection,dbIdx}=nextProps;
+            if(keys!=null && connection===this.props.selectedConnection && dbIdx=== this.props.dbIdx){
+                this.setState({keyLoaded:true,keys});
+            }
+        }
     }
 
+  
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return true;
-        // const { item, selectedName } = this.props;
+     
+        const { connection ,dbIdx,selectedDbIdx,isVisible} = this.props;
+        
         // const {dbLoaded}=this.state;
         // if(nextState!=null && nextState.dbLoaded!==dbLoaded){
         //     console.log('check dbloaded '+item.name);
         //     return true;
         // }
-        // if (nextProps != null) {
-        //     if (item.name === selectedName && nextProps.selectedName !== item.name) {
-        //         return true;
-        //     }
-        //     else if (item.name !== selectedName && nextProps.selectedName === item.name) {
-        //         return true;
-        //     }
+        if (nextProps != null && nextProps.selectedConnection===connection) {
+            if (dbIdx === selectedDbIdx && nextProps.selectedDbIdx !== dbIdx) {
+                return true;
+            }
+            else if (dbIdx !== selectedDbIdx && nextProps.selectedDbIdx === dbIdx) {
+                return true;
+            }
 
-        //     if( item.name===nextProps.connection){
-        //         return true;
-        //     }
-        // }
+            // if( item.name===nextProps.connection){
+            //     return true;
+            // }
+        }
+
+        if(nextProps!=null && nextProps.isVisible!==isVisible){
+            return true;
+        }
 
         return false;
     }
 
-
     render() {
-        const { dbIdx } = this.props;
-
+        const { dbIdx ,isVisible,connection,selectedConnection,selectedDbIdx} = this.props;
+        const {keys} =this.state;
         console.log('render db ' + dbIdx);
+    
         return <React.Fragment>
-            <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
+           {isVisible &&  <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
                 <Li onClick={this.handleClick} title={`DB${dbIdx}`} onDoubleClick={this.handleDoubleClick}>
-                    <ExpandContent name={dbIdx} isSelected={false} >
-                        {/* {dbs && dbs.length>0 && dbs.map(x=><div key={x}>{x}</div>)} */}
+                    <ExpandContent name={dbIdx} isSelected={dbIdx===selectedDbIdx && connection===selectedConnection} >
+                        {keys && keys.length>0 && keys.map(x=><div key={x}>{x}</div>)}
                     </ExpandContent>
-
                 </Li>
-            </ContextMenuTrigger>
+            </ContextMenuTrigger>}
         </React.Fragment>
-
     }
 }
 
 function mapStateToProps(state) {
-    const { dbs, connection } = state.db;
-    return { dbs, connection };
+    const { dbs, connection ,selectedDbIdx,selectedConnection} = state.db;
+    return { dbs, connection ,selectedDbIdx,selectedConnection};
 }
 
 

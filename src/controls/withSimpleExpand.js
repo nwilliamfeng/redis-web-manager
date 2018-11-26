@@ -7,7 +7,7 @@ const HeaderDiv = styled.div`
     display:flex;
     width:100%;
     padding:0px 6px;
-    /* background-color:${props => props.isSelected === true ? '#C4C4C5' : 'transparent'}; */
+    background-color:${props => props.isSelected === true ? '#C4C4C5' : 'transparent'};
     &:hover{
         background-color: #DEDBDA;
         color:black;
@@ -18,7 +18,6 @@ const HeaderDiv = styled.div`
 
 const BodyDiv = styled.div`
     padding: 0px 0px 5px 30px;
-    background:white;
     color: gray;
 `
 
@@ -31,31 +30,43 @@ const ArrowDiv = styled.div`
     };
  `
 
-export const withExpand = WrapperComponent => class extends Component {
+export const withSimpleExpand = WrapperComponent => class extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { isExpand: true };
+    }
 
     handleDoubleClick = () => {
-        const { children, handleExpand, isExpand } = this.props;
-        if (children && handleExpand != null) {
-            handleExpand(!isExpand);
+        const { children,handleExpand } = this.props;
+        if (children) {
+            const { isExpand } = this.state;
+            this.setState({ isExpand: !isExpand });
         }
+
     }
 
     render() {
         console.log('render expand');
-        const { isSelected, isExpand } = this.props;
+         console.log(this.props);
+        const { isExpand } = this.state;
+        const { isSelected } = this.props;
         return <React.Fragment>
             <HeaderDiv onDoubleClick={this.handleDoubleClick} isSelected={isSelected}>
-                <ArrowDiv onClick={this.handleDoubleClick}>
-                    {this.props.children && <FontAwesomeIcon icon={isExpand === true ? arrowDown : arrowRight} size='xs' />}
-                </ArrowDiv>
+                
+                    <ArrowDiv onClick={this.handleDoubleClick}>
+                    {this.props.children &&<FontAwesomeIcon icon={isExpand === true ? arrowDown : arrowRight} size='xs' />}
+                    </ArrowDiv> 
+
                 <WrapperComponent {...this.props} {...isExpand} />
             </HeaderDiv>
 
-            {this.props.children &&
-                <BodyDiv {...this.props}>
+            {isExpand === true && this.props.children &&
+                <BodyDiv>
                     {this.props.children}
                 </BodyDiv>
             }
+          
         </React.Fragment>
 
     }

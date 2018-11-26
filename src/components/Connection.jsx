@@ -4,7 +4,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from './contextMenuIds'
 import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { withExpand } from '../controls'
+import { withExpand ,withSelectByClick} from '../controls'
 import { DB } from './DB'
 
 
@@ -20,14 +20,14 @@ const Content = props => {
     </FlexDiv>
 }
 
-const ExpandContent = withExpand(props => <Content {...props} />)
+const ExpandContent =withSelectByClick( withExpand(props => <Content {...props} />))
 
 class Connection extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dbLoaded: false, dbs: [], isLoading: false };
-
+        this.state = { dbLoaded: false, dbs: [], isLoading: false,isExpand:true };
+        
     }
 
     handleClick = () => {
@@ -56,12 +56,16 @@ class Connection extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { item, selectedName } = this.props;
-        const { dbLoaded, isLoading } = this.state;
+        const { dbLoaded, isLoading,isExpand } = this.state;
         if (nextState != null) {
             if (nextState.dbLoaded !== dbLoaded) {
                 return true;
             }
             if (nextState.isLoading !== isLoading) {
+                return true;
+            }
+
+            if (nextState.isExpand !== isExpand) {
                 return true;
             }
         }
@@ -72,7 +76,6 @@ class Connection extends Component {
             else if (item.name !== selectedName && nextProps.selectedName === item.name) {
                 return true;
             }
-
             if (item.name === nextProps.connection) {
                 return true;
             }
@@ -81,16 +84,21 @@ class Connection extends Component {
         return false;
     }
 
+    handleExpand=isExpand=>{
+        this.setState({isExpand});
+    }
+
 
     render() {
         const { item, selectedName } = this.props;
-        const { dbs, isLoading } = this.state;
+        const { dbs, isLoading ,isExpand} = this.state;
         console.log('render connection ' + item.name);
         return <React.Fragment>
             {item && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
                 <Li onClick={this.handleClick} title={item.name} onDoubleClick={this.handleDoubleClick}>
-                    <ExpandContent item={item} isSelected={selectedName === item.name} dbs={dbs} isLoading={isLoading}>
-                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x} dbIdx={x} />)}
+                    <ExpandContent item={item} isSelected={selectedName === item.name} dbs={dbs} isLoading={isLoading}
+                     handleExpand={this.handleExpand} isExpand={isExpand}>
+                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x} dbIdx={x} connection={item.name} isVisible={isExpand}/>)}
                     </ExpandContent>
 
                 </Li>
