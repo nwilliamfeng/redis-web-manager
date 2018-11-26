@@ -47,7 +47,7 @@ export const EmptyDiv = styled.div`
 
 export const FlexContainerDiv = styled.div`
     display:flex;
-    
+    width:100%;
 `
 
 const Img = styled.img`

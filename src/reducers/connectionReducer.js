@@ -2,7 +2,6 @@ import { connectionConstants } from '../constants';
 
 const defaultState = {
     connections: [],
-    selectedName: null,
 }
 
 export const connectionReducer = (state = defaultState, action) => {
@@ -14,12 +13,7 @@ export const connectionReducer = (state = defaultState, action) => {
 
             }
 
-        case connectionConstants.SELECT_CONNECTION:
-            return {
-                ...state,
-                selectedName: action.connectionName,
-
-            }
+        
 
         default:
             return state;

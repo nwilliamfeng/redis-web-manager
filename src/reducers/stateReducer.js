@@ -1,22 +1,32 @@
 import { selectNodeType } from '../constants';
 
 const defaultState = {
-    selectNodeType:selectNodeType.SELECT_CONNECTION,
+    selectedNodeType:selectNodeType.SELECT_CONNECTION,
+    selectedConnection:null,
+    selectedDB:null,
+    selectedKey:null,
+
 }
 
 export const stateReducer = (state = defaultState, action) => {
     switch (action.type) {
-        case connectionConstants.LOAD_CONNECTION_LIST:
+        case selectNodeType.SELECT_CONNECTION:
             return {
                 ...state,
-                connections: action.connections,
+                selectedNodeType:action.type,
+                selectedConnection:action.connection,
+                selectedDB:null,
+                selectedKey:null,
 
             }
 
-        case connectionConstants.SELECT_CONNECTION:
+        case selectNodeType.SELECT_DB:
             return {
                 ...state,
-                selectedName: action.connectionName,
+                selectedNodeType:action.type,
+                selectedConnection:action.connection,
+                selectedDB:action.db,
+                selectedKey:null,
 
             }
 

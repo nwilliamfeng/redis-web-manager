@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
-import { Ul, Li, LiIcon, NameDiv, FlexDiv, EmptyDiv, FlexContainerDiv, LoadingImg } from './parts'
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
+import { Li, LiIcon, NameDiv, FlexDiv, EmptyDiv, FlexContainerDiv, LoadingImg } from './parts'
+import { ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from './contextMenuIds'
-import { keyActions,dbActions } from '../actions'
+import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { withExpand,withSelectByClick } from '../controls'
+import { selectNodeType } from '../constants'
+import { withExpand, withSelectByClick } from '../controls'
 
 
 const Content = props => {
-    const {name,isLoading}=props;
+    const { name, isLoading, handleClick } = props;
     return <FlexDiv>
-        <FlexContainerDiv>
+        <FlexContainerDiv onClick={handleClick}>
             <EmptyDiv />
             <LiIcon src={require('../assets/imgs/db.png')} />
             <NameDiv>{`DB${name}`}</NameDiv>
@@ -20,66 +21,66 @@ const Content = props => {
     </FlexDiv>
 }
 
-const ExpandContent =withSelectByClick( withExpand(props => <Content {...props} />))
+const ExpandContent = withSelectByClick(withExpand(props => <Content {...props} />))
 
 class DB extends Component {
 
     constructor(props) {
-        console.log('create db '+props.dbIdx);
+        console.log('create db ' + props.dbIdx);
         super(props);
-        this.state = { keyLoaded: false, keys: [],isLoading:false };
+        this.state = { keyLoaded: false, keys: [], isLoading: false };
     }
 
-    handleClick = () => {
-        const { dispatch, connection,dbIdx } = this.props;
-        dispatch(dbActions.selectDB(connection,dbIdx));
-      
+    handleClick = (e) => {
+        const { dispatch, connectionName, dbIdx } = this.props;
+        dispatch(dbActions.selectDB(connectionName, dbIdx));
+
     }
 
     handleDoubleClick = () => {
-        const {keyLoaded} =this.state;
-        const {dbIdx,connection}=this.props;
-        if(keyLoaded===false){
-            const { dispatch,item } = this.props;
-            dispatch(keyActions.getKeyList(connection,dbIdx));
+        const { keyLoaded } = this.state;
+        const { dbIdx, connection } = this.props;
+        if (keyLoaded === false) {
+            const { dispatch } = this.props;
+            dispatch(keyActions.getKeyList(connection, dbIdx));
         }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const {keyLoaded} =this.state;
-       
-        if(keyLoaded===false){
-            const {keys,connection,dbIdx}=nextProps;
-            if(keys!=null && connection===this.props.selectedConnection && dbIdx=== this.props.dbIdx){
-                this.setState({keyLoaded:true,keys});
+        const { keyLoaded } = this.state;
+
+        if (keyLoaded === false) {
+            const { keys, connection, dbIdx } = nextProps;
+            if (keys != null && connection === this.props.selectedConnection && dbIdx === this.props.dbIdx) {
+                this.setState({ keyLoaded: true, keys });
             }
         }
     }
 
-  
+
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-     
-        const { connection ,dbIdx,selectedDbIdx,isVisible} = this.props;
-        
+
+        const { connectionName, dbIdx, selectedDB,isVisible } = this.props;
+
         // const {dbLoaded}=this.state;
         // if(nextState!=null && nextState.dbLoaded!==dbLoaded){
         //     console.log('check dbloaded '+item.name);
         //     return true;
         // }
-        if (nextProps != null && nextProps.selectedConnection===connection) {
-            if (dbIdx === selectedDbIdx && nextProps.selectedDbIdx !== dbIdx) {
-                return true;
+        if (nextProps != null && nextProps.selectedConnection != null) {
+            if (connectionName === nextProps.selectedConnection) {
+                if (dbIdx === selectedDB && nextProps.selectedDB !== dbIdx) {
+                    return true;
+                }
+                else if (dbIdx !== selectedDB && nextProps.selectedDB === dbIdx) {
+                    return true;
+                }
             }
-            else if (dbIdx !== selectedDbIdx && nextProps.selectedDbIdx === dbIdx) {
+            else if(dbIdx===selectedDB)
                 return true;
-            }
-
-            // if( item.name===nextProps.connection){
-            //     return true;
-            // }
         }
 
-        if(nextProps!=null && nextProps.isVisible!==isVisible){
+        if (nextProps != null && nextProps.isVisible !== isVisible) {
             return true;
         }
 
@@ -87,15 +88,15 @@ class DB extends Component {
     }
 
     render() {
-        const { dbIdx ,isVisible,connection,selectedConnection,selectedDbIdx} = this.props;
-        const {keys} =this.state;
-        console.log('render db ' + dbIdx);
-    
+        const { dbIdx, isVisible, selectedDB, selectedConnection, connectionName } = this.props;
+        const { keys } = this.state;
+        console.log(`render db:dbIdx ${dbIdx} selectedDB ${selectedDB}  selectedConnection ${selectedConnection} connection ${connectionName}` );
+
         return <React.Fragment>
-           {isVisible &&  <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
-                <Li onClick={this.handleClick} title={`DB${dbIdx}`} onDoubleClick={this.handleDoubleClick}>
-                    <ExpandContent name={dbIdx} isSelected={dbIdx===selectedDbIdx && connection===selectedConnection} >
-                        {keys && keys.length>0 && keys.map(x=><div key={x}>{x}</div>)}
+            {isVisible && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
+                <Li title={`DB${dbIdx}`} onDoubleClick={this.handleDoubleClick}>
+                    <ExpandContent name={dbIdx} isSelected={dbIdx === selectedDB && connectionName === selectedConnection} handleClick={this.handleClick}>
+                        {keys && keys.length > 0 && keys.map(x => <div key={x}>{x}</div>)}
                     </ExpandContent>
                 </Li>
             </ContextMenuTrigger>}
@@ -104,8 +105,13 @@ class DB extends Component {
 }
 
 function mapStateToProps(state) {
-    const { dbs, connection ,selectedDbIdx,selectedConnection} = state.db;
-    return { dbs, connection ,selectedDbIdx,selectedConnection};
+  
+    const { selectedNodeType, selectedDB, selectedConnection } = state.state;
+    if(selectedNodeType === selectNodeType.SELECT_DB){
+        return {  selectedDB, selectedConnection }
+    }
+    return state;
+  
 }
 
 

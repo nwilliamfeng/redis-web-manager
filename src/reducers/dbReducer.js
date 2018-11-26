@@ -15,12 +15,7 @@ export const dbReducer = (state = defaultState, action) => {
 
             }
 
-        case dbConstants.SELECT_DB:
-            return {
-                ...state,
-                selectedDbIdx: action.dbIdx,
-                selectedConnection:action.connection,
-            }
+      
 
         default:
             return state;

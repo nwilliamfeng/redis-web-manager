@@ -48,7 +48,7 @@ export const withSimpleExpand = WrapperComponent => class extends Component {
 
     render() {
         console.log('render expand');
-         console.log(this.props);
+  
         const { isExpand } = this.state;
         const { isSelected } = this.props;
         return <React.Fragment>

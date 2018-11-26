@@ -1,4 +1,4 @@
-import { dbConstants } from '../constants';
+import { dbConstants,selectNodeType } from '../constants';
 import { redisApi } from '../api'
 
 
@@ -20,5 +20,5 @@ function getDbList(connectionName) {
 }
 
 function selectDB(connection, dbIdx){
-    return {type:dbConstants.SELECT_DB,connection,dbIdx};
+    return {type:selectNodeType.SELECT_DB,connection,db:dbIdx};
 }

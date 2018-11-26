@@ -1,4 +1,4 @@
-import {connectionConstants} from '../constants';
+import {connectionConstants,selectNodeType} from '../constants';
 import {redisApi} from '../api'
 
 
@@ -19,5 +19,5 @@ export const connectionActions={
 }
 
 function selectConnection(connectionName){
-    return {type:connectionConstants.SELECT_CONNECTION,connectionName};
+    return {type:selectNodeType.SELECT_CONNECTION,connection: connectionName};
 }

@@ -8,7 +8,7 @@ const Div = styled.div`
 
 export const withSelectByClick = WrapperComponent => class extends Component {
     render() {
-        console.log(this.props);
+ 
         return <Div {...this.props}>
             <WrapperComponent {...this.props} />
         </Div>
