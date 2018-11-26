@@ -1,24 +1,33 @@
 import React, { Component } from 'react'
-import { Ul, Li, LiIcon, NameDiv, FlexDiv } from './parts'
+import { Ul, Li, LiIcon, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg } from './parts'
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from './contextMenuIds'
-import { connectionActions,dbActions } from '../actions'
+import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
 import { withExpand } from '../controls'
+import { DB } from './DB'
 
 
-const Content = props => <FlexDiv>
-    <LiIcon src={require('../assets/imgs/connection.png')} />
-    <NameDiv>{props.item.name}</NameDiv>
-</FlexDiv>
+const Content = props => {
+    const { dbs, item, isLoading } = props;
+    return <FlexDiv>
+        <FlexContainerDiv>
+            <LiIcon src={require('../assets/imgs/connection.png')} />
+            <NameDiv>{item.name}</NameDiv>
+            {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
+        </FlexContainerDiv>
+        {isLoading === true && <LoadingImg />}
+    </FlexDiv>
+}
 
-const ExpandContent = withExpand(props => <Content {...props}/>)
+const ExpandContent = withExpand(props => <Content {...props} />)
 
 class Connection extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dbLoaded: false,dbs:[] };
+        this.state = { dbLoaded: false, dbs: [], isLoading: false };
+
     }
 
     handleClick = () => {
@@ -27,20 +36,34 @@ class Connection extends Component {
     }
 
     handleDoubleClick = () => {
-        const {dbLoaded} =this.state;
-        if(dbLoaded===false){
-            const { dispatch,item } = this.props;
+        const { dbLoaded } = this.state;
+        if (dbLoaded === false) {
+            this.setState({ isLoading: true });
+            const { dispatch, item } = this.props;
             dispatch(dbActions.getDbList(item.name));
-            this.setState({dbLoaded:true});
+        }
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        const { dbLoaded } = this.state;
+        if (dbLoaded === false) {
+            const { dbs, connection, item } = nextProps;
+            if (dbs != null && connection === item.name) {
+                this.setState({ dbLoaded: true, dbs, isLoading: false });
+            }
         }
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { item, selectedName,dbs } = this.props;
-        console.log('do render...' );
-        const {dbLoaded}=this.state;
-        if(nextState!=null && nextState.dbLoaded!==dbLoaded){
-            return true;
+        const { item, selectedName } = this.props;
+        const { dbLoaded, isLoading } = this.state;
+        if (nextState != null) {
+            if (nextState.dbLoaded !== dbLoaded) {
+                return true;
+            }
+            if (nextState.isLoading !== isLoading) {
+                return true;
+            }
         }
         if (nextProps != null) {
             if (item.name === selectedName && nextProps.selectedName !== item.name) {
@@ -50,7 +73,7 @@ class Connection extends Component {
                 return true;
             }
 
-            if( item.name===nextProps.connection){
+            if (item.name === nextProps.connection) {
                 return true;
             }
         }
@@ -60,16 +83,14 @@ class Connection extends Component {
 
 
     render() {
-        const { item, selectedName,dbs } = this.props;
+        const { item, selectedName } = this.props;
+        const { dbs, isLoading } = this.state;
         console.log('render connection ' + item.name);
-        console.log(dbs);
         return <React.Fragment>
             {item && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
                 <Li onClick={this.handleClick} title={item.name} onDoubleClick={this.handleDoubleClick}>
-                    <ExpandContent item={item} isSelected={selectedName === item.name} >
-                         {dbs && dbs.length>0 && dbs.map(x=><div>{x}</div>)
-                           
-                        }
+                    <ExpandContent item={item} isSelected={selectedName === item.name} dbs={dbs} isLoading={isLoading}>
+                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x} dbIdx={x} />)}
                     </ExpandContent>
 
                 </Li>
@@ -80,9 +101,9 @@ class Connection extends Component {
 }
 
 function mapStateToProps(state) {
-    const  {connections, selectedName}= state.connection;
-    const {dbs,connection} =state.db;
-    return {connections,selectedName,dbs,connection};
+    const { connections, selectedName } = state.connection;
+    const { dbs, connection } = state.db;
+    return { connections, selectedName, dbs, connection };
 }
 
 

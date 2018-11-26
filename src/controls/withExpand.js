@@ -17,7 +17,7 @@ const HeaderDiv = styled.div`
 `
 
 const BodyDiv = styled.div`
-    padding: 5px 5px 5px 30px;
+    padding: 0px 0px 5px 30px;
     color: gray;
 `
 
@@ -48,7 +48,7 @@ export const withExpand = WrapperComponent => class extends Component {
 
     render() {
         console.log('render expand');
-        console.log(this.props);
+       // console.log(this.props);
         const { isExpand } = this.state;
         const { isSelected } = this.props;
         return <React.Fragment>
