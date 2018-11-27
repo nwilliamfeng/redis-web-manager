@@ -35,7 +35,7 @@ export const withSimpleExpand = WrapperComponent => class extends Component {
     }
 
     handleDoubleClick = () => {
-        const { children, handleExpand } = this.props;
+        const { children } = this.props;
         if (children) {
             const { isExpand } = this.state;
             this.setState({ isExpand: !isExpand });
@@ -45,9 +45,9 @@ export const withSimpleExpand = WrapperComponent => class extends Component {
 
     render() {
         const { isExpand } = this.state;
-        const { paddingLeft } = this.props;
+        const { paddingLeft ,handleClick} = this.props;
         return <React.Fragment>
-            <HeaderDiv onDoubleClick={this.handleDoubleClick} paddingLeft={paddingLeft}>
+            <HeaderDiv onDoubleClick={this.handleDoubleClick} paddingLeft={paddingLeft} onClick={handleClick}>
                 <ArrowDiv onClick={this.handleDoubleClick}>
                     {this.props.children && <FontAwesomeIcon icon={isExpand === true ? arrowDown : arrowRight} size='xs' />}
                 </ArrowDiv>

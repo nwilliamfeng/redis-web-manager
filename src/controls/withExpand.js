@@ -38,9 +38,9 @@ export const withExpand = WrapperComponent => class extends Component {
     }
 
     render() {
-        const { isExpand,paddingLeft } = this.props;
+        const { isExpand,paddingLeft,handleClick } = this.props;
         return <React.Fragment>
-            <HeaderDiv onDoubleClick={this.handleDoubleClick} paddingLeft={paddingLeft}>
+            <HeaderDiv onDoubleClick={this.handleDoubleClick} paddingLeft={paddingLeft} onClick={handleClick}>
                 <ArrowDiv onClick={this.handleDoubleClick}>
                     {this.props.children && <FontAwesomeIcon icon={isExpand === true ? arrowDown : arrowRight} size='xs' />}
                 </ArrowDiv>

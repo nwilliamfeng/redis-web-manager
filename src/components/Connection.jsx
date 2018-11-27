@@ -11,9 +11,9 @@ import { DB } from './DB'
 
 
 const Content = props => {
-    const { dbs, item, isLoading, handleClick } = props;
+    const { dbs, item, isLoading } = props;
     return <FlexDiv>
-        <FlexContainerDiv onClick={handleClick}>
+        <FlexContainerDiv >
             <LiIcon src={require('../assets/imgs/connection.png')} />
             <NameDiv>{item.name}</NameDiv>
             {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}

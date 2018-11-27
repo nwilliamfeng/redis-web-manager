@@ -12,9 +12,9 @@ import styled from 'styled-components'
 
  
 const Content = props => {
-    const { name, isLoading, handleClick, keys } = props;
+    const { name, isLoading, keys } = props;
     return <FlexDiv>
-        <FlexContainerDiv onClick={handleClick}>
+        <FlexContainerDiv>
             <LiIcon src={require('../assets/imgs/db.png')} />
             <NameDiv>{`db${name}`}</NameDiv>
             {keys && keys.length > 0 && <div>{`[${keys.length}项]`}</div>}
@@ -140,7 +140,9 @@ class DB extends Component {
         return <React.Fragment>
             {isVisible && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
 
-                <ExpandContent name={dbIdx} title={`DB${dbIdx}`} onDoubleClick={this.handleDoubleClick}  
+                <ExpandContent name={dbIdx} 
+                    title={`DB${dbIdx}`} 
+                    onDoubleClick={this.handleDoubleClick}  
                     isSelected={this.isSelected()}
                     handleClick={this.handleClick}
                     isLoading={isLoading}

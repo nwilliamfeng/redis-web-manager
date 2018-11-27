@@ -54,7 +54,6 @@ export const FlexContainerDiv = styled.div`
     align-items:center;
     width:100%;
     height:32px;
-    
 `
 
 const Img = styled.img`
