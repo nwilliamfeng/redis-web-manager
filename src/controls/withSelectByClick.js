@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 
 const Div = styled.div`
+  
     background-color:${props => props.isSelected === true ? '#C4C4C5' : 'transparent'};
+    color: ${props => props.isSelected === true ? 'black' : 'gray'};
     width:100%;
 `
 

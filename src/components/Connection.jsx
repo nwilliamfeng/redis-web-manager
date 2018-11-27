@@ -1,34 +1,35 @@
 import React, { Component } from 'react'
-import { Li, LiIcon, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg } from './parts'
-import {  ContextMenuTrigger } from "react-contextmenu"
+import { Li, LiIcon, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, Ul } from '../controls/parts'
+import { ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from './contextMenuIds'
 import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import {selectNodeType} from '../constants'
-import { withExpand ,withSelectByClick} from '../controls'
+import { selectNodeType as selectType} from '../constants'
+import { withExpand, withSelectByClick } from '../controls'
+import { compose } from 'recompose'
 import { DB } from './DB'
 
 
 const Content = props => {
-    const { dbs, item, isLoading ,handleClick} = props;
+    const { dbs, item, isLoading, handleClick } = props;
     return <FlexDiv>
         <FlexContainerDiv onClick={handleClick}>
             <LiIcon src={require('../assets/imgs/connection.png')} />
             <NameDiv>{item.name}</NameDiv>
             {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
         </FlexContainerDiv>
-        {isLoading === true && <LoadingImg />}
+        <div>{isLoading === true && <LoadingImg />}</div>
     </FlexDiv>
 }
 
-const ExpandContent =withSelectByClick( withExpand(props => <Content {...props} />))
+const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
 
 class Connection extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dbLoaded: false, dbs: [], isLoading: false,isExpand:true };
-        
+        this.state = { dbLoaded: false, dbs: [], isLoading: false, isExpand: true };
+
     }
 
     handleClick = () => {
@@ -56,8 +57,8 @@ class Connection extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { item, selectedConnection } = this.props;
-        const { dbLoaded, isLoading,isExpand } = this.state;
+        const { item, selectedConnection,selectNodeType } = this.props;
+        const { dbLoaded, isLoading, isExpand } = this.state;
         if (nextState != null) {
             if (nextState.dbLoaded !== dbLoaded) {
                 return true;
@@ -71,13 +72,17 @@ class Connection extends Component {
             }
         }
         if (nextProps != null) {
+
+            if (selectedConnection === item.name && nextProps.selectedNodeType !== selectType.SELECT_CONNECTION) {
+                return true;
+            }
             if (item.name === selectedConnection && nextProps.selectedConnection !== item.name) {
                 return true;
             }
-            else if (item.name !== selectedConnection && nextProps.selectedConnection === item.name) {
+            if (item.name !== selectedConnection && nextProps.selectedConnection === item.name) {
                 return true;
             }
-            if (item.name === nextProps.connection) {
+            if(selectedConnection === item.name && nextProps.selectedNodeType !== selectNodeType){
                 return true;
             }
         }
@@ -85,21 +90,27 @@ class Connection extends Component {
         return false;
     }
 
-    handleExpand=isExpand=>{
-        this.setState({isExpand});
+    handleExpand = isExpand => {
+        this.setState({ isExpand });
     }
 
-
+    
     render() {
-        const { item, selectedConnection } = this.props;
-        const { dbs, isLoading ,isExpand} = this.state;
+        const { item, selectedConnection, selectedNodeType } = this.props;
+        const { dbs, isLoading, isExpand } = this.state;
         console.log('render connection ' + item.name);
         return <React.Fragment>
             {item && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
-                <Li   title={item.name} onDoubleClick={this.handleDoubleClick}>
-                    <ExpandContent handleClick={this.handleClick} item={item} isSelected={selectedConnection === item.name} dbs={dbs} isLoading={isLoading}
-                     handleExpand={this.handleExpand} isExpand={isExpand}>
-                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x} dbIdx={x} connectionName={item.name} isVisible={isExpand}/>)}
+                <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
+                    <ExpandContent
+                        handleClick={this.handleClick}
+                        item={item}
+                        isSelected={selectedNodeType === selectType.SELECT_CONNECTION && selectedConnection === item.name} 
+                        dbs={dbs} 
+                        isLoading={isLoading}
+                        handleExpand={this.handleExpand}
+                        isExpand={isExpand}>
+                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x} dbIdx={x} connectionName={item.name} isVisible={isExpand} />)}
                     </ExpandContent>
 
                 </Li>
@@ -109,11 +120,11 @@ class Connection extends Component {
     }
 }
 
-function mapStateToProps(state) {  
+function mapStateToProps(state) {
     const { connections } = state.connection;
     const { dbs, connection } = state.db;
-    const {selectedConnection,selectedNodeType} =state.state;
-    return selectedNodeType===selectNodeType.SELECT_CONNECTION? { connections, selectedConnection, dbs, connection } :{ connections, dbs, connection };
+    const { selectedConnection, selectedNodeType } = state.state;
+    return { connections, selectedConnection, dbs, connection, selectedNodeType };
 }
 
 

@@ -24,16 +24,16 @@ export const NameDiv = styled.div`
     text-overflow:ellipsis;
     margin-right:10px;
     white-space:nowrap;
+    text-align:left;
 `
 
 export const FlexDiv = styled.div`
     display:flex;
-    padding:5px 0px;
     overflow:hidden;
+    width:100%;
     text-overflow:ellipsis;
     white-space:nowrap;
     cursor:default;
-    width:100%;
     justify-content:space-between;
     align-items: center;
     -webkit-user-select: none; /* Chrome/Safari */        
@@ -41,13 +41,20 @@ export const FlexDiv = styled.div`
     -ms-user-select: none; /* IE10+ */
 `
 
-export const EmptyDiv = styled.div`
-    width:20px;
+export const HoverDiv = styled.div`
+    &:hover{
+        background-color: #DEDBDA;
+        color:black;
+    };
+
 `
 
 export const FlexContainerDiv = styled.div`
     display:flex;
+    align-items:center;
     width:100%;
+    height:32px;
+    
 `
 
 const Img = styled.img`

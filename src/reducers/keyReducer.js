@@ -2,8 +2,8 @@ import { keyConstants } from '../constants';
 
 const defaultState = {
     keys: [],
-    db: null,
-    connection:null,
+    dbOfKey: null,
+    connectionOfKey:null,
 }
 
 export const keyReducer = (state = defaultState, action) => {
@@ -11,12 +11,10 @@ export const keyReducer = (state = defaultState, action) => {
         case keyConstants.LOAD_KEY_LIST:
             return {
                 ...state,
-                db:action.db,     
+                dbOfKey:action.db,     
                 keys: action.keyList,
-                connection:action.connection,
+                connectionOfKey:action.connection,
             }
-
-        
 
         default:
             return state;

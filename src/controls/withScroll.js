@@ -9,7 +9,7 @@ require('../assets/styles/scrollbar.css')
 const OutContainer = styled.div`
     overflow-y: hidden;
     height: 100%;
-   position:${props=>props.isAbsolute===true?'absolute':'static'}
+   position:${props=>props.isAbsolute===true?'absolute':'static'};
     width:100%;`
 
 /**

@@ -2,23 +2,20 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight as arrowRight, faChevronDown as arrowDown } from '@fortawesome/free-solid-svg-icons'
+import {HoverDiv} from './parts'
 
-const HeaderDiv = styled.div`
+const HeaderDiv = styled(HoverDiv)`
     display:flex;
     width:100%;
     padding:0px 6px;
-    background-color:${props => props.isSelected === true ? '#C4C4C5' : 'transparent'};
-    &:hover{
-        background-color: #DEDBDA;
-        color:black;
-    };
-  
-    color: ${props => props.isSelected === true ? 'black' : 'gray'};;
+    padding-left:${props => props.paddingLeft ? `${props.paddingLeft}px` : '6px'};
+   
 `
 
 const BodyDiv = styled.div`
     padding: 0px 0px 5px 30px;
     color: gray;
+    background:white;
 `
 
 const ArrowDiv = styled.div`  
@@ -38,7 +35,7 @@ export const withSimpleExpand = WrapperComponent => class extends Component {
     }
 
     handleDoubleClick = () => {
-        const { children,handleExpand } = this.props;
+        const { children, handleExpand } = this.props;
         if (children) {
             const { isExpand } = this.state;
             this.setState({ isExpand: !isExpand });
@@ -47,26 +44,21 @@ export const withSimpleExpand = WrapperComponent => class extends Component {
     }
 
     render() {
-        console.log('render expand');
-  
         const { isExpand } = this.state;
-        const { isSelected } = this.props;
+        const { paddingLeft } = this.props;
         return <React.Fragment>
-            <HeaderDiv onDoubleClick={this.handleDoubleClick} isSelected={isSelected}>
-                
-                    <ArrowDiv onClick={this.handleDoubleClick}>
-                    {this.props.children &&<FontAwesomeIcon icon={isExpand === true ? arrowDown : arrowRight} size='xs' />}
-                    </ArrowDiv> 
-
+            <HeaderDiv onDoubleClick={this.handleDoubleClick} paddingLeft={paddingLeft}>
+                <ArrowDiv onClick={this.handleDoubleClick}>
+                    {this.props.children && <FontAwesomeIcon icon={isExpand === true ? arrowDown : arrowRight} size='xs' />}
+                </ArrowDiv>
                 <WrapperComponent {...this.props} {...isExpand} />
             </HeaderDiv>
 
             {isExpand === true && this.props.children &&
                 <BodyDiv>
                     {this.props.children}
-                </BodyDiv>
-            }
-          
+                </BodyDiv>}
+
         </React.Fragment>
 
     }

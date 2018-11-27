@@ -32,7 +32,7 @@ class RedisApi {
         //[{"Key":"9","Type":"string"}...]
         if (Code === 2)
             throw new Error(Message);
-        return Data;
+        return Data.map(x => { return { key: x.Key, type: x.Type} });
     }
 }
 

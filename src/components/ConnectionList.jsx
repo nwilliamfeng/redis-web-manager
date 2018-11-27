@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { connectionActions } from '../actions'
 import { ContextMenu, MenuItem } from "react-contextmenu"
 import {Connection} from './Connection'
-import {Ul,Li} from './parts'
+import {Ul,Li} from '../controls/parts'
 import {contextMenuIds} from './contextMenuIds'
 
 
