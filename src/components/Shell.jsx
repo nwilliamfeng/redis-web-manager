@@ -5,7 +5,7 @@ import BackgroundImg from '../assets/imgs/background.jpg';
 import { withScroll, withSplit } from '../controls'
 import { ConnectionList } from './ConnectionList'
 import { KeySearch } from './KeySearch'
-import {TabPaneList} from './TabPaneList'
+import { TabPaneList } from './TabPaneList'
 
 const ShellDiv = styled.div`
     display:flex;
@@ -38,12 +38,12 @@ const Container = styled.div`
 `
 
 const TabDiv = styled.div`
-      display:flex;
-    justify-content:left;
-    flex-direction:row;
-    
+    display:flex;
+    justify-content: left;
+    text-align:left;
+    width:100%;
     height:100%;
-    padding:8px 1px;
+    padding:12px 6px;
     
 `
 
@@ -87,7 +87,7 @@ class Shell extends Component {
 
                     </ListRegion>
                     <TabDiv>
-                        <TabPaneList style={{width:'100%'}}/>
+                        <TabPaneList />
                     </TabDiv>
                 </VerticalSplit>
             </Container>

@@ -9,13 +9,14 @@ import { withSimpleExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { Key } from './Key'
 import styled from 'styled-components'
+import {icons} from './icons'
 
  
 const Content = props => {
     const { name, isLoading, keys } = props;
     return <FlexDiv>
         <FlexContainerDiv>
-            <LiIcon src={require('../assets/imgs/db.png')} />
+            <LiIcon src={icons.DB_ICON} />
             <NameDiv>{`db${name}`}</NameDiv>
             {keys && keys.length > 0 && <div>{`[${keys.length}项]`}</div>}
         </FlexContainerDiv>

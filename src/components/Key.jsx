@@ -4,13 +4,14 @@ import { withSelectByClick } from '../controls'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from './contextMenuIds'
 import { NameDiv, FlexDiv, LiIcon, FlexContainerDiv, HoverDiv } from '../controls/parts'
+import {icons} from './icons'
 
 const Content = props => {
     const { keyName } = props;
     
     return <FlexDiv >
         <FlexContainerDiv>
-            <LiIcon src={require('../assets/imgs/key.png')} />
+            <LiIcon src={icons.KEY_ICON} />
             <NameDiv>{keyName}</NameDiv>
         </FlexContainerDiv>
     </FlexDiv>

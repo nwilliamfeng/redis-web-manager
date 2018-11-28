@@ -30,7 +30,6 @@ class ConnectionList extends Component {
         return true;
     }
 
-
     render() {
         console.log('render connection-list');
         const { connections, dispatch } = this.props;

@@ -8,13 +8,14 @@ import { selectNodeType as selectType} from '../constants'
 import { withExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { DB } from './DB'
+import {icons} from './icons'
 
 
 const Content = props => {
     const { dbs, item, isLoading } = props;
     return <FlexDiv>
         <FlexContainerDiv >
-            <LiIcon src={require('../assets/imgs/connection.png')} />
+            <LiIcon src={icons.CONNECTION_ICON} />
             <NameDiv>{item.name}</NameDiv>
             {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
         </FlexContainerDiv>
