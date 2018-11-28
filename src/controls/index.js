@@ -9,4 +9,4 @@ export * from './withExpand'
 export * from './withSelectByClick'
 export * from './withSimpleExpand'
 export * from './parts'
- 
+export * from './Tabpanes'
