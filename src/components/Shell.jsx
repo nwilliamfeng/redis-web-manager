@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import BackgroundImg from '../assets/imgs/background.jpg';
 import { withScroll, withSplit } from '../controls'
 import { ConnectionList } from './ConnectionList'
-import { KeySearch } from './KeySearch'
+import { Toolbar } from './Toolbar'
+import {Menubar} from './Menubar'
 import { TabPaneList } from './TabPaneList'
 
 const ShellDiv = styled.div`
@@ -31,7 +32,8 @@ const Background = styled.div`
         position: fixed;`
 
 const Container = styled.div`
-  
+    display:flex;
+    flex-direction:column;
     background: white;
     height:100vh;
     width:70%;
@@ -39,33 +41,18 @@ const Container = styled.div`
 
 const TabDiv = styled.div`
     display:flex;
-    justify-content: left;
-    text-align:left;
     width:100%;
     height:100%;
-    padding:12px 6px;
     
 `
 
-const ListRegion = styled.div`
-     
-    display:flex;
-    height:100vh;
-    flex-direction:column;`
-
-const ListContainerDiv = styled.div`
-    overflow:hidden;
-    padding:2px;
-    height:  100%  ;`
+const MenuBarDiv=styled.div`
+    text-align:left;
+    width:400px;
+`
 
 
 const ListContainer = withScroll(props => <div {...props} />)
-
-
-const SearchBoxContainer = styled.div`
-    display:flex;
-    flex-direction:column;
-    margin:14px 8px 6px 8px;`
 
 const VerticalSplit = withSplit()
 
@@ -74,18 +61,17 @@ class Shell extends Component {
         return <ShellDiv>
             <Background img={BackgroundImg} />
             <Container>
+                <MenuBarDiv>
+                <Menubar/>
+                </MenuBarDiv>
+                
+                <Toolbar />
                 <VerticalSplit size={240} minSize={240} maxSize={290}>
-                    <ListRegion>
-                        <SearchBoxContainer>
-                            <KeySearch />
-                        </SearchBoxContainer>
-                        <ListContainerDiv>
-                            <ListContainer>
-                                <ConnectionList />
-                            </ListContainer>
-                        </ListContainerDiv>
-
-                    </ListRegion>
+                   
+                        <ListContainer>
+                            <ConnectionList />
+                        </ListContainer>
+               
                     <TabDiv>
                         <TabPaneList />
                     </TabDiv>

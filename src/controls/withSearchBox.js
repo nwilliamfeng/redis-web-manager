@@ -25,9 +25,9 @@ const menuStyle = {
     maxHeight: '50%',
 }
 
-const DefaultSearchInput = props => <div className="form-group  right-inner-addon">
+const DefaultSearchInput = props => <div className="right-inner-addon" >
     <SearchIcon aria-hidden="true"><FontAwesomeIcon icon={faSearch} /></SearchIcon>
-    <input type="search" className="form-control input-xs" placeholder="键值" style={{ height: 28 }} {...props} />
+    <input type="search" className="form-control input-xs" placeholder="键值"  style={props.searchBoxStyle} {...props} />
 </div>
 
 const DefaultMenuItem = (item, highlighted) => <MenuItemDiv key={item.id} highlighted={highlighted}>
@@ -110,6 +110,7 @@ export const withSearchBox = (Input, MenuItem) => class extends Component {
 
 
     render() {
+        console.log(this.props);
         const menuItems = this.handleItems();
         return <ReactAutocomplete
             open={menuItems.length > 0 && this.state.isOpen === true}
@@ -117,7 +118,7 @@ export const withSearchBox = (Input, MenuItem) => class extends Component {
             shouldItemRender={this.shouldItemRender}
             getItemValue={item => item.label}
             renderItem={MenuItem ? MenuItem : DefaultMenuItem}
-            renderInput={Input ? Input : DefaultSearchInput}
+            renderInput={Input ? Input : props=><DefaultSearchInput {...this.props}/>}
             
             renderMenu={this.renderMenu}
             value={this.state.value}

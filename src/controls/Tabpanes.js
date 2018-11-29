@@ -21,6 +21,7 @@ const TabPaneDiv = styled.div`
     cursor:pointer;     
     border:${props => props.isSelected === true ? '1px solid  #d3cfcf' : '1px solid transparent'};   
     border-radius:${props => props.isSelected === true ? '0px 12px 0px 0px' : '0px'};
+    border-top:none;
     border-bottom:${props => props.isSelected === true ? '1px solid transparent' : '1px solid #d3cfcf'}; 
     margin-left:${props => props.isSelected === true ? '-2px' : '0px'};
     z-index:${props => props.isSelected === true ? '100' : '0'};
@@ -30,6 +31,7 @@ const TabPaneDiv = styled.div`
     padding-right:0px;
     &:first-child {
         margin-left:0px;
+        border-left:none;
     }
     &:hover{
       background:${props => props.isSelected === true ? 'white' : 'whitesmoke'};
@@ -84,7 +86,7 @@ const TabPane = ({ tabId, icon, title, onSelect, onClose, isSelected }) => {
 const TabPaneListDiv = styled.div`
     display:flex;
     width:100%;
-    border-bottom:1px solid #d3cfcf;
+    border-bottom:${props=>props.hasTabs===true?'1px solid #d3cfcf':'none'} ;
     flex-wrap:wrap;
     background:#eee;
 `
@@ -114,7 +116,7 @@ export class TabPanes extends Component {
     render() {
         const { selectedPage } = this.state;
         const { items } = this.props;
-        return <TabPaneListDiv >
+        return <TabPaneListDiv hasTabs={items.length>0}>
             {items && items.map(x => 
             <TabPane {...x} 
                  isSelected={selectedPage===x.tabId}

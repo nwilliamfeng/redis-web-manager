@@ -17,7 +17,8 @@ const Container=styled.div`
 const TabPanel=styled.div`
     width:100%;
     height:100%;
-    border:1px solid #d3cfcf;
+    /* border: 1px solid #d3cfcf; */
+    
     border-top:none;
      
 `
@@ -28,20 +29,21 @@ class TabPaneList extends Component {
     super(props);
     this.state = { selectedPage: null,items:[{tabId:selectNodeType.SELECT_CONNECTION,icon:icons.CONNECTION_ICON,title:'abc'},
     {tabId:selectNodeType.SELECT_DB,icon:icons.DB_ICON,title:'ddddfd'}] };
+    
   }
 
   handleSelectTab = tabId => {
    // this.setState({ selectedPage: tab });
-   alert('select ' + tabId);
+  // alert('select ' + tabId);
   }
 
   handleCloseTab = tabId => {
-    alert('close ' + tabId);
+   // alert('close ' + tabId);
   }
 
   render() {
     const { selectedPage } = this.state;
-
+    
     return <Container>
       <TabPanes items={this.state.items} onClose={this.handleCloseTab} onSelect={this.handleSelectTab}>
       

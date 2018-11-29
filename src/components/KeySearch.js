@@ -22,7 +22,7 @@ const MenuItem = (item, highlighted) => <MenuItemDiv key={item.id} highlighted={
 </MenuItemDiv>
 
 
-const SearchBox = withSearchBox(null,MenuItem)
+const SearchBox = withSearchBox(null,props=><MenuItem {...props}/>)
 
 
 /** 
@@ -55,7 +55,7 @@ class KeySearch extends Component {
 
 
     render() {
-        return <SearchBox getMenuItems={this.getKeyTypes} onSelectItem={this.handleSelectItem} />
+        return <SearchBox  getMenuItems={this.getKeyTypes} onSelectItem={this.handleSelectItem} {...this.props}/>
     }
 
 }
