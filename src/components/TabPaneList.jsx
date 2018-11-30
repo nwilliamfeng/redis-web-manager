@@ -1,62 +1,101 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import {commandAction} from '../actions'
 import { icons } from './icons'
-import { selectNodeType } from '../constants'
-import {TabPanes} from '../controls'
+import { selectNodeType, tabPaneTypes } from '../constants'
+import { TabPanes } from '../controls'
+import {ListViewTabPane} from './tabPanes'
 
-const Container=styled.div`
+const Container = styled.div`
   display: flex;
   width:100%;
   flex-direction:column;
 `
 
-const TabPanel=styled.div`
+const TabPanel = styled.div`
     width:100%;
     height:100%;
     /* border: 1px solid #d3cfcf; */
-    
     border-top:none;
-     
 `
+
+const tabPaneIds = {
+  LIST_VIEW_PANE: 'LIST_VIEW_PANE',
+}
+
+
 
 class TabPaneList extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { selectedPage: null,items:[{tabId:selectNodeType.SELECT_CONNECTION,icon:icons.CONNECTION_ICON,title:'abc'},
-    {tabId:selectNodeType.SELECT_DB,icon:icons.DB_ICON,title:'ddddfd'}] };
-    
+   
   }
 
   handleSelectTab = tabId => {
-   // this.setState({ selectedPage: tab });
-  // alert('select ' + tabId);
+    // this.setState({ selectedPage: tab });
+    // alert('select ' + tabId);
   }
 
   handleCloseTab = tabId => {
-   // alert('close ' + tabId);
+     const {dispatch} =this.props;
+     dispatch(commandAction.closeListView());
+    //alert('close ' + tabId);
+  }
+
+  getTabPanes = () => {
+    const { tabPanes } = this.props;
+    if (tabPanes == null) {
+      return [];
+    }
+    return tabPanes.map(x => { return { tabId: x, title: this.getTabPaneTitle(x),icon:this.getTabPaneIcon(x) } })
+  }
+
+  getTabPaneTitle = tabPane => {
+    switch (tabPane) {
+      case tabPaneIds.LIST_VIEW_PANE:
+        return '列表视图';
+      default:
+        return '未知';
+    }
+  }
+
+  getTabPaneIcon = tabPane => {
+    switch (tabPane) {
+      case tabPaneIds.LIST_VIEW_PANE:
+        return icons.FOLDER_ICON;
+      default:
+        return '';
+    }
+  }
+
+  isTabPaneVisible=name=>{
+    const { tabPanes } = this.props;
+    if(tabPanes==null){
+      return false;
+    }
+    return tabPanes.some(x=>x===name);
   }
 
   render() {
-    const { selectedPage } = this.state;
-    
+    console.log('render tabpanelist');
+    const { activeTabPane } = this.props;
     return <Container>
-      <TabPanes items={this.state.items} onClose={this.handleCloseTab} onSelect={this.handleSelectTab}>
-      
-      </TabPanes>
-      <TabPanel/>
-      
+      <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab}/>
+
+      <TabPanel>
+         {this.isTabPaneVisible(tabPaneTypes.LIST_VIEW_PANE) && <ListViewTabPane/> }
+      </TabPanel>
+
     </Container>
 
   }
 }
 
 const mapStateToProps = state => {
-  return { ...state };
+  const { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDB, selectedKey } = state.state;
+  return { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDB, selectedKey };
 }
 
 const list = connect(mapStateToProps)(TabPaneList)

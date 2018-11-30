@@ -27,7 +27,7 @@ const menuStyle = {
 
 const DefaultSearchInput = props => <div className="right-inner-addon" >
     <SearchIcon aria-hidden="true"><FontAwesomeIcon icon={faSearch} /></SearchIcon>
-    <input type="search" className="form-control input-xs" placeholder="键值"  style={props.searchBoxStyle} {...props} />
+    <input type="search" className="form-control input-xs" placeholder="键值"  style={props.searchBoxStyle}   />
 </div>
 
 const DefaultMenuItem = (item, highlighted) => <MenuItemDiv key={item.id} highlighted={highlighted}>
@@ -110,7 +110,6 @@ export const withSearchBox = (Input, MenuItem) => class extends Component {
 
 
     render() {
-        console.log(this.props);
         const menuItems = this.handleItems();
         return <ReactAutocomplete
             open={menuItems.length > 0 && this.state.isOpen === true}

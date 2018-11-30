@@ -9,4 +9,6 @@ export const icons={
 
     KEY_ICON:require('../assets/imgs/key.png'),
 
+    FOLDER_ICON:require('../assets/imgs/folder.png'),
+
 }

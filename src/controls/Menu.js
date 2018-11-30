@@ -8,7 +8,7 @@ const MenubarDiv = styled.div`
 `
 
 const MenuItemDiv = styled.div`
-    padding:6px 12px;
+    padding:4px 12px;
     background:${props => props.isOpen === true ? '#eee' : 'white'};
     border:${props => props.isTopMenu === true && props.isOpen === true ? '1px solid lightgray' : '1px solid transparent'};
     border-bottom:none;
@@ -21,6 +21,25 @@ const MenuItemDiv = styled.div`
         background:#eee;
     }
 `
+
+const SpliterDiv = styled.div`
+    display:flex;
+    justify-content:center;
+    padding:2px 6px;
+    background:white;
+    cursor:default;
+`
+
+const SpliterLine = styled.div`
+    
+    height:2px;
+    flex:0 1 100%;
+    border-top:1px solid lightgray;
+`
+
+const Spliter = props => <SpliterDiv {...props}>
+    <SpliterLine />
+</SpliterDiv>
 
 
 const popupContentStyle = () => {
@@ -36,21 +55,24 @@ const popupContentStyle = () => {
 
 class MenuItem extends Component {
 
-    handleClick=()=>{
-        const {command,popup}=this.props;
-       
-        if(command!=null){
-            console.log('close '+this.props.title);
-           // command();
+    handleClick = () => {
+        const { command, popup,dispatch } = this.props;
+        if (command != null) {
+            command(dispatch);
             popup.closePopup();
         }
     }
 
+    isSpliter = () => {
+        const { title } = this.props;
+        return title == null || title === '';
+    }
+
     render() {
-        
-        const { title, subItems, isTopMenu } = this.props;
+
+        const { title, subItems, isTopMenu,dispatch } = this.props;
         return <React.Fragment>
-           {subItems && <Popup
+            {subItems && <Popup
                 trigger={open => <MenuItemDiv isOpen={open} isTopMenu={isTopMenu}>{title}</MenuItemDiv>}
                 position={'bottom left'}
                 closeOnDocumentClick
@@ -60,9 +82,13 @@ class MenuItem extends Component {
                 mouseEnterDelay={0}
                 contentStyle={popupContentStyle(0, 0)}
                 arrow={false} >
-                {subItems && subItems.map(x => <MenuItem {...x} key={x.id} popup={this.popup}/>)}
+                <React.Fragment>
+                    {subItems && subItems.map(x => <MenuItem {...x} key={x.id} popup={this.popup} dispatch={dispatch}/>)}
+                </React.Fragment>
+
             </Popup>}
-            {!subItems && <MenuItemDiv onClick={this.handleClick}  isTopMenu={isTopMenu}>{title}</MenuItemDiv> }
+            {!subItems && !this.isSpliter() && <MenuItemDiv onClick={this.handleClick} isTopMenu={isTopMenu}>{title}</MenuItemDiv>}
+            {!subItems && this.isSpliter() && <Spliter />}
         </React.Fragment>
 
     }
@@ -70,21 +96,11 @@ class MenuItem extends Component {
 
 
 export class Menu extends Component {
-   
-
     render() {
         console.log('render menu');
-        const { items } = this.props;
+        const { items,dispatch } = this.props;
         return <MenubarDiv>
-            {items && items.map(x => <MenuItem key={x.id} {...x}/>)}
+            {items && items.map(x => <MenuItem key={x.id} {...x}  dispatch={dispatch}/>)}
         </MenubarDiv>
     }
 }
-
-// const MenuItemValue = {
-//     title: '',
-//     id: 'abc',
-//     command: null,
-//     subitems: [],
-// }
-

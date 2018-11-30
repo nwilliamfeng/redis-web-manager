@@ -1,4 +1,7 @@
 export const selectNodeType={
+
+    SELECT_NONE:'SELECT_NONE',
+
     SELECT_CONNECTION:'SELECT_CONNECTION',
 
     SELECT_DB:'SELECT_DB',

@@ -12,8 +12,8 @@ const CloseIconDiv = styled.div`
     margin-left:5px;
 `
 const Icon = styled.img`
-    width:16px;
-    height:16px;
+    width:18px;
+    height:18px;
     margin-right:3px;
 `
 
@@ -44,11 +44,13 @@ const TitleDiv = styled.div`
     max-width:90px;
     width:90px;
     overflow:hidden;
+    text-align:left;
     text-overflow:ellipsis;
     white-space:nowrap;
 `
 const TitleContainer = styled.div`
     display:flex;
+    justify-content:center;
 `
 
 const InnerTabPaneDiv = styled.div`
@@ -94,12 +96,18 @@ const TabPaneListDiv = styled.div`
 export class TabPanes extends Component {
 
     constructor(props) {
-        super(props);
-        this.state = { selectedPage: null };
+        super(props);       
+        this.state = { selectedTabId:null };      
+    }
+
+    componentWillReceiveProps(nextProps,nextContext){
+        if(nextProps!=null)
+        this.setState({selectedTabId:nextProps.selectedTabId});
+       
     }
 
     handleSelectTab = tabId => {
-        this.setState({ selectedPage: tabId });
+        this.setState({ selectedTabId: tabId });
         const {onSelect} = this.props;
         if(onSelect){
             onSelect(tabId);
@@ -114,12 +122,15 @@ export class TabPanes extends Component {
     }
 
     render() {
-        const { selectedPage } = this.state;
+        console.log('render tabpanes');
+        const { selectedTabId } = this.state;
+       
         const { items } = this.props;
         return <TabPaneListDiv hasTabs={items.length>0}>
             {items && items.map(x => 
             <TabPane {...x} 
-                 isSelected={selectedPage===x.tabId}
+                 key={x.tabId}
+                 isSelected={selectedTabId===x.tabId}
                  onSelect={this.handleSelectTab}
                  onClose={this.handleCloseTab}
                  />)}
