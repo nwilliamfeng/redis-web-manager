@@ -2,16 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import { withSelectByClick } from '../controls'
 import { ContextMenuTrigger } from "react-contextmenu"
-import { contextMenuIds } from './contextMenuIds'
-import { NameDiv, FlexDiv, LiIcon, FlexContainerDiv, HoverDiv } from '../controls/parts'
-import {icons} from './icons'
+import { contextMenuIds } from '../constants/contextMenuIds'
+import { NameDiv, FlexDiv, FlexContainerDiv, HoverDiv } from '../controls/parts'
+import {KeyIcon} from './icons'
 
 const Content = props => {
     const { keyName } = props;
     
     return <FlexDiv >
         <FlexContainerDiv>
-            <LiIcon src={icons.KEY_ICON} />
+            <KeyIcon/>
             <NameDiv>{keyName}</NameDiv>
         </FlexContainerDiv>
     </FlexDiv>
@@ -26,7 +26,7 @@ export const Key = ({ keyName, keyType, isSelected, handleClick }) => {
         handleClick(keyName);
     }
     return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
-        <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
+        <ContextMenuTrigger id={contextMenuIds.DB_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
             <HoverDiv>
                 <SelectContent isSelected={isSelected} handleClick={handleClick} keyName={keyName}   />
             </HoverDiv>

@@ -8,7 +8,7 @@ const MenubarDiv = styled.div`
 `
 
 const MenuItemDiv = styled.div`
-    padding:4px 12px;
+    padding:2px 12px;
     background:${props => props.isOpen === true ? '#eee' : 'white'};
     border:${props => props.isTopMenu === true && props.isOpen === true ? '1px solid lightgray' : '1px solid transparent'};
     border-bottom:none;
@@ -20,6 +20,9 @@ const MenuItemDiv = styled.div`
     &:hover{
         background:#eee;
     }
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
 `
 
 const SpliterDiv = styled.div`

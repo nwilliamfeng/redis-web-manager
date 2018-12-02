@@ -1,22 +1,20 @@
 import React, { Component } from 'react'
-import { Li, LiIcon, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, Ul } from '../controls/parts'
+import { NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, } from '../controls/parts'
 import { ContextMenuTrigger } from "react-contextmenu"
-import { contextMenuIds } from './contextMenuIds'
+import { contextMenuIds } from '../constants/contextMenuIds'
 import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
 import { selectNodeType as selectType } from '../constants'
 import { withSimpleExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { Key } from './Key'
-import styled from 'styled-components'
-import {icons} from './icons'
-
+import {DBIcon} from './icons'
  
 const Content = props => {
     const { name, isLoading, keys } = props;
     return <FlexDiv>
         <FlexContainerDiv>
-            <LiIcon src={icons.DB_ICON} />
+            <DBIcon/>
             <NameDiv>{`db${name}`}</NameDiv>
             {keys && keys.length > 0 && <div>{`[${keys.length}项]`}</div>}
         </FlexContainerDiv>
@@ -28,7 +26,11 @@ const offSetStyle ={marginLeft:-40, width:'calc(100% + 40px)'}
 
 const ExpandContent = compose(withSelectByClick, withSimpleExpand)(props => <Content {...props} />)
 
+
+
 class DB extends Component {
+
+    
 
     constructor(props) {
         console.log('create db ' + props.dbIdx);

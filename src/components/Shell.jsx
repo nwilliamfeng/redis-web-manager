@@ -5,7 +5,7 @@ import BackgroundImg from '../assets/imgs/background.jpg';
 import { withScroll, withSplit } from '../controls'
 import { ConnectionList } from './ConnectionList'
 import { Toolbar } from './Toolbar'
-import {Menubar} from './Menubar'
+import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
 
 const ShellDiv = styled.div`
@@ -43,14 +43,20 @@ const TabDiv = styled.div`
     display:flex;
     width:100%;
     height:100%;
-    
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
 `
 
-const MenuBarDiv=styled.div`
+const MenuBarDiv = styled.div`
     text-align:left;
     width:400px;
 `
 
+const OutListDiv=styled.div`
+     height:100%;
+    padding:0px 1px 0px 0px; 
+`
 
 const ListContainer = withScroll(props => <div {...props} />)
 
@@ -62,16 +68,18 @@ class Shell extends Component {
             <Background img={BackgroundImg} />
             <Container>
                 <MenuBarDiv>
-                <Menubar/>
+                    <Menubar />
                 </MenuBarDiv>
-                
+
                 <Toolbar />
                 <VerticalSplit size={240} minSize={240} maxSize={290}>
+                <OutListDiv>
+                <ListContainer>
+                        <ConnectionList />
+                    </ListContainer>
+                </OutListDiv>
                    
-                        <ListContainer>
-                            <ConnectionList />
-                        </ListContainer>
-               
+
                     <TabDiv>
                         <TabPaneList />
                     </TabDiv>

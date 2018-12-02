@@ -23,7 +23,7 @@
    background-color:#b5b1b1;
  
    overflow:hidden;height:whatever px;
-} 
+}  */
 
-.scollContainer {overflow-y:auto;  overflow-x:hidden;height:whatever px;}
-.scollContainer:hover { overflow-y:auto; }
+.scollContainer {overflow-y:auto;  overflow-x:hidden;height:whatever px;} 
+ .scollContainer:hover { overflow-y:auto; } 

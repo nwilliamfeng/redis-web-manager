@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {commandAction} from '../actions'
-import { icons } from './icons'
+import { icons,DBIcon,KeyIcon,ConnectionIcon } from './icons'
 import { selectNodeType, tabPaneTypes } from '../constants'
-import { TabPanes } from '../controls'
+import { TabPanes,withScroll,ListViewIcons } from '../controls'
 import {ListViewTabPane} from './tabPanes'
+
+
 
 const Container = styled.div`
   display: flex;
@@ -13,12 +15,9 @@ const Container = styled.div`
   flex-direction:column;
 `
 
-const TabPanel = styled.div`
-    width:100%;
-    height:100%;
-    /* border: 1px solid #d3cfcf; */
-    border-top:none;
-`
+ 
+
+const TabPanel = withScroll(props => <div {...props} />)
 
 const tabPaneIds = {
   LIST_VIEW_PANE: 'LIST_VIEW_PANE',
@@ -30,7 +29,11 @@ class TabPaneList extends Component {
 
   constructor(props) {
     super(props);
-   
+    this.registListViewImgs();
+  }
+
+  registListViewImgs=()=>{
+      ListViewIcons.push({ key: 'db', icon: DBIcon },{ key: 'db2', icon: DBIcon })
   }
 
   handleSelectTab = tabId => {
@@ -83,9 +86,8 @@ class TabPaneList extends Component {
     const { activeTabPane } = this.props;
     return <Container>
       <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab}/>
-
-      <TabPanel>
-         {this.isTabPaneVisible(tabPaneTypes.LIST_VIEW_PANE) && <ListViewTabPane/> }
+      <TabPanel>     
+          {this.isTabPaneVisible(tabPaneTypes.LIST_VIEW_PANE) && <ListViewTabPane/> }     
       </TabPanel>
 
     </Container>

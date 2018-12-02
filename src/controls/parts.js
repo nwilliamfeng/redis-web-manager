@@ -23,6 +23,7 @@ export const NameDiv = styled.div`
     overflow:hidden;
     text-overflow:ellipsis;
     margin-right:10px;
+    margin-left:3px;
     white-space:nowrap;
     text-align:left;
 `

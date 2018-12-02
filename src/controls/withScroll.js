@@ -4,13 +4,25 @@ import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { isEqual } from 'lodash'
 import Rx from 'rx'
-require('../assets/styles/scrollbar.css')
+
 
 const OutContainer = styled.div`
-    overflow-y: hidden;
     height: 100%;
-   position:${props=>props.isAbsolute===true?'absolute':'static'};
-    width:100%;`
+    position:${props => props.isAbsolute === true ? 'absolute' : 'static'};
+    width:100%;
+    overflow-y:auto;  overflow-x:hidden;height:whatever px;
+
+    ::-webkit-scrollbar-thumb{  
+        border-radius:12px;  
+        background-color:#b5b1b1;
+        overflow:hidden;height:whatever px;
+    } 
+    ::-webkit-scrollbar{  
+        width: 6px;  
+        height:4px;       
+    }  
+`
+
 
 /**
  * 支持垂直滚动
@@ -50,8 +62,8 @@ export const withScroll = InnerComponent => class extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const {isAbsolute}=this.props
-        return isAbsolute===true ? !isEqual(this.props, nextProps) :true
+        const { isAbsolute } = this.props
+        return isAbsolute === true ? !isEqual(this.props, nextProps) : true
     }
 
     componentDidMount() {
@@ -107,7 +119,7 @@ export const withScroll = InnerComponent => class extends React.Component {
 
 
     render() {
-        const { isAbsolute} = this.props    
+        const { isAbsolute } = this.props
         return <OutContainer className='scollContainer' isAbsolute={isAbsolute} ref={el => this.container = el} onWheel={e => this.handleWheel$.onNext(e)}>
             <InnerComponent {...this.props} />
             {/* 注意这里必须是react自己的dom element如果用自定义的element则在滚动时会抛出 _this.scrollDiv.scrollIntoView is not a function */}
@@ -115,5 +127,5 @@ export const withScroll = InnerComponent => class extends React.Component {
         </OutContainer>
     }
 
-    
+
 }

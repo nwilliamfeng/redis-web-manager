@@ -20,14 +20,14 @@ const Icon = styled.img`
 const TabPaneDiv = styled.div`
     cursor:pointer;     
     border:${props => props.isSelected === true ? '1px solid  #d3cfcf' : '1px solid transparent'};   
-    border-radius:${props => props.isSelected === true ? '0px 12px 0px 0px' : '0px'};
+    border-radius:${props => props.isSelected === true ? '0px 18px 0px 0px' : '0px'};
     border-top:none;
     border-bottom:${props => props.isSelected === true ? '1px solid transparent' : '1px solid #d3cfcf'}; 
     margin-left:${props => props.isSelected === true ? '-2px' : '0px'};
     z-index:${props => props.isSelected === true ? '100' : '0'};
-    padding:4px 12px;
-    width:160px;
-    max-width:160px;
+    padding:4px 10px;
+    width:130px;
+    max-width:130px;
     padding-right:0px;
     &:first-child {
         margin-left:0px;
@@ -41,8 +41,8 @@ const TabPaneDiv = styled.div`
 `
 
 const TitleDiv = styled.div`
-    max-width:90px;
-    width:90px;
+    max-width:75px;
+    width:75px;
     overflow:hidden;
     text-align:left;
     text-overflow:ellipsis;
@@ -97,7 +97,8 @@ export class TabPanes extends Component {
 
     constructor(props) {
         super(props);       
-        this.state = { selectedTabId:null };      
+        
+        this.state = { selectedTabId:props.selectedTabId };      
     }
 
     componentWillReceiveProps(nextProps,nextContext){
