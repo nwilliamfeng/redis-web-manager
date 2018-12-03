@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {commandAction} from '../actions'
-import { icons,DBIcon,KeyIcon,ConnectionIcon } from './icons'
-import { selectNodeType, tabPaneTypes } from '../constants'
-import { TabPanes,withScroll,ListViewIcons } from '../controls'
+import { icons} from './icons'
+import { nodeTypes, tabPaneTypes } from '../constants'
+import { TabPanes,withScroll } from '../controls'
 import {ListViewTabPane} from './tabPanes'
-
 
 
 const Container = styled.div`
@@ -14,8 +13,6 @@ const Container = styled.div`
   width:100%;
   flex-direction:column;
 `
-
- 
 
 const TabPanel = withScroll(props => <div {...props} />)
 
@@ -25,16 +22,9 @@ const tabPaneIds = {
 
 
 
+
 class TabPaneList extends Component {
 
-  constructor(props) {
-    super(props);
-    this.registListViewImgs();
-  }
-
-  registListViewImgs=()=>{
-      ListViewIcons.push({ key: 'db', icon: DBIcon },{ key: 'db2', icon: DBIcon })
-  }
 
   handleSelectTab = tabId => {
     // this.setState({ selectedPage: tab });

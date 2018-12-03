@@ -1,8 +1,8 @@
-import { selectNodeType, commandConstants, tabPaneTypes } from '../constants';
+import { nodeTypes, commandConstants, tabPaneTypes } from '../constants';
 import { findIndex } from 'lodash';
 
 const defaultState = {
-    selectedNodeType: selectNodeType.SELECT_NONE,
+    selectedNodeType: nodeTypes.ROOT,
     selectedConnection: null,
     selectedDB: null,
     selectedKey: null,
@@ -12,7 +12,7 @@ const defaultState = {
 
 export const stateReducer = (state = defaultState, action) => {
     switch (action.type) {
-        case selectNodeType.SELECT_CONNECTION:
+        case nodeTypes.CONNECTION:
             return {
                 ...state,
                 selectedNodeType: action.type,
@@ -22,7 +22,7 @@ export const stateReducer = (state = defaultState, action) => {
 
             }
 
-        case selectNodeType.SELECT_DB:
+        case nodeTypes.DB:
             return {
                 ...state,
                 selectedNodeType: action.type,
@@ -32,7 +32,7 @@ export const stateReducer = (state = defaultState, action) => {
 
             }
 
-        case selectNodeType.SELECT_KEY:
+        case nodeTypes.KEY:
             return {
                 ...state,
                 selectedNodeType: action.type,

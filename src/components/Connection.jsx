@@ -4,17 +4,19 @@ import { ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from '../constants/contextMenuIds'
 import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { selectNodeType as selectType} from '../constants'
+import { nodeTypes} from '../constants'
 import { withExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { DB } from './DB'
-import {ConnectionIcon} from './icons'
+import {ConnectionIcon,ConnectionSuccessIcon} from './icons'
 
 const Content = props => {
     const { dbs, item, isLoading,connState } = props;
     return <FlexDiv>
         <FlexContainerDiv >
-            <ConnectionIcon fill={connState===connectionState.NONE?'gray':connState===connectionState.CONNECT_SUCCESS?'#1296db':'red' }/>
+            {connState===connectionState.NONE && <ConnectionIcon/>}
+            {connState===connectionState.CONNECT_SUCCESS && <ConnectionSuccessIcon/>}
+         
             <NameDiv>{item.name}</NameDiv>
             {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
         </FlexContainerDiv>
@@ -79,7 +81,7 @@ class Connection extends Component {
         }
         if (nextProps != null) {
 
-            if (selectedConnection === item.name && nextProps.selectedNodeType !== selectType.SELECT_CONNECTION) {
+            if (selectedConnection === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
                 return true;
             }
             if (item.name === selectedConnection && nextProps.selectedConnection !== item.name) {
@@ -105,7 +107,7 @@ class Connection extends Component {
         const { item, selectedConnection, selectedNodeType } = this.props;
         const { dbs, isLoading, isExpand ,connState} = this.state;
         console.log('render connection ' + item.name);
-        const isSelected=selectedNodeType === selectType.SELECT_CONNECTION && selectedConnection === item.name;
+        const isSelected=selectedNodeType === nodeTypes.CONNECTION && selectedConnection === item.name;
         return <React.Fragment>
             {item && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ connection: JSON.stringify(item) }}>
                 <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
