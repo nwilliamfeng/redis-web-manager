@@ -26,7 +26,7 @@ export const Key = ({ keyName, keyType, isSelected, handleClick }) => {
         handleClick(keyName);
     }
     return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
-        <ContextMenuTrigger id={contextMenuIds.DB_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
+        <ContextMenuTrigger id={contextMenuIds.KEY_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
             <HoverDiv>
                 <SelectContent isSelected={isSelected} handleClick={handleClick} keyName={keyName}   />
             </HoverDiv>

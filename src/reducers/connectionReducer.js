@@ -9,8 +9,7 @@ export const connectionReducer = (state = defaultState, action) => {
         case connectionConstants.LOAD_CONNECTION_LIST:
             return {
                 ...state,
-                connections: action.connections,
-
+                connections: action.connections,             
             }
 
         

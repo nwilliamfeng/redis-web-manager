@@ -93,13 +93,13 @@ class DB extends Component {
         return keys.some(x => x.key === selectedKey);
     }
 
-    containKey =key=>{
-        const { keys } = this.state;    
+    containKey = key => {
+        const { keys } = this.state;
         return keys.some(x => x.key === key);
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const {  isVisible } = this.props;
+        const { isVisible } = this.props;
         const { keyLoaded, isLoading } = this.state;
         if (nextState != null) {
             if (nextState.keyLoaded !== keyLoaded) {//加载
@@ -117,66 +117,67 @@ class DB extends Component {
         if (nextProps.isVisible !== isVisible) { //处理折叠
             return true;
         }
-        
-        const currConnectionName=this.props.connectionName;
-        const currDbIdx=this.props.dbIdx;
-        const currSelectedNodeType=this.props.selectedNodeType;
-        const {selectedNodeType,selectedConnection,selectedDB,selectedKey}=nextProps;
 
-        switch(selectedNodeType){
-            case nodeTypes.CONNECTION:              
+        const currConnectionName = this.props.connectionName;
+        const currDbIdx = this.props.dbIdx;
+        const { selectedNodeType, selectedConnection, selectedDB, selectedKey } = nextProps;
+
+        switch (selectedNodeType) {
+            case nodeTypes.CONNECTION:
                 return this.isSelected() || this.containSelectKey();
 
             case nodeTypes.KEY:
-                if( currConnectionName!==selectedConnection || currDbIdx!==selectedDB ){
-                    return   this.isSelected() || this.containSelectKey();
+                if (currConnectionName !== selectedConnection || currDbIdx !== selectedDB) {
+                    return this.isSelected() || this.containSelectKey();
                 }
-                else  if( currConnectionName===selectedConnection && currDbIdx===selectedDB ){
-                    return    this.containKey(selectedKey);
+                else if (currConnectionName === selectedConnection && currDbIdx === selectedDB) {
+                    return this.containKey(selectedKey);
                 }
+                return false;
 
             case nodeTypes.DB:
-                if(this.containSelectKey()){
+                if (this.containSelectKey()) {
                     return true;
                 }
-                if(this.isSelected())
-                    return currConnectionName!==selectedConnection || currDbIdx!==selectedDB;
-                return currConnectionName===selectedConnection && currDbIdx===selectedDB ;
-                
+                if (this.isSelected()) {
+                    return currConnectionName !== selectedConnection || currDbIdx !== selectedDB;
+                }
+                return currConnectionName === selectedConnection && currDbIdx === selectedDB;
+
             default:
                 return false;
-                
-        }      
+
+        }
     }
 
 
-render() {
-    const { dbIdx, isVisible, selectedDB, selectedConnection, connectionName, selectedNodeType, selectedKey } = this.props;
-    const { keys, isLoading } = this.state;
+    render() {
+        const { dbIdx, isVisible, selectedDB, selectedConnection, connectionName, selectedNodeType, selectedKey } = this.props;
+        const { keys, isLoading } = this.state;
 
-    console.log(`render db:dbIdx ${dbIdx} selectedDB ${selectedDB}  selectedConnection ${selectedConnection} connection ${connectionName}`);
+        console.log(`render db:dbIdx ${dbIdx} selectedDB ${selectedDB}  selectedConnection ${selectedConnection} connection ${connectionName}`);
 
-    return <React.Fragment>
-        {isVisible && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
+        return <React.Fragment>
+            {isVisible && <ContextMenuTrigger id={contextMenuIds.DB_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
 
-            <ExpandContent name={dbIdx}
-                title={`DB${dbIdx}`}
-                onDoubleClick={this.handleDoubleClick}
-                isSelected={this.isSelected()}
-                handleClick={this.handleClick}
-                isLoading={isLoading}
-                style={offSetStyle}
-                paddingLeft={30}>
-                {keys && keys.length > 0 &&
-                    keys.map(x => <Key keyName={x.key}
-                        isSelected={selectedDB === dbIdx && connectionName === selectedConnection && x.key === selectedKey && selectedNodeType === nodeTypes.KEY}
-                        keyType={x.type}
-                        key={x.key}
-                        handleClick={this.handleKeyItemClick} />)}
-            </ExpandContent>
-        </ContextMenuTrigger>}
-    </React.Fragment>
-}
+                <ExpandContent name={dbIdx}
+                    title={`DB${dbIdx}`}
+                    onDoubleClick={this.handleDoubleClick}
+                    isSelected={this.isSelected()}
+                    handleClick={this.handleClick}
+                    isLoading={isLoading}
+                    style={offSetStyle}
+                    paddingLeft={30}>
+                    {keys && keys.length > 0 &&
+                        keys.map(x => <Key keyName={x.key}
+                            isSelected={selectedDB === dbIdx && connectionName === selectedConnection && x.key === selectedKey && selectedNodeType === nodeTypes.KEY}
+                            keyType={x.type}
+                            key={x.key}
+                            handleClick={this.handleKeyItemClick} />)}
+                </ExpandContent>
+            </ContextMenuTrigger>}
+        </React.Fragment>
+    }
 }
 
 function mapStateToProps(state) {

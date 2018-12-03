@@ -102,14 +102,19 @@ class Connection extends Component {
         this.setState({ isExpand });
     }
 
+    contextMenuCollect=props=> {
+        return { connection: this.props.item };
+    }
+
     
     render() {
         const { item, selectedConnection, selectedNodeType } = this.props;
         const { dbs, isLoading, isExpand ,connState} = this.state;
         console.log('render connection ' + item.name);
         const isSelected=selectedNodeType === nodeTypes.CONNECTION && selectedConnection === item.name;
+        
         return <React.Fragment>
-            {item && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ connection: JSON.stringify(item) }}>
+            {item && <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} collect={this.contextMenuCollect} attributes={{ connection: JSON.stringify(item) }}>
                 <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
                     <ExpandContent
                         handleClick={this.handleClick}

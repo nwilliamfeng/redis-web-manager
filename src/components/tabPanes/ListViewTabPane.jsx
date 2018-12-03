@@ -42,16 +42,14 @@ class ListViewTabPane extends Component {
     }
 
     getListViewItems = () => {
-        const { selectedNodeType, selectedConnection, selectedDB, selectedKey, connections, dbs } = this.props;
+        const { selectedNodeType,   connections, dbs,keys } = this.props;
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
                 return connections.map(x => { return this.mapConnectionToItem(x) });
             case nodeTypes.CONNECTION:
                 return dbs.map(x => { return this.mapDBToItem(x) });
-                break;
             case nodeTypes.DB:
-                return dbs.map(x => { return this.mapKeyToItem(x) });
-                break;
+                return keys.map(x => { return this.mapKeyToItem(x) });
             default:
                 return [];
         }
@@ -63,6 +61,7 @@ class ListViewTabPane extends Component {
             title: connection.name,
             id: connection.name,
             onDoubleClick: this.handleConnectionNodeClick,
+            isSmallIcon:true,
         }
     }
 
@@ -72,15 +71,17 @@ class ListViewTabPane extends Component {
             title: `db${dbIdx}`,
             id: dbIdx,
             onDoubleClick: this.handleDbNodeClick,
+            isSmallIcon:true,
         }
     }
 
     mapKeyToItem = key => {
         return {
             iconId: iconKeys.KEY_ICON,
-            title: key,
-            id: key,
+            title: key.key,
+            id: key.key,
             onDoubleClick: this.handleKeyNodeClick,
+            isSmallIcon:true,
         }
     }
 
@@ -100,18 +101,15 @@ class ListViewTabPane extends Component {
 
     render() {
         // console.log('render listviewpane');
-        //console.log(this.props);
         const items = this.getListViewItems();
-        return <Div>
-            
+        return <Div>          
             <ListView items={items} />
-
         </Div>
     }
 }
 
 const mapStateToProps = state => {
-    return { ...state.state, ...state.connection, ...state.db };
+    return { ...state.state, ...state.connection, ...state.db,...state.key };
 }
 
 const listView = connect(mapStateToProps)(ListViewTabPane)

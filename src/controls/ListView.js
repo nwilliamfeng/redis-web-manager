@@ -3,7 +3,18 @@ import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from '../constants'
-import {ListViewIcons} from './ListViewIcons'
+import { ListViewIcons } from './ListViewIcons'
+import { } from 'lodash'
+
+const ItemBase = styled.div`
+    &:hover{
+        background:${props => props.isSelected === true ? '#CCE8FF' : 'aliceblue'};
+    }
+    &:hover .checkBox{
+       visibility: visible;
+    }
+    background:${props => props.isSelected === true ? '#CCE8FF' : 'transparent'};
+`
 
 const Div = styled.div`
     display:flex;
@@ -27,7 +38,7 @@ const LargeWordDiv = styled.div`
     text-align:left;
 `
 
-const LargeItemDiv = styled.div`
+const LargeItemDiv = styled(ItemBase)`
     display:flex;
     flex-direction:column;
     max-height:85px;
@@ -39,33 +50,29 @@ const LargeItemDiv = styled.div`
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;  
     padding:3px 8px 8px 8px;
-    &:hover{
-        background:${props => props.isSelected === true ? '#CCE8FF' : 'aliceblue'};
-    }
-    background:${props => props.isSelected === true ? '#CCE8FF' : 'transparent'};
+    
 `
 
-const LargeIconDiv=styled.div`
+const LargeIconDiv = styled.div`
     height:32px;
     width:32px;
     margin-bottom:2px;   
 `
-const LargeIcon =({iconId}) => {
-    const Img= ListViewIcons.find(x=>x.key===iconId).icon;
+const LargeIcon = ({ iconId }) => {
+    const Img = ListViewIcons.find(x => x.key === iconId).icon;
     return <LargeIconDiv>
-        <Img width={32} height={32}/>
+        <Img width={32} height={32} />
     </LargeIconDiv>
 }
 
 const LargeContainer = styled.div`
    display:flex;
    justify-content:flex-start;
-   &:hover .something{
-       color:red;
-   }
+  
 `
 
-const SmallItemDiv = styled.div`
+
+const SmallItemDiv = styled(ItemBase)`
     display:flex;
     max-width:270px;
     width:270px;
@@ -74,27 +81,23 @@ const SmallItemDiv = styled.div`
     padding-right:5px;
     align-items:center;
     height:24px;
-    &:hover{
-        background:${props => props.isSelected === true ? '#CCE8FF' : 'aliceblue'};
-    }
-    background:${props => props.isSelected === true ? '#CCE8FF' : 'transparent'};
+   
 `
-const MockCheckBox = styled.div`
-    height: 16px;
-    width:16px;
-`
- 
 
-const SmallIconDiv=styled.div`
+const SmallIconDiv = styled.div`
      margin:0px 5px;  
      height:16px;
      width:16px;
 `
 
-const SmallIcon =({iconId}) => {
-    const Img= ListViewIcons.find(x=>x.key===iconId).icon;
+const CheckBoxDiv = styled.div`
+    visibility:${props => props.isVisible === true ? 'visible' : 'hidden'};
+`
+
+const SmallIcon = ({ iconId }) => {
+    const Img = ListViewIcons.find(x => x.key === iconId).icon;
     return <SmallIconDiv>
-        <Img/>
+        <Img />
     </SmallIconDiv>
 }
 
@@ -106,66 +109,82 @@ const SmallWordDiv = styled.div`
     text-overflow:ellipsis;
 `
 
-//const ditems = [{ iconId: 'CONNECTION_SUCCESS_ICON', title: 'ab56346345634563456345643563462', id: 'abcd' }]
-
-const ListViewItem = ({ id, iconId, title, onClick,onDoubleClick, isSelected = false, isSmallIcon = false }) => {
+const ListViewItem = ({ id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false ,contexMenuId}) => {
     const handleClick = () => {
         if (onClick != null) {
             onClick(id);
         }
     }
-    const handleDoubleClick =()=>{
-        if(onDoubleClick!=null){
+
+    const handleCheck = () => {
+        if (onClick != null) {
+            onClick(id, !isSelected);
+        }
+    }
+    const handleDoubleClick = () => {
+        if (onDoubleClick != null) {
             onDoubleClick(id);
         }
     }
     return <React.Fragment>
-        {isSmallIcon === false &&
-            <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
-                <LargeContainer>
-                    {/* <LargeCheckBox type='checkbox' isVisible={isSelected}/> */}
-                    <div className="something">{'a'}</div>
-                    <LargeIcon iconId={iconId}/>
-                </LargeContainer>
-                <LargeWordDiv>{title}</LargeWordDiv>
-            </LargeItemDiv>}
-        {isSmallIcon === true &&
-            <ContextMenuTrigger id={contextMenuIds.CONNECTION_CONTEXTMENU_ID} attributes={{ connection: JSON.stringify('item') }}>
-                <SmallItemDiv  onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+        <ContextMenuTrigger id={contexMenuId}>
+            {isSmallIcon === false &&
+                <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+                    <LargeContainer>
+                        <CheckBoxDiv className='checkBox' isVisible={isSelected} >
+                            <LargeCheckBox type='checkbox' isChecked={isSelected} onCheck={handleCheck} />
+                        </CheckBoxDiv>
+                        <LargeIcon iconId={iconId} />
+                    </LargeContainer>
+                    <LargeWordDiv>{title}</LargeWordDiv>
+                </LargeItemDiv>}
+            {isSmallIcon === true &&
 
-                    {isSelected === true && <CheckBox type='checkbox' />}
-                    {(!isSelected || isSelected === false) && <MockCheckBox />}
-                    <SmallIcon iconId={iconId}/>
+                <SmallItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+                    <CheckBoxDiv className='checkBox' isVisible={isSelected === true} >
+                        <CheckBox type='checkbox' isChecked={isSelected} onCheck={handleCheck} />
+                    </CheckBoxDiv>
+                    <SmallIcon iconId={iconId} />
                     <SmallWordDiv>{title}</SmallWordDiv>
                 </SmallItemDiv>
-            </ContextMenuTrigger>
-        }
+            }
+        </ContextMenuTrigger>
     </React.Fragment>
 }
 
 export class ListView extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={selectedItemId:null};
-         
+        this.state = { selectedItemIds: [] };
     }
 
-    // componentWillReceiveProps(nextProps,nextContext){
-    //     if(nextProps!=null){
-    //         this.setState
-    //     }
-    // }
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({ selectedItemIds: [] });
+    }
 
-    handleItemClick=x=>{
-        this.setState({selectedItemId:x})
+    handleItemClick = (id, isSelected) => {
+        if (isSelected == null) {
+            this.setState({ selectedItemIds: [id] });
+            return;
+        }
+        const { selectedItemIds } = this.state;
+        const idx = selectedItemIds.findIndex(x => x === id);
+        if (idx >= 0) {
+            if (isSelected === false) {
+                this.setState({ selectedItemIds: [...selectedItemIds.slice(0, idx), ...selectedItemIds.slice(idx + 1)] });
+            }
+        }
+        else if (isSelected === true) {
+            this.setState({ selectedItemIds: [...selectedItemIds, id] })
+        }
     }
 
     render() {
-        const {items}= this.props;
-        const {selectedItemId} =this.state;
+        const { items } = this.props;
+        const { selectedItemIds } = this.state;
         return <Div>
-            {items && items.map(x => <ListViewItem key={x.id} {...x}  onClick={this.handleItemClick} isSelected={selectedItemId===x.id}/>)}
+            {items && items.map(x => <ListViewItem key={x.id} {...x} onClick={this.handleItemClick} isSelected={selectedItemIds.findIndex(id => id === x.id) >= 0} />)}
         </Div>
     }
 }
