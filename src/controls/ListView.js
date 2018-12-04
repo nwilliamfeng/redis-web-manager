@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
-import { contextMenuIds } from '../constants'
 import { IconList } from './IconList'
 
 const ItemBase = styled.div`

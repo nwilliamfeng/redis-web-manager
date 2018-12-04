@@ -1,23 +1,23 @@
 import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
-import { dbActions } from '../../actions'
+import { keyActions } from '../../actions'
 import { withContextMenuTrigger } from './withMenuTrigger'
 
 
 
 
-const Trigger = withContextMenuTrigger(contextMenuIds.CONNECTION_CONTEXTMENU_ID);
+const Trigger = withContextMenuTrigger(contextMenuIds.DB_CONTEXTMENU_ID);
 
-export const ConnectionMenuTrigger = props => {
+export const DbMenuTrigger = props => {
 
     const handleItemClick = (e, data, target) => {
-        const { dispatch, connection } = props;
+        const {dispatch, dbIdx, connectionName } = props;
         switch (data.action) {
-            case commandConstants.CONNECT_CONNECTION:
-                dispatch(dbActions.getDbList(connection.name));
+            case commandConstants.LOAD_KEYS:
+                dispatch(keyActions.getKeyList(connectionName,dbIdx));
                 break;
             case commandConstants.REFRESH_CONNECTION:
-            alert('refresh');
+            alert('refresh db');
                // dispatch(dbActions.getDbList(connection.name));
                 break;
             default:
@@ -25,8 +25,8 @@ export const ConnectionMenuTrigger = props => {
         }
     }
     const isRefreshEnable = () => {
-        const { isConnected } = props;
-        return isConnected;
+        const { isKeyLoaded } = props;
+        return isKeyLoaded;
     }
 
     return <Trigger {...props} isRefreshEnable={isRefreshEnable()} onItemClick={handleItemClick} />

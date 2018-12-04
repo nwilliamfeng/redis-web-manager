@@ -11,11 +11,11 @@ import { ConnectionIcon, ConnectionSuccessIcon } from './icons'
 import {ConnectionContextMenu, ConnectionMenuTrigger} from './contextMenus'
 
 const Content = props => {
-    const { dbs, item, isLoading, connState } = props;
+    const { dbs, item, isLoading, isConnected } = props;
     return <FlexDiv>
         <FlexContainerDiv >
-            {connState === connectionState.NONE && <ConnectionIcon />}
-            {connState === connectionState.CONNECT_SUCCESS && <ConnectionSuccessIcon />}
+            {isConnected===false && <ConnectionIcon />}
+            {isConnected === true && <ConnectionSuccessIcon />}
 
             <NameDiv>{item.name}</NameDiv>
             {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
@@ -24,11 +24,7 @@ const Content = props => {
     </FlexDiv>
 }
 
-const connectionState = {
-    NONE: 'NONE',
-    CONNECT_SUCCESS: 'CONNECT_SUCCESS',
-    CONNECT_FAIL: 'CONNECT_FAIL',
-}
+ 
 
 const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
 
@@ -36,7 +32,7 @@ class Connection extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { connState: connectionState.NONE, dbs: [], isLoading: false, isExpand: true };
+        this.state = { dbs: [], isLoading: false, isExpand: true };
 
     }
 
@@ -46,31 +42,34 @@ class Connection extends Component {
     }
 
     handleDoubleClick = () => {
-        const { connState } = this.state;
-        if (connState === connectionState.NONE) {
+        
+        if (!this.isConnected()) {
             this.setState({ isLoading: true });
             const { dispatch, item } = this.props;
             dispatch(dbActions.getDbList(item.name));
         }
     }
 
+    isConnected=()=>{
+        const {loadedConnections,item} =this.props;
+        return loadedConnections.some(x=>x===item.name)===true;
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
-        const { connState } = this.state;
-        if (connState === connectionState.NONE) {
+      
+        if (!this.isConnected()) {
             const { dbs, connection, item } = nextProps;
             if (dbs != null && connection === item.name) {
-                this.setState({ connState: connectionState.CONNECT_SUCCESS, dbs, isLoading: false });
+                this.setState({ dbs, isLoading: false });
             }
         }
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { item, selectedConnection, selectNodeType } = this.props;
-        const { connState, isLoading, isExpand } = this.state;
+        const {  isLoading, isExpand } = this.state;
         if (nextState != null) {
-            if (nextState.connState !== connState) {
-                return true;
-            }
+          
             if (nextState.isLoading !== isLoading) {
                 return true;
             }
@@ -80,7 +79,9 @@ class Connection extends Component {
             }
         }
         if (nextProps != null) {
-
+            if(!this.isConnected()&& nextProps.loadedConnections.some(x=>x===item.name)){
+                return true;
+            }
             if (selectedConnection === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
                 return true;
             }
@@ -104,17 +105,18 @@ class Connection extends Component {
 
     render() {
         const { item, selectedConnection, selectedNodeType,dispatch } = this.props;
-        const { dbs, isLoading, isExpand, connState } = this.state;
+        const { dbs, isLoading, isExpand } = this.state;
         console.log('render connection ' + item.name);
+        const isConnected=this.isConnected();
         const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnection === item.name;
         return <React.Fragment>
-            {item && <ConnectionMenuTrigger  item={item} dispatch={dispatch} >
+            {item && <ConnectionMenuTrigger  connection={item} dispatch={dispatch} isConnected={isConnected} >
                 <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
                     <ExpandContent
                         handleClick={this.handleClick}
                         item={item}
                         isSelected={isSelected}
-                        connState={connState}
+                        isConnected={isConnected}
                         dbs={dbs}
                         isLoading={isLoading}
                         handleExpand={this.handleExpand}
@@ -131,9 +133,9 @@ class Connection extends Component {
 
 function mapStateToProps(state) {
     const { connections } = state.connection;
-    const { dbs, connection } = state.db;
+    const { dbs, connection,loadedConnections } = state.db;
     const { selectedConnection, selectedNodeType } = state.state;
-    return { connections, selectedConnection, dbs, connection, selectedNodeType };
+    return { connections, selectedConnection, dbs, connection, selectedNodeType,loadedConnections };
 }
 
 

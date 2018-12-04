@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { connectionActions } from '../actions'
 import {Connection} from './Connection'
 import {Ul} from '../controls/parts'
-import {ConnectionContextMenu} from './contextMenus/ContextMenus'
+import {ConnectionContextMenu,DbContextMenu,KeyContenxtMenu} from './contextMenus/ContextMenus'
  
 
 
@@ -20,7 +20,7 @@ class ConnectionList extends Component {
 
     render() {
         console.log('render connection-list');
-        const { connections, dispatch } = this.props;
+        const { connections } = this.props;
 
         return <React.Fragment>
             {connections &&
@@ -28,7 +28,8 @@ class ConnectionList extends Component {
                     {connections.map(x => <Connection key={x.name} item={x}/>)}
                 </Ul>}
                 <ConnectionContextMenu />
-          
+                <DbContextMenu/>
+                <KeyContenxtMenu/>
         </React.Fragment>
     }
 }

@@ -30,4 +30,12 @@ export const commandConstants={
      */
     REFRESH_CONNECTION:'REFRESH_CONNECTION',
 
+    LOAD_KEYS:'LOAD_KEYS',
+
+    REFRESH_KEYS:'REFRESH_KEYS',
+
+    OPEN_KEY:'OPEN_KEY',
+
+    DELETE_KEY:'DELETE_KEY',
+
 }

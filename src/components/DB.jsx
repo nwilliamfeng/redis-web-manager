@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, } from '../controls/parts'
-import { ContextMenuTrigger } from "react-contextmenu"
-import { contextMenuIds } from '../constants/contextMenuIds'
+import { DbMenuTrigger } from './contextMenus'
 import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
 import { nodeTypes } from '../constants'
@@ -152,13 +151,13 @@ class DB extends Component {
 
 
     render() {
-        const { dbIdx, isVisible, selectedDB, selectedConnection, connectionName, selectedNodeType, selectedKey } = this.props;
-        const { keys, isLoading } = this.state;
+        const { dbIdx, isVisible,dispatch, selectedDB, selectedConnection, connectionName, selectedNodeType, selectedKey } = this.props;
+        const { keys, isLoading,keyLoaded } = this.state;
 
         console.log(`render db:dbIdx ${dbIdx} selectedDB ${selectedDB}  selectedConnection ${selectedConnection} connection ${connectionName}`);
 
         return <React.Fragment>
-            {isVisible && <ContextMenuTrigger id={contextMenuIds.DB_CONTEXTMENU_ID} attributes={{ chatdata: JSON.stringify('chat') }}>
+            {isVisible && <DbMenuTrigger  connectionName={connectionName} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={keyLoaded} >
 
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
@@ -173,9 +172,13 @@ class DB extends Component {
                             isSelected={selectedDB === dbIdx && connectionName === selectedConnection && x.key === selectedKey && selectedNodeType === nodeTypes.KEY}
                             keyType={x.type}
                             key={x.key}
-                            handleClick={this.handleKeyItemClick} />)}
+                            handleClick={this.handleKeyItemClick}
+                            dbIdx={dbIdx}
+                            connectionName={connectionName}
+                            dispatch={dispatch}
+                            />)}
                 </ExpandContent>
-            </ContextMenuTrigger>}
+            </DbMenuTrigger>}
         </React.Fragment>
     }
 }
