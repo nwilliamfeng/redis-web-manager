@@ -30,4 +30,14 @@ export const menuIds={
      */
     VIEW_MENU:'VIEW_MENU',
 
+    /**
+     * 设置
+     */
+    SETTING_MENU:'SETTING_MENU',
+
+     /**
+     * 工具
+     */
+    TOOL_MENU:'TOOL_MENU',
+
 }

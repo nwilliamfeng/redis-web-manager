@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { contextMenuIds } from '../constants'
-import { ListViewIcons } from './ListViewIcons'
-import { } from 'lodash'
+import { IconList } from './IconList'
 
 const ItemBase = styled.div`
     &:hover{
@@ -59,7 +58,7 @@ const LargeIconDiv = styled.div`
     margin-bottom:2px;   
 `
 const LargeIcon = ({ iconId }) => {
-    const Img = ListViewIcons.find(x => x.key === iconId).icon;
+    const Img = IconList.find(x => x.key === iconId).icon;
     return <LargeIconDiv>
         <Img width={32} height={32} />
     </LargeIconDiv>
@@ -95,7 +94,7 @@ const CheckBoxDiv = styled.div`
 `
 
 const SmallIcon = ({ iconId }) => {
-    const Img = ListViewIcons.find(x => x.key === iconId).icon;
+    const Img = IconList.find(x => x.key === iconId).icon;
     return <SmallIconDiv>
         <Img />
     </SmallIconDiv>
@@ -110,7 +109,7 @@ const SmallWordDiv = styled.div`
 `
 
 const ListViewItem = ({ id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false ,contexMenuId}) => {
-    const handleClick = () => {
+    const handleClick = e => {
         if (onClick != null) {
             onClick(id);
         }
@@ -121,7 +120,7 @@ const ListViewItem = ({ id, iconId, title, onClick, onDoubleClick, isSelected = 
             onClick(id, !isSelected);
         }
     }
-    const handleDoubleClick = () => {
+    const handleDoubleClick = e => {
         if (onDoubleClick != null) {
             onDoubleClick(id);
         }

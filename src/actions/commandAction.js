@@ -1,14 +1,19 @@
-import {commandConstants} from '../constants'
+import {commandConstants,tabPaneIds} from '../constants'
 
 export const commandAction={
-    openListView,
-    closeListView,
+    openTabPane,
+    closeTabPane,
+    selectTabPane,
 }
 
-function openListView(){
-    return {type:commandConstants.OPEN_LIST_VIEW};
+function openTabPane(tabPaneId){
+    return {type:commandConstants.OPEN_TAB,tabPaneId};
 }
 
-function closeListView(){
-    return {type:commandConstants.CLOSE_LIST_VIEW};
+function closeTabPane(tabPaneId){
+    return {type:commandConstants.CLOSE_TAB,tabPaneId};
+}
+
+function selectTabPane(tabPaneId){
+    return {type:commandConstants.SELECT_TAB,tabPaneId};
 }

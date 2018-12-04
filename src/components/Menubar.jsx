@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Menu } from '../controls/Menu'
-import { fileMenu, viewMenu } from './menus'
+import { fileMenu, viewMenu ,toolMenu} from './menus'
 import { connect } from 'react-redux'
 
 
@@ -14,7 +14,7 @@ class Menubar extends Component {
     render() {
         
         console.log('render menubar');
-        const menuItems = [fileMenu, viewMenu]
+        const menuItems = [fileMenu, viewMenu,toolMenu];
         const {dispatch} =this.props;
         return <Menu items={menuItems} dispatch={dispatch} />
       

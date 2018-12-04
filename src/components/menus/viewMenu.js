@@ -1,5 +1,6 @@
 import {menuIds} from './menuIds'
 import {spliter} from './spliter'
+import {tabPaneIds} from '../../constants'
 import {commandAction} from '../../actions'
 
 const openListView={
@@ -8,7 +9,7 @@ const openListView={
     id: menuIds.OPEN_LISTVIEW_MENU,
     command:dispatch=>{
         console.log('do open list view');
-        dispatch(commandAction.openListView());
+        dispatch(commandAction.openTabPane(tabPaneIds.LIST_VIEW_PANE));
     },
 }
  

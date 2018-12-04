@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { connectionActions } from '../actions'
 import {Connection} from './Connection'
 import {Ul} from '../controls/parts'
-import {ContextMenus} from './ContextMenus'
+import {ConnectionContextMenu} from './contextMenus/ContextMenus'
  
 
 
@@ -27,7 +27,7 @@ class ConnectionList extends Component {
                 <Ul>
                     {connections.map(x => <Connection key={x.name} item={x}/>)}
                 </Ul>}
-                <ContextMenus dispatch={dispatch}/>
+                <ConnectionContextMenu />
           
         </React.Fragment>
     }

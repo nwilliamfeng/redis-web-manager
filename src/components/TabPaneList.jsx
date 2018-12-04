@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {commandAction} from '../actions'
-import { icons} from './icons'
-import { nodeTypes, tabPaneTypes } from '../constants'
-import { TabPanes,withScroll } from '../controls'
-import {ListViewTabPane} from './tabPanes'
+import { FolderIcon,SettingIcon} from './icons'
+import { nodeTypes, tabPaneIds } from '../constants'
+import { TabPanes,withScroll,IconList } from '../controls'
+import {ListViewTabPane,SettingTabPane} from './tabPanes'
 
 
 const Container = styled.div`
@@ -16,25 +16,35 @@ const Container = styled.div`
 
 const TabPanel = withScroll(props => <div {...props} />)
 
-const tabPaneIds = {
-  LIST_VIEW_PANE: 'LIST_VIEW_PANE',
-}
-
-
-
 
 class TabPaneList extends Component {
+
+  constructor(props){
+     super(props);
+     this.registPaneIcons();
+  }
+
+  registPaneIcons = () => {
+    const add = ({ key, icon }) => {
+        if (IconList.find(x => x.key === key) == null) {
+            IconList.push({ key, icon });
+        }
+    }
+    add({ key: tabPaneIds.LIST_VIEW_PANE, icon: FolderIcon });
+    add({ key: tabPaneIds.SETTING_PANE, icon: SettingIcon });
+}
 
 
   handleSelectTab = tabId => {
     // this.setState({ selectedPage: tab });
-    // alert('select ' + tabId);
+    const {dispatch} =this.props;
+    dispatch(commandAction.selectTabPane(tabId));
+
   }
 
   handleCloseTab = tabId => {
      const {dispatch} =this.props;
-     dispatch(commandAction.closeListView());
-    //alert('close ' + tabId);
+     dispatch(commandAction.closeTabPane(tabId));
   }
 
   getTabPanes = () => {
@@ -42,33 +52,28 @@ class TabPaneList extends Component {
     if (tabPanes == null) {
       return [];
     }
-    return tabPanes.map(x => { return { tabId: x, title: this.getTabPaneTitle(x),icon:this.getTabPaneIcon(x) } })
+    return tabPanes.map(x => { return { tabId: x, title: this.getTabPaneTitle(x),iconId:x } })
   }
 
   getTabPaneTitle = tabPane => {
     switch (tabPane) {
       case tabPaneIds.LIST_VIEW_PANE:
         return '列表视图';
+      case tabPaneIds.SETTING_PANE:
+        return '设置';
       default:
         return '未知';
     }
   }
 
-  getTabPaneIcon = tabPane => {
-    switch (tabPane) {
-      case tabPaneIds.LIST_VIEW_PANE:
-        return icons.FOLDER_ICON;
-      default:
-        return '';
-    }
-  }
+
 
   isTabPaneVisible=name=>{
-    const { tabPanes } = this.props;
+    const { tabPanes ,activeTabPane} = this.props;
     if(tabPanes==null){
       return false;
     }
-    return tabPanes.some(x=>x===name);
+    return tabPanes.some(x=>x===name) && activeTabPane===name;
   }
 
   render() {
@@ -77,7 +82,8 @@ class TabPaneList extends Component {
     return <Container>
       <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab}/>
       <TabPanel>     
-          {this.isTabPaneVisible(tabPaneTypes.LIST_VIEW_PANE) && <ListViewTabPane/> }     
+          {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane/> }     
+          {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane/> }    
       </TabPanel>
 
     </Container>

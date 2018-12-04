@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { nodeTypes } from '../../constants'
 import { connectionActions, keyActions, dbActions } from '../../actions'
-import { ListView, ListViewIcons } from '../../controls'
+import { ListView, IconList } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 
 const Div = styled.div`
@@ -31,8 +31,8 @@ class ListViewTabPane extends Component {
 
     registListViewIcons = () => {
         const add = ({ key, icon }) => {
-            if (ListViewIcons.find(x => x.key === key) == null) {
-                ListViewIcons.push({ key, icon });
+            if (IconList.find(x => x.key === key) == null) {
+                IconList.push({ key, icon });
             }
         }
         add({ key: iconKeys.CONNECTION_DEFAULT_ICON, icon: ConnectionIcon });

@@ -10,3 +10,12 @@ export const contextMenuIds={
 
      
 }
+
+// export const connectionContextMenuActions={
+
+//      CONNECT_ACTION:'CONNECT_ACTION',
+
+//      REFRESH_ACTION:'REFRESH_ACTION',
+
+
+// }
