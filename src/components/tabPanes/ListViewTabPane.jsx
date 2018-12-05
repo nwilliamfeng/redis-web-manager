@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { nodeTypes } from '../../constants'
+import { nodeTypes, contextMenuIds } from '../../constants'
 import { connectionActions, keyActions, dbActions } from '../../actions'
-import { ListView, IconList } from '../../controls'
+import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
+import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
+
 
 const Div = styled.div`
     width:100%;
@@ -26,10 +28,11 @@ class ListViewTabPane extends Component {
 
     constructor(props) {
         super(props);
-        this.registListViewIcons();
+        this.registItemIcon();
+        this.registItemContextMenuTrigger();
     }
 
-    registListViewIcons = () => {
+    registItemIcon = () => {
         const add = ({ key, icon }) => {
             if (IconList.find(x => x.key === key) == null) {
                 IconList.push({ key, icon });
@@ -41,15 +44,31 @@ class ListViewTabPane extends Component {
         add({ key: iconKeys.KEY_ICON, icon: KeyIcon });
     }
 
+    registItemContextMenuTrigger = () => {
+        const add = ({ key, trigger }) => {
+            if (ContextMenuTriggerRegists.find(x => x.key === key) == null) {
+                ContextMenuTriggerRegists.push({ key, trigger });
+            }
+        }
+        add({ key: contextMenuIds.CONNECTION_CONTEXTMENU_ID, trigger: ConnectionMenuTrigger });
+    }
+
     getListViewItems = () => {
-        const { selectedNodeType,   connections, dbs,keys } = this.props;
+        const { selectedNodeType, connections, dbs, keys, connectionOfDb, selectedConnection, selectedKey, selectedDB ,dbOfKey, connectionOfKey,} = this.props;
+        console.log( { selectedNodeType, connections, dbs, keys, connectionOfDb, selectedConnection, selectedKey, selectedDB ,dbOfKey, connectionOfKey,} );
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
                 return connections.map(x => { return this.mapConnectionToItem(x) });
             case nodeTypes.CONNECTION:
-                return dbs.map(x => { return this.mapDBToItem(x) });
+                if (selectedConnection === connectionOfDb) {
+                    return dbs.map(x => { return this.mapDBToItem(x) });
+                }
+                return [];
             case nodeTypes.DB:
-                return keys.map(x => { return this.mapKeyToItem(x) });
+                if (selectedConnection === connectionOfKey && selectedDB===dbOfKey) {
+                    return keys.map(x => { return this.mapKeyToItem(x) });
+                }
+                return [];
             default:
                 return [];
         }
@@ -61,7 +80,8 @@ class ListViewTabPane extends Component {
             title: connection.name,
             id: connection.name,
             onDoubleClick: this.handleConnectionNodeClick,
-            isSmallIcon:true,
+            isSmallIcon: true,
+            contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
         }
     }
 
@@ -71,7 +91,7 @@ class ListViewTabPane extends Component {
             title: `db${dbIdx}`,
             id: dbIdx,
             onDoubleClick: this.handleDbNodeClick,
-            isSmallIcon:true,
+            isSmallIcon: true,
         }
     }
 
@@ -81,7 +101,7 @@ class ListViewTabPane extends Component {
             title: key.key,
             id: key.key,
             onDoubleClick: this.handleKeyNodeClick,
-            isSmallIcon:true,
+            isSmallIcon: true,
         }
     }
 
@@ -100,16 +120,17 @@ class ListViewTabPane extends Component {
     }
 
     render() {
-        // console.log('render listviewpane');
+        console.log('render listviewpane');
         const items = this.getListViewItems();
-        return <Div>          
+
+        return <Div>
             <ListView items={items} />
         </Div>
     }
 }
 
 const mapStateToProps = state => {
-    return { ...state.state, ...state.connection, ...state.db,...state.key };
+    return { ...state.state, ...state.connection, ...state.db, ...state.key };
 }
 
 const listView = connect(mapStateToProps)(ListViewTabPane)

@@ -30,11 +30,11 @@ const Svg = styled.svg`
 
 export const CheckBox = props => {
 
-    const { isChecked = false, onCheck } = props;
+    const { isChecked = false, handleCheck } = props;
     const handleClick = e => {
         e.stopPropagation();
-        if (onCheck != null) {
-            onCheck(!isChecked)
+        if (handleCheck != null) {
+            handleCheck(!isChecked)
         }
     }
     return <Div onClick={handleClick} {...props}>

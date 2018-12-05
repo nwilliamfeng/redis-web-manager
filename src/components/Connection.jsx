@@ -58,8 +58,8 @@ class Connection extends Component {
     componentWillReceiveProps(nextProps, nextContext) {
       
         if (!this.isConnected()) {
-            const { dbs, connection, item } = nextProps;
-            if (dbs != null && connection === item.name) {
+            const { dbs, connectionOfDb, item } = nextProps;
+            if (dbs != null && connectionOfDb === item.name) {
                 this.setState({ dbs, isLoading: false });
             }
         }
@@ -133,9 +133,9 @@ class Connection extends Component {
 
 function mapStateToProps(state) {
     const { connections } = state.connection;
-    const { dbs, connection,loadedConnections } = state.db;
+    const { dbs, connectionOfDb,loadedConnections } = state.db;
     const { selectedConnection, selectedNodeType } = state.state;
-    return { connections, selectedConnection, dbs, connection, selectedNodeType,loadedConnections };
+    return { connections, selectedConnection, dbs, connectionOfDb, selectedNodeType,loadedConnections };
 }
 
 

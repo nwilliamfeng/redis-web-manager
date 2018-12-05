@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { IconList } from './IconList'
+import {ContextMenuTriggerRegists} from './ContextMenuTriggerRegists'
 
 const ItemBase = styled.div`
     &:hover{
@@ -48,7 +49,6 @@ const LargeItemDiv = styled(ItemBase)`
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;  
     padding:3px 8px 8px 8px;
-    
 `
 
 const LargeIconDiv = styled.div`
@@ -66,9 +66,7 @@ const LargeIcon = ({ iconId }) => {
 const LargeContainer = styled.div`
    display:flex;
    justify-content:flex-start;
-  
 `
-
 
 const SmallItemDiv = styled(ItemBase)`
     display:flex;
@@ -78,8 +76,7 @@ const SmallItemDiv = styled(ItemBase)`
     padding-left:5px;
     padding-right:5px;
     align-items:center;
-    height:24px;
-   
+    height:24px; 
 `
 
 const SmallIconDiv = styled.div`
@@ -107,7 +104,8 @@ const SmallWordDiv = styled.div`
     text-overflow:ellipsis;
 `
 
-const ListViewItem = ({ id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false ,contexMenuId}) => {
+const ListViewItem = props => {
+    const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false ,contexMenuTriggerId}=props
     const handleClick = e => {
         if (onClick != null) {
             onClick(id);
@@ -124,23 +122,25 @@ const ListViewItem = ({ id, iconId, title, onClick, onDoubleClick, isSelected = 
             onDoubleClick(id);
         }
     }
+
+   // const Trigger=ContextMenuTriggerRegists.find(x=>x.key===contexMenuTriggerId).trigger;
+   
     return <React.Fragment>
-        <ContextMenuTrigger id={contexMenuId}>
+        <ContextMenuTrigger id={contexMenuTriggerId}>
             {isSmallIcon === false &&
                 <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
                     <LargeContainer>
                         <CheckBoxDiv className='checkBox' isVisible={isSelected} >
-                            <LargeCheckBox type='checkbox' isChecked={isSelected} onCheck={handleCheck} />
+                            <LargeCheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
                         </CheckBoxDiv>
                         <LargeIcon iconId={iconId} />
                     </LargeContainer>
                     <LargeWordDiv>{title}</LargeWordDiv>
                 </LargeItemDiv>}
             {isSmallIcon === true &&
-
                 <SmallItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
                     <CheckBoxDiv className='checkBox' isVisible={isSelected === true} >
-                        <CheckBox type='checkbox' isChecked={isSelected} onCheck={handleCheck} />
+                        <CheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
                     </CheckBoxDiv>
                     <SmallIcon iconId={iconId} />
                     <SmallWordDiv>{title}</SmallWordDiv>
