@@ -2,8 +2,8 @@ import { keyConstants, nodeTypes } from '../constants';
 
 const defaultState = {
     keys: [],
-    dbOfKey: null,
-    connectionOfKey: null,
+    selectedKey: null,
+
 }
 
 const keyCache = [];
@@ -20,22 +20,31 @@ export const keyReducer = (state = defaultState, action) => {
             }
             return {
                 ...state,
-                dbOfKey: action.db,
+                selectedKey: null,
                 keys: action.keyList,
-                connectionOfKey: action.connection,
+
             }
         case nodeTypes.DB:
             const current = keyCache.find(x => x.connectionOfKey === action.connection && x.dbOfKey === action.db);
             if (current == null) {
-                return {...state};
+                return { ...state,keys:[] };
             }
             return {
                 ...state,
-               
-                connectionOfKey: action.connection,
-                dbOfKey: action.db,
+                selectedKey: null,
                 keys: current.keys,
 
+            }
+        case nodeTypes.KEY:
+            const curr = keyCache.find(x => x.connectionOfKey === action.connection && x.dbOfKey===action.db);
+
+            if (curr == null) {
+                return { ...state };
+            }
+            return {
+                ...state,
+                selectedKey:action.key,
+                keys: curr.keys,
             }
 
 

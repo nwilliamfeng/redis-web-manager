@@ -43,13 +43,26 @@ export const dbReducer = (state = defaultState, action) => {
             const curr = dbCache.find(x => x.connectionOfDb === action.connection);
 
             if (curr == null) {
-                return { ...state };
+                return { ...state,dbs:[] };
             }
             return {
                 ...state,
                 selectedDb: action.db,
                 dbs: curr.dbs,
             }
+
+        case nodeTypes.KEY:
+            const curr2 = dbCache.find(x => x.connectionOfDb === action.connection);
+
+            if (curr2 == null) {
+                return { ...state,dbs:[] };
+            }
+            return {
+                ...state,
+                selectedDb: action.db,
+                dbs: curr2.dbs,
+            }
+
 
         default:
             return state;

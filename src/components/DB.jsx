@@ -36,16 +36,18 @@ class DB extends Component {
     }
 
     handleClick = () => {
-        const { dispatch, connectionName, dbIdx,selectedConnectionName,selectedDb } = this.props;
-        if(!(connectionName===connectionName && dbIdx===selectedDb)|| selectedNodeType!==nodeTypes.DB){
+        const { dispatch, connectionName, dbIdx,selectedConnectionName,selectedDb,selectedNodeType } = this.props;
+        if(!(connectionName===selectedConnectionName && dbIdx===selectedDb)|| selectedNodeType!==nodeTypes.DB){
             dispatch(dbActions.selectDB(connectionName, dbIdx));
         }
         
     }
 
     handleKeyItemClick = key => {
-        const { dispatch, connectionName, dbIdx } = this.props;
+        const { dispatch, connectionName, dbIdx,selectedConnectionName,selectedKey,selectedDb,selectedNodeType } = this.props;
+        if(!(connectionName===selectedConnectionName && dbIdx===selectedDb && key===selectedKey)|| selectedNodeType!==nodeTypes.KEY){
         dispatch(keyActions.selectKey(connectionName, dbIdx, key));
+        }
     }
 
 
@@ -60,11 +62,11 @@ class DB extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const { keyLoaded } = this.state;
+        const { keyLoaded,isLoading } = this.state;
         const { dbIdx, connectionName } = this.props;
-        if (keyLoaded === false) {
-            const { keys, connectionOfKey, dbOfKey } = nextProps;
-            if (keys != null && connectionOfKey === connectionName && dbOfKey === dbIdx) {
+        if (keyLoaded === false && isLoading===true) {
+            const { keys, selectedConnectionName, selectedDb } = nextProps;
+            if (keys != null && selectedConnectionName === connectionName && selectedDb === dbIdx) {
                 this.setState({ keyLoaded: true, keys, isLoading: false });
             }
         }
@@ -75,14 +77,11 @@ class DB extends Component {
         if (selectedNodeType !== nodeTypes.DB) {
             return false;
         }
-        if (connectionName !== selectedConnectionName) {
-            return false;
-        }
-        return dbIdx === selectedDb;
+        return dbIdx === selectedDb && connectionName===selectedConnectionName;
     }
 
     containSelectKey = () => {
-        const { connectionName, dbIdx, selectedDb, selectedKey, selectedNodeType, selectedConnectionName } = this.props;
+        const { connectionName, dbIdx, selectedDb, selectedNodeType, selectedConnectionName,selectedKey } = this.props;
         if (selectedNodeType !== nodeTypes.KEY) {
             return false;
         }
@@ -168,16 +167,16 @@ class DB extends Component {
                     isLoading={isLoading}
                     style={offSetStyle}
                     paddingLeft={30}>
-                    {/* {keys && keys.length > 0 &&
+                    {keys && keys.length > 0 &&
                         keys.map(x => <Key keyName={x.key}
-                            isSelected={selectedDB === dbIdx && connectionName === selectedConnection && x.key === selectedKey && selectedNodeType === nodeTypes.KEY}
+                            isSelected={selectedDb === dbIdx && connectionName === selectedConnectionName && x.key === selectedKey && selectedNodeType === nodeTypes.KEY}
                             keyType={x.type}
                             key={x.key}
                             handleClick={this.handleKeyItemClick}
                             dbIdx={dbIdx}
                             connectionName={connectionName}
                             dispatch={dispatch}
-                            />)} */}
+                            />)}
                 </ExpandContent>
             </DbMenuTrigger>}
         </React.Fragment>

@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { Li, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg } from '../controls/parts'
- import { contextMenuIds } from '../constants/contextMenuIds'
-import { connectionActions, dbActions, commandAction } from '../actions'
+import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { nodeTypes, commandConstants } from '../constants'
+import { nodeTypes } from '../constants'
 import { withExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { DB } from './DB'
 import { ConnectionIcon, ConnectionSuccessIcon } from './icons'
-import {ConnectionContextMenu, ConnectionMenuTrigger} from './contextMenus'
+import { ConnectionMenuTrigger} from './contextMenus'
 
 const Content = props => {
     const { dbs, item, isLoading, isConnected } = props;
@@ -23,8 +22,6 @@ const Content = props => {
         <div>{isLoading === true && <LoadingImg />}</div>
     </FlexDiv>
 }
-
- 
 
 const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
 
@@ -72,7 +69,7 @@ class Connection extends Component {
         const {  isLoading, isExpand,isConnected } = this.state;
         if (nextState != null) {
           
-            if(isConnected!=nextState.isConnected){
+            if(isConnected!==nextState.isConnected){
                 return true;
             }
             if (nextState.isLoading !== isLoading) {

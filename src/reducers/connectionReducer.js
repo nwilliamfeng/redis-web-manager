@@ -23,7 +23,13 @@ export const connectionReducer = (state = defaultState, action) => {
         case nodeTypes.DB:
             return {
                 ...state,
-                selectedConnectionName:action.connection,
+                selectedConnectionName: action.connection,
+            }
+
+        case nodeTypes.KEY:
+            return {
+                ...state,
+                selectedConnectionName: action.connection,
             }
 
         default:

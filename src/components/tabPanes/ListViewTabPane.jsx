@@ -63,10 +63,9 @@ class ListViewTabPane extends Component {
                 return dbs.map(x => { return this.mapDBToItem(x) });
 
             case nodeTypes.DB:
-                // if (selectedConnection === connectionOfKey && selectedDB===dbOfKey) {
-                //     return keys.map(x => { return this.mapKeyToItem(x) });
-                // }
-                return [];
+            case nodeTypes.KEY:
+                return keys.map(x => { return this.mapKeyToItem(x) });
+           
             default:
                 return [];
         }
@@ -109,8 +108,8 @@ class ListViewTabPane extends Component {
     }
 
     handleDbNodeClick = dbIdx => {
-        const { dispatch, selectedConnection } = this.props;
-        dispatch(dbActions.selectDB(selectedConnection, dbIdx));
+        const { dispatch, selectedConnectionName } = this.props;
+        dispatch(dbActions.selectDB(selectedConnectionName, dbIdx));
     }
 
     handleKeyNodeClick = key => {
@@ -128,6 +127,7 @@ class ListViewTabPane extends Component {
 }
 
 const mapStateToProps = state => {
+
     return { ...state.state, ...state.connection, ...state.db, ...state.key };
 }
 

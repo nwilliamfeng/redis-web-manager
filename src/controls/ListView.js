@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { IconList } from './IconList'
-import {ContextMenuTriggerRegists} from './ContextMenuTriggerRegists'
+import { ContextMenuTriggerRegists } from './ContextMenuTriggerRegists'
+import {ConnectionMenuTrigger,ConnectionContextMenu} from '../components/contextMenus'
 
 const ItemBase = styled.div`
     &:hover{
@@ -104,8 +105,10 @@ const SmallWordDiv = styled.div`
     text-overflow:ellipsis;
 `
 
+
+
 const ListViewItem = props => {
-    const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false ,contexMenuTriggerId}=props
+    const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false, contextMenuTriggerId } = props
     const handleClick = e => {
         if (onClick != null) {
             onClick(id);
@@ -123,10 +126,15 @@ const ListViewItem = props => {
         }
     }
 
-   // const Trigger=ContextMenuTriggerRegists.find(x=>x.key===contexMenuTriggerId).trigger;
-   
+    const Trigger =(props)=>{
+        const {contextMenuTriggerId} =props;
+        const ItemTrigger =ContextMenuTriggerRegists.find(x => x.key === contextMenuTriggerId).trigger;
+        return <ItemTrigger {...props}/>
+    }
+
+    
     return <React.Fragment>
-        <ContextMenuTrigger id={contexMenuTriggerId}>
+        <Trigger >
             {isSmallIcon === false &&
                 <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
                     <LargeContainer>
@@ -146,8 +154,32 @@ const ListViewItem = props => {
                     <SmallWordDiv>{title}</SmallWordDiv>
                 </SmallItemDiv>
             }
-        </ContextMenuTrigger>
+        </Trigger>
     </React.Fragment>
+
+    // return <React.Fragment>
+    //     <ContextMenuTrigger id={contexMenuTriggerId}>
+    //         {isSmallIcon === false &&
+    //             <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+    //                 <LargeContainer>
+    //                     <CheckBoxDiv className='checkBox' isVisible={isSelected} >
+    //                         <LargeCheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
+    //                     </CheckBoxDiv>
+    //                     <LargeIcon iconId={iconId} />
+    //                 </LargeContainer>
+    //                 <LargeWordDiv>{title}</LargeWordDiv>
+    //             </LargeItemDiv>}
+    //         {isSmallIcon === true &&
+    //             <SmallItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+    //                 <CheckBoxDiv className='checkBox' isVisible={isSelected === true} >
+    //                     <CheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
+    //                 </CheckBoxDiv>
+    //                 <SmallIcon iconId={iconId} />
+    //                 <SmallWordDiv>{title}</SmallWordDiv>
+    //             </SmallItemDiv>
+    //         }
+    //     </ContextMenuTrigger>
+    // </React.Fragment>
 }
 
 export class ListView extends Component {
