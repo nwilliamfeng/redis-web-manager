@@ -23,6 +23,9 @@ class RedisApi {
         const { Data, Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
+        if(name==='conn2'){
+            return Data.slice(0,3);
+        }
         return Data;
     }
 

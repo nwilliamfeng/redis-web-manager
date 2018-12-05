@@ -2,8 +2,7 @@ import { dbConstants, nodeTypes } from '../constants';
 
 const defaultState = {
     dbs: [],
-    connectionOfDb: null,
-    loadedConnections: [],
+    selectedDb: null,
 }
 
 const dbCache = []
@@ -11,30 +10,45 @@ const dbCache = []
 export const dbReducer = (state = defaultState, action) => {
     switch (action.type) {
         case dbConstants.LOAD_DB_LIST:
-            const exist = dbCache.find(x => x.connectionOfDb === action.connection );
+            const exist = dbCache.find(x => x.connectionOfDb === action.connection);
             if (exist != null) {
                 exist.dbs = action.dbList;
             }
             else {
-                dbCache.push({ connectionOfDb: action.connection,  dbs: action.dbList });
+                dbCache.push({ connectionOfDb: action.connection, dbs: action.dbList });
             }
             return {
                 ...state,
-                connectionOfDb: action.connection,
                 dbs: action.dbList,
-                loadedConnections: [...state.loadedConnections, action.connection],
+
             }
 
         case nodeTypes.CONNECTION:
             const current = dbCache.find(x => x.connectionOfDb === action.connection);
             if (current == null) {
+                return {
+                    ...state,
+                    selectedDb: null,
+                    dbs: [],
+                }
+            }
+            return {
+                ...state,
+                selectedDb: null,
+                dbs: current.dbs,
+
+            }
+
+        case nodeTypes.DB:
+            const curr = dbCache.find(x => x.connectionOfDb === action.connection);
+
+            if (curr == null) {
                 return { ...state };
             }
             return {
                 ...state,
-                connectionOfDb: action.connection,
-                dbs: current.dbs,
-
+                selectedDb: action.db,
+                dbs: curr.dbs,
             }
 
         default:

@@ -54,20 +54,18 @@ class ListViewTabPane extends Component {
     }
 
     getListViewItems = () => {
-        const { selectedNodeType, connections, dbs, keys, connectionOfDb, selectedConnection, selectedKey, selectedDB ,dbOfKey, connectionOfKey,} = this.props;
-        console.log( { selectedNodeType, connections, dbs, keys, connectionOfDb, selectedConnection, selectedKey, selectedDB ,dbOfKey, connectionOfKey,} );
+        const { selectedNodeType, connections, dbs, keys, selectedConnectionName, selectedKey, selectedDb, } = this.props;
+        // console.log( { selectedNodeType, connections, dbs, keys, connectionOfDb, selectedConnection, selectedKey, selectedDB ,dbOfKey, connectionOfKey,} );
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
                 return connections.map(x => { return this.mapConnectionToItem(x) });
             case nodeTypes.CONNECTION:
-                if (selectedConnection === connectionOfDb) {
-                    return dbs.map(x => { return this.mapDBToItem(x) });
-                }
-                return [];
+                return dbs.map(x => { return this.mapDBToItem(x) });
+
             case nodeTypes.DB:
-                if (selectedConnection === connectionOfKey && selectedDB===dbOfKey) {
-                    return keys.map(x => { return this.mapKeyToItem(x) });
-                }
+                // if (selectedConnection === connectionOfKey && selectedDB===dbOfKey) {
+                //     return keys.map(x => { return this.mapKeyToItem(x) });
+                // }
                 return [];
             default:
                 return [];

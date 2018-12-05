@@ -32,17 +32,19 @@ class Connection extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dbs: [], isLoading: false, isExpand: true };
+        this.state = {isConnected:false, dbs: [], isLoading: false, isExpand: true };
 
     }
 
     handleClick = () => {
-        const { dispatch, item } = this.props;
-        dispatch(connectionActions.selectConnection(item.name));
+        const { dispatch, item ,selectedConnectionName,selectedNodeType} = this.props;
+        if(selectedConnectionName!==item.name || selectedNodeType!==nodeTypes.CONNECTION){
+            dispatch(connectionActions.selectConnection(item.name));
+        }
+       
     }
 
-    handleDoubleClick = () => {
-        
+    handleDoubleClick = () => {     
         if (!this.isConnected()) {
             this.setState({ isLoading: true });
             const { dispatch, item } = this.props;
@@ -51,25 +53,28 @@ class Connection extends Component {
     }
 
     isConnected=()=>{
-        const {loadedConnections,item} =this.props;
-        return loadedConnections.some(x=>x===item.name)===true;
+        const {isConnected} =this.state;
+        return isConnected===true;
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
       
-        if (!this.isConnected()) {
-            const { dbs, connectionOfDb, item } = nextProps;
-            if (dbs != null && connectionOfDb === item.name) {
-                this.setState({ dbs, isLoading: false });
+        if (!this.isConnected() && this.state.isLoading===true) {
+            const { dbs, selectedConnectionName, item } = nextProps;
+            if (dbs != null && selectedConnectionName === item.name) {
+                this.setState({ dbs, isLoading: false ,isConnected:true});
             }
         }
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { item, selectedConnection, selectNodeType } = this.props;
-        const {  isLoading, isExpand } = this.state;
+        const { item, selectedConnectionName, selectNodeType } = this.props;
+        const {  isLoading, isExpand,isConnected } = this.state;
         if (nextState != null) {
           
+            if(isConnected!=nextState.isConnected){
+                return true;
+            }
             if (nextState.isLoading !== isLoading) {
                 return true;
             }
@@ -79,19 +84,17 @@ class Connection extends Component {
             }
         }
         if (nextProps != null) {
-            if(!this.isConnected()&& nextProps.loadedConnections.some(x=>x===item.name)){
+          
+            if (selectedConnectionName === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
                 return true;
             }
-            if (selectedConnection === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
+            if (item.name === selectedConnectionName && nextProps.selectedConnectionName !== item.name) {
                 return true;
             }
-            if (item.name === selectedConnection && nextProps.selectedConnection !== item.name) {
+            if (item.name !== selectedConnectionName && nextProps.selectedConnectionName === item.name) {
                 return true;
             }
-            if (item.name !== selectedConnection && nextProps.selectedConnection === item.name) {
-                return true;
-            }
-            if (selectedConnection === item.name && nextProps.selectedNodeType !== selectNodeType) {
+            if (selectedConnectionName === item.name && nextProps.selectedNodeType !== selectNodeType) {
                 return true;
             }
         }
@@ -104,11 +107,11 @@ class Connection extends Component {
     }
 
     render() {
-        const { item, selectedConnection, selectedNodeType,dispatch } = this.props;
+        const { item, selectedConnectionName, selectedNodeType,dispatch } = this.props;
         const { dbs, isLoading, isExpand } = this.state;
         console.log('render connection ' + item.name);
         const isConnected=this.isConnected();
-        const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnection === item.name;
+        const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionName === item.name;
         return <React.Fragment>
             {item && <ConnectionMenuTrigger  connection={item} dispatch={dispatch} isConnected={isConnected} >
                 <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
@@ -132,10 +135,10 @@ class Connection extends Component {
 }
 
 function mapStateToProps(state) {
-    const { connections } = state.connection;
-    const { dbs, connectionOfDb,loadedConnections } = state.db;
-    const { selectedConnection, selectedNodeType } = state.state;
-    return { connections, selectedConnection, dbs, connectionOfDb, selectedNodeType,loadedConnections };
+    const { connections,selectedConnectionName } = state.connection;
+    const { dbs } = state.db;
+    const {  selectedNodeType } = state.state;
+    return { connections,  dbs, selectedConnectionName, selectedNodeType };
 }
 
 
