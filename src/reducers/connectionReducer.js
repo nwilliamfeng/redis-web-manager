@@ -2,7 +2,7 @@ import { connectionConstants, nodeTypes } from '../constants';
 
 const defaultState = {
     connections: [],
-    selectedConnectionName: null,
+    selectedConnectionId: null,
 }
 
 export const connectionReducer = (state = defaultState, action) => {
@@ -10,26 +10,26 @@ export const connectionReducer = (state = defaultState, action) => {
         case connectionConstants.LOAD_CONNECTION_LIST:
             return {
                 ...state,
-                selectedConnectionName: null,
+                selectedConnectionId: null,
                 connections: action.connections,
             }
 
         case nodeTypes.CONNECTION:
             return {
                 ...state,
-                selectedConnectionName: action.connection,
+                selectedConnectionId: action.connectionId,
             }
 
         case nodeTypes.DB:
             return {
                 ...state,
-                selectedConnectionName: action.connection,
+                selectedConnectionId: action.connectionId,
             }
 
         case nodeTypes.KEY:
             return {
                 ...state,
-                selectedConnectionName: action.connection,
+                selectedConnectionId: action.connectionId,
             }
 
         default:

@@ -54,8 +54,8 @@ class ListViewTabPane extends Component {
     }
 
     getListViewItems = () => {
-        const { selectedNodeType, connections, dbs, keys, selectedConnectionName, selectedKey, selectedDb, } = this.props;
-        // console.log( { selectedNodeType, connections, dbs, keys, connectionOfDb, selectedConnection, selectedKey, selectedDB ,dbOfKey, connectionOfKey,} );
+        const { selectedNodeType, connections, dbs, keys, selectedConnectionId, selectedKey, selectedDbId, } = this.props;
+
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
                 return connections.map(x => { return this.mapConnectionToItem(x) });
@@ -63,7 +63,10 @@ class ListViewTabPane extends Component {
                 return dbs.map(x => { return this.mapDBToItem(x) });
 
             case nodeTypes.DB:
+           // console.log(keys);
+            return keys.map(x => { return this.mapKeyToItem(x) });
             case nodeTypes.KEY:
+          
                 return keys.map(x => { return this.mapKeyToItem(x) });
            
             default:
@@ -87,11 +90,11 @@ class ListViewTabPane extends Component {
         }
     }
 
-    mapDBToItem = dbIdx => {
+    mapDBToItem = db => {
         return {
             iconId: iconKeys.DB_ICON,
-            title: `db${dbIdx}`,
-            id: dbIdx,
+            title: `db${db.dbIdx}`,
+            id: db.id,
             onDoubleClick: this.handleDbNodeClick,
             isSmallIcon: true,
         }
@@ -101,7 +104,7 @@ class ListViewTabPane extends Component {
         return {
             iconId: iconKeys.KEY_ICON,
             title: key.key,
-            id: key.key,
+            id: key.id,
             onDoubleClick: this.handleKeyNodeClick,
             isSmallIcon: true,
         }
@@ -112,9 +115,10 @@ class ListViewTabPane extends Component {
         dispatch(connectionActions.selectConnection(connectionName));
     }
 
-    handleDbNodeClick = dbIdx => {
-        const { dispatch, selectedConnectionName } = this.props;
-        dispatch(dbActions.selectDB(selectedConnectionName, dbIdx));
+    handleDbNodeClick = id => {
+        console.log('click');?????2!!!
+        const { dispatch, selectedConnectionId } = this.props;
+        dispatch(dbActions.selectDB(selectedConnectionId,id));
     }
 
     handleKeyNodeClick = key => {

@@ -36,17 +36,16 @@ class DB extends Component {
     }
 
     handleClick = () => {
-        const { dispatch, connectionName, dbIdx,selectedConnectionName,selectedDb,selectedNodeType } = this.props;
-        if(!(connectionName===selectedConnectionName && dbIdx===selectedDb)|| selectedNodeType!==nodeTypes.DB){
-            dispatch(dbActions.selectDB(connectionName, dbIdx));
+        const { dispatch, connectionName, id,dbIdx, selectedDbId, selectedNodeType } = this.props;
+        if (!(id === selectedDbId) || selectedNodeType !== nodeTypes.DB) {
+            dispatch(dbActions.selectDB(connectionName, id,dbIdx));
         }
-        
     }
 
-    handleKeyItemClick = key => {
-        const { dispatch, connectionName, dbIdx,selectedConnectionName,selectedKey,selectedDb,selectedNodeType } = this.props;
-        if(!(connectionName===selectedConnectionName && dbIdx===selectedDb && key===selectedKey)|| selectedNodeType!==nodeTypes.KEY){
-        dispatch(keyActions.selectKey(connectionName, dbIdx, key));
+    handleKeyItemClick = keyId => {
+        const { dispatch, connectionName,dbIdx, id, selectedKeyId, selectedNodeType } = this.props;
+        if (!(keyId === selectedKeyId) || selectedNodeType !== nodeTypes.KEY) {
+            dispatch(keyActions.selectKey(connectionName, id,dbIdx, keyId));
         }
     }
 
@@ -54,51 +53,48 @@ class DB extends Component {
     handleDoubleClick = () => {
         const { keyLoaded } = this.state;
         if (keyLoaded === false) {
-            const { dbIdx, connectionName } = this.props;
+            const { dbIdx, connectionName,id } = this.props;
             this.setState({ isLoading: true });
             const { dispatch } = this.props;
-            dispatch(keyActions.getKeyList(connectionName, dbIdx));
+            dispatch(keyActions.getKeyList(connectionName, dbIdx,id));
         }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const { keyLoaded,isLoading } = this.state;
-        const { dbIdx, connectionName } = this.props;
-        if (keyLoaded === false && isLoading===true) {
-            const { keys, selectedConnectionName, selectedDb } = nextProps;
-            if (keys != null && selectedConnectionName === connectionName && selectedDb === dbIdx) {
+        const { keyLoaded, isLoading } = this.state;
+        const { id } = this.props;
+        if (keyLoaded === false && isLoading === true) {
+            const { keys,  selectedDbId } = nextProps;
+            if (keys != null &&  selectedDbId === id) {
                 this.setState({ keyLoaded: true, keys, isLoading: false });
             }
         }
     }
 
     isSelected = () => {
-        const { connectionName, dbIdx, selectedDb, selectedNodeType, selectedConnectionName } = this.props;
+        const { id, selectedDbId, selectedNodeType } = this.props;
         if (selectedNodeType !== nodeTypes.DB) {
             return false;
         }
-        return dbIdx === selectedDb && connectionName===selectedConnectionName;
+        return id === selectedDbId;
     }
 
     containSelectKey = () => {
-        const { connectionName, dbIdx, selectedDb, selectedNodeType, selectedConnectionName,selectedKey } = this.props;
+        const { selectedNodeType, selectedKeyId } = this.props;
         if (selectedNodeType !== nodeTypes.KEY) {
             return false;
         }
         const { keys } = this.state;
-        if (connectionName !== selectedConnectionName || dbIdx !== selectedDb) {
-            return false;
-        }
-        return keys.some(x => x.key === selectedKey);
+        return keys.some(x => x.id === selectedKeyId);
     }
 
-    containKey = key => {
+    containKey = keyId => {
         const { keys } = this.state;
-        return keys.some(x => x.key === key);
+        return keys.some(x => x.id === keyId);
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { isVisible } = this.props;
+        const { id, isVisible } = this.props;
         const { keyLoaded, isLoading } = this.state;
         if (nextState != null) {
             if (nextState.keyLoaded !== keyLoaded) {//加载
@@ -118,19 +114,19 @@ class DB extends Component {
         }
 
         const currConnectionName = this.props.connectionName;
-        const currDbIdx = this.props.dbIdx;
-        const { selectedNodeType, selectedConnectionName, selectedDb, selectedKey } = nextProps;
+     
+        const { selectedNodeType, selectedConnectionId, selectedDbId, selectedKeyId } = nextProps;
 
         switch (selectedNodeType) {
             case nodeTypes.CONNECTION:
                 return this.isSelected() || this.containSelectKey();
 
             case nodeTypes.KEY:
-                if (currConnectionName !== selectedConnectionName || currDbIdx !== selectedDb) {
+                if (currConnectionName !== selectedConnectionId || id !== selectedDbId) {
                     return this.isSelected() || this.containSelectKey();
                 }
-                else if (currConnectionName === selectedConnectionName && currDbIdx === selectedDb) {
-                    return this.containKey(selectedKey);
+                else if (currConnectionName === selectedConnectionId && id === selectedDbId) {
+                    return this.containKey(selectedKeyId);
                 }
                 return false;
 
@@ -139,9 +135,9 @@ class DB extends Component {
                     return true;
                 }
                 if (this.isSelected()) {
-                    return currConnectionName !== selectedConnectionName || currDbIdx !== selectedDb;
+                    return id !== selectedDbId;
                 }
-                return currConnectionName === selectedConnectionName && currDbIdx === selectedDb;
+                return id === selectedDbId;
 
             default:
                 return false;
@@ -151,13 +147,13 @@ class DB extends Component {
 
 
     render() {
-        const { dbIdx, isVisible,dispatch, selectedDb, selectedConnectionName, connectionName, selectedNodeType, selectedKey } = this.props;
-        const { keys, isLoading,keyLoaded } = this.state;
+        const { id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, selectedKeyId } = this.props;
+        const { keys, isLoading, keyLoaded } = this.state;
 
-        console.log(`render db:dbIdx ${dbIdx} selectedDB ${selectedDb}  selectedConnection ${selectedConnectionName} connection ${connectionName}`);
+        console.log(`render db:dbIdx ${dbIdx} selectedDbId ${selectedDbId}  selectedConnection ${selectedConnectionId} connection ${connectionName}`);
 
         return <React.Fragment>
-            {isVisible && <DbMenuTrigger  connectionName={connectionName} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={keyLoaded} >
+            {isVisible && <DbMenuTrigger connectionName={connectionName} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={keyLoaded} >
 
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
@@ -168,15 +164,17 @@ class DB extends Component {
                     style={offSetStyle}
                     paddingLeft={30}>
                     {keys && keys.length > 0 &&
-                        keys.map(x => <Key keyName={x.key}
-                            isSelected={selectedDb === dbIdx && connectionName === selectedConnectionName && x.key === selectedKey && selectedNodeType === nodeTypes.KEY}
+                        keys.map(x => <Key
+                            keyName={x.key}
+                            id={x.id}
+                            isSelected={ x.id === selectedKeyId && selectedNodeType === nodeTypes.KEY}
                             keyType={x.type}
                             key={x.key}
                             handleClick={this.handleKeyItemClick}
                             dbIdx={dbIdx}
                             connectionName={connectionName}
                             dispatch={dispatch}
-                            />)}
+                        />)}
                 </ExpandContent>
             </DbMenuTrigger>}
         </React.Fragment>
@@ -184,10 +182,10 @@ class DB extends Component {
 }
 
 function mapStateToProps(state) {
-    const { selectedNodeType} = state.state;
-    const {selectedDb} =state.db;
-    const {selectedConnectionName}=state.connection;
-    return { selectedNodeType, selectedDb,selectedConnectionName,  ...state.key };
+    const { selectedNodeType } = state.state;
+    const { selectedDbId } = state.db;
+    const { selectedConnectionId } = state.connection;
+    return { selectedNodeType, selectedDbId, selectedConnectionId, ...state.key };
 }
 
 

@@ -107,14 +107,16 @@ const SmallWordDiv = styled.div`
 
 const Trigger = (props) => {
     const { contextMenuProps } = props;
-    console.log(props);
+    if(contextMenuProps==null){
+       return <div {...props} />
+    }
     const regist = ContextMenuTriggerRegists.find(x => x.key === contextMenuProps.contextMenuTriggerId);
     if (regist == null) {
-        return <React.Fragment {...props} />
+        return <div {...props} />
     }
     const ItemTrigger = regist.trigger;
     return <ItemTrigger  {...contextMenuProps}>
-        <React.Fragment {...props} />
+        <div {...props} />
     </ItemTrigger>
 
 }

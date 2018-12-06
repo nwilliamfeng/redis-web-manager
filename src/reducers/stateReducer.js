@@ -4,7 +4,7 @@ import { findIndex } from 'lodash';
 const defaultState = {
     selectedNodeType: nodeTypes.ROOT,
     // selectedConnection: null,
-    // selectedDB: null,
+    // selectedDbId: null,
     // selectedKey: null,
     tabPanes: [tabPaneIds.LIST_VIEW_PANE, tabPaneIds.SETTING_PANE],
     activeTabPane: tabPaneIds.LIST_VIEW_PANE,
@@ -17,7 +17,7 @@ export const stateReducer = (state = defaultState, action) => {
                 ...state,
                 selectedNodeType: action.type,
                 // selectedConnection: action.connection,
-                // selectedDB: null,
+                // selectedDbId: null,
                 // selectedKey: null,
 
             }
@@ -27,7 +27,7 @@ export const stateReducer = (state = defaultState, action) => {
                 ...state,
                 selectedNodeType: action.type,
                 // selectedConnection: action.connection,
-                // selectedDB: action.db,
+                // selectedDbId: action.db,
                 // selectedKey: null,
 
             }
@@ -37,7 +37,7 @@ export const stateReducer = (state = defaultState, action) => {
                 ...state,
                 selectedNodeType: action.type,
                 // selectedConnection: action.connection,
-                // selectedDB: action.db,
+                // selectedDbId: action.db,
                 // selectedKey: action.key,
             }
 

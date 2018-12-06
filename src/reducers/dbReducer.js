@@ -2,21 +2,16 @@ import { dbConstants, nodeTypes } from '../constants';
 
 const defaultState = {
     dbs: [],
-    selectedDb: null,
+    selectedDbId: null,
 }
 
-const dbCache = []
+let dbCache = []
 
 export const dbReducer = (state = defaultState, action) => {
     switch (action.type) {
         case dbConstants.LOAD_DB_LIST:
-            const exist = dbCache.find(x => x.connectionOfDb === action.connection);
-            if (exist != null) {
-                exist.dbs = action.dbList;
-            }
-            else {
-                dbCache.push({ connectionOfDb: action.connection, dbs: action.dbList });
-            }
+            const others =dbCache.filter(x=>x.connectionName!==action.connectionName);
+            dbCache=[...others,...action.dbList];
             return {
                 ...state,
                 dbs: action.dbList,
@@ -24,43 +19,26 @@ export const dbReducer = (state = defaultState, action) => {
             }
 
         case nodeTypes.CONNECTION:
-            const current = dbCache.find(x => x.connectionOfDb === action.connection);
-            if (current == null) {
-                return {
-                    ...state,
-                    selectedDb: null,
-                    dbs: [],
-                }
-            }
             return {
                 ...state,
-                selectedDb: null,
-                dbs: current.dbs,
+                selectedDbId: null,
+                dbs:[ ...dbCache.filter(x=>x.connectionName===action.connectionId)],
 
             }
 
         case nodeTypes.DB:
-            const curr = dbCache.find(x => x.connectionOfDb === action.connection);
-
-            if (curr == null) {
-                return { ...state,dbs:[] };
-            }
             return {
                 ...state,
-                selectedDb: action.db,
-                dbs: curr.dbs,
+                selectedDbId: action.dbId,
+                dbs:[...dbCache.filter(x=>x.connectionName===action.connectionId)],
             }
 
         case nodeTypes.KEY:
-            const curr2 = dbCache.find(x => x.connectionOfDb === action.connection);
-
-            if (curr2 == null) {
-                return { ...state,dbs:[] };
-            }
+        
             return {
                 ...state,
-                selectedDb: action.db,
-                dbs: curr2.dbs,
+                selectedDbId: action.dbId,
+                dbs:[...dbCache.filter(x=>x.connectionName===action.connectionId)],
             }
 
 

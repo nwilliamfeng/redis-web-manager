@@ -20,9 +20,9 @@ const Div = styled.div`margin-left:-20px;`
 
 const SelectContent =styled( withSelectByClick(props => <Content {...props} />))`padding-left:50px;`
 
-export const Key = ({ keyName, keyType, isSelected, handleClick,dispatch,dbIdx,connectionName }) => {
+export const Key = ({id, keyName, keyType, isSelected, handleClick,dispatch,dbIdx,connectionName }) => {
     const click = () => {
-        handleClick(keyName);
+        handleClick(id);
     }
     return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
         <KeyMenuTrigger dispatch={dispatch} dbIdx={dbIdx} connection={connectionName} keyName={keyName} >

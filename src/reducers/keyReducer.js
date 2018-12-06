@@ -2,49 +2,39 @@ import { keyConstants, nodeTypes } from '../constants';
 
 const defaultState = {
     keys: [],
-    selectedKey: null,
+    selectedKeyId: null,
 
 }
 
-const keyCache = [];
+let keyCache = [];
 
 export const keyReducer = (state = defaultState, action) => {
     switch (action.type) {
         case keyConstants.LOAD_KEY_LIST:
-            const exist = keyCache.find(x => x.connectionOfKey === action.connection && x.dbOfKey === action.db);
-            if (exist != null) {
-                exist.keys = action.keyList;
-            }
-            else {
-                keyCache.push({ connectionOfKey: action.connection, dbOfKey: action.db, keys: action.keyList });
-            }
+            const others= keyCache.filter(x=>x.connectionName!==action.connectionName && x.dbIdx!==action.dbIdx);
+            keyCache=[...others,...action.keyList];
             return {
                 ...state,
-                selectedKey: null,
+                selectedKeyId: null,
                 keys: action.keyList,
 
             }
-        case nodeTypes.DB:
-            const current = keyCache.find(x => x.connectionOfKey === action.connection && x.dbOfKey === action.db);
-            if (current == null) {
-                return { ...state,keys:[] };
-            }
+        case nodeTypes.DB:       
+        console.log('ccccc');
+        console.log([...keyCache]);
+        console.log([...keyCache.filter(x=>x.connectionName===action.connectionId && x.dbId===action.dbId)]);
             return {
                 ...state,
-                selectedKey: null,
-                keys: current.keys,
+                selectedKeyId: null,
+                keys:[...keyCache.filter(x=>x.connectionName===action.connectionId && x.dbId===action.dbId)],
 
             }
         case nodeTypes.KEY:
-            const curr = keyCache.find(x => x.connectionOfKey === action.connection && x.dbOfKey===action.db);
-
-            if (curr == null) {
-                return { ...state };
-            }
+            
             return {
                 ...state,
-                selectedKey:action.key,
-                keys: curr.keys,
+                selectedKeyId:action.keyId,
+                keys:[...keyCache.filter(x=>x.connectionName===action.connectionId && x.dbId===action.dbId)],
             }
 
 

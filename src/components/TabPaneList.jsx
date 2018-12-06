@@ -92,8 +92,8 @@ class TabPaneList extends Component {
 }
 
 const mapStateToProps = state => {
-  const { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDB, selectedKey } = state.state;
-  return { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDB, selectedKey };
+  const { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDbId, selectedKey } = state.state;
+  return { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDbId, selectedKey };
 }
 
 const list = connect(mapStateToProps)(TabPaneList)

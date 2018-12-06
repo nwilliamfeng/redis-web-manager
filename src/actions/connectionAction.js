@@ -18,6 +18,6 @@ export const connectionActions={
     }
 }
 
-function selectConnection(connectionName){
-    return {type:nodeTypes.CONNECTION,connection: connectionName};
+function selectConnection(connectionId){
+    return {type:nodeTypes.CONNECTION,connectionId};
 }

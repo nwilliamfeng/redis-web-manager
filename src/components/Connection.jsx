@@ -34,8 +34,8 @@ class Connection extends Component {
     }
 
     handleClick = () => {
-        const { dispatch, item ,selectedConnectionName,selectedNodeType} = this.props;
-        if(selectedConnectionName!==item.name || selectedNodeType!==nodeTypes.CONNECTION){
+        const { dispatch, item ,selectedConnectionId,selectedNodeType} = this.props;
+        if(selectedConnectionId!==item.name || selectedNodeType!==nodeTypes.CONNECTION){
             dispatch(connectionActions.selectConnection(item.name));
         }
        
@@ -57,15 +57,15 @@ class Connection extends Component {
     componentWillReceiveProps(nextProps, nextContext) {
       
         if (!this.isConnected() && this.state.isLoading===true) {
-            const { dbs, selectedConnectionName, item } = nextProps;
-            if (dbs != null && selectedConnectionName === item.name) {
+            const { dbs, selectedConnectionId, item } = nextProps;
+            if (dbs != null && selectedConnectionId === item.name) {
                 this.setState({ dbs, isLoading: false ,isConnected:true});
             }
         }
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { item, selectedConnectionName, selectNodeType } = this.props;
+        const { item, selectedConnectionId, selectNodeType } = this.props;
         const {  isLoading, isExpand,isConnected } = this.state;
         if (nextState != null) {
           
@@ -82,16 +82,16 @@ class Connection extends Component {
         }
         if (nextProps != null) {
           
-            if (selectedConnectionName === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
+            if (selectedConnectionId === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
                 return true;
             }
-            if (item.name === selectedConnectionName && nextProps.selectedConnectionName !== item.name) {
+            if (item.name === selectedConnectionId && nextProps.selectedConnectionId !== item.name) {
                 return true;
             }
-            if (item.name !== selectedConnectionName && nextProps.selectedConnectionName === item.name) {
+            if (item.name !== selectedConnectionId && nextProps.selectedConnectionId === item.name) {
                 return true;
             }
-            if (selectedConnectionName === item.name && nextProps.selectedNodeType !== selectNodeType) {
+            if (selectedConnectionId === item.name && nextProps.selectedNodeType !== selectNodeType) {
                 return true;
             }
         }
@@ -104,11 +104,11 @@ class Connection extends Component {
     }
 
     render() {
-        const { item, selectedConnectionName, selectedNodeType,dispatch } = this.props;
+        const { item, selectedConnectionId, selectedNodeType,dispatch } = this.props;
         const { dbs, isLoading, isExpand } = this.state;
         console.log('render connection ' + item.name);
         const isConnected=this.isConnected();
-        const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionName === item.name;
+        const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionId === item.name;
         return <React.Fragment>
             {item && <ConnectionMenuTrigger  connection={item.name} dispatch={dispatch} isConnected={isConnected} >
                 <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
@@ -121,7 +121,7 @@ class Connection extends Component {
                         isLoading={isLoading}
                         handleExpand={this.handleExpand}
                         isExpand={isExpand}>
-                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x} dbIdx={x} connectionName={item.name} isVisible={isExpand} />)}
+                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x.id} id={x.id} dbIdx={x.dbIdx} connectionName={item.name} isVisible={isExpand} />)}
                     </ExpandContent>
                 </Li>
             </ConnectionMenuTrigger>}
@@ -132,10 +132,10 @@ class Connection extends Component {
 }
 
 function mapStateToProps(state) {
-    const { connections,selectedConnectionName } = state.connection;
+    const { connections,selectedConnectionId } = state.connection;
     const { dbs } = state.db;
     const {  selectedNodeType } = state.state;
-    return { connections,  dbs, selectedConnectionName, selectedNodeType };
+    return { connections,  dbs, selectedConnectionId, selectedNodeType };
 }
 
 
