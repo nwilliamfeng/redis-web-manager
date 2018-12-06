@@ -72,13 +72,18 @@ class ListViewTabPane extends Component {
     }
 
     mapConnectionToItem = connection => {
+        //格式必须包括listviewitem的所需数据和快捷菜单的数据
         return {
             iconId: iconKeys.CONNECTION_DEFAULT_ICON,
             title: connection.name,
             id: connection.name,
             onDoubleClick: this.handleConnectionNodeClick,
             isSmallIcon: true,
-            contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
+            contextMenuProps:{ 
+                contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
+                connection:connection.name,
+                isConnected:false,
+            },
         }
     }
 

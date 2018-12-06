@@ -4,7 +4,7 @@ import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { IconList } from './IconList'
 import { ContextMenuTriggerRegists } from './ContextMenuTriggerRegists'
-import {ConnectionMenuTrigger,ConnectionContextMenu} from '../components/contextMenus'
+import { ConnectionMenuTrigger, ConnectionContextMenu } from '../components/contextMenus'
 
 const ItemBase = styled.div`
     &:hover{
@@ -105,6 +105,19 @@ const SmallWordDiv = styled.div`
     text-overflow:ellipsis;
 `
 
+const Trigger = (props) => {
+    const { contextMenuProps } = props;
+    console.log(props);
+    const regist = ContextMenuTriggerRegists.find(x => x.key === contextMenuProps.contextMenuTriggerId);
+    if (regist == null) {
+        return <React.Fragment {...props} />
+    }
+    const ItemTrigger = regist.trigger;
+    return <ItemTrigger  {...contextMenuProps}>
+        <React.Fragment {...props} />
+    </ItemTrigger>
+
+}
 
 
 const ListViewItem = props => {
@@ -126,17 +139,10 @@ const ListViewItem = props => {
         }
     }
 
-    const Trigger =(props)=>{
-        const {contextMenuTriggerId} =props;
-        const ItemTrigger =ContextMenuTriggerRegists.find(x => x.key === contextMenuTriggerId).trigger;
-        return <ItemTrigger {...props}/>
-    }
-
-    
     return <React.Fragment>
-        <Trigger >
+        <Trigger {...props} >
             {isSmallIcon === false &&
-                <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+                <LargeItemDiv isSelected={isSelected} title={title} onClick={handleClick} onDoubleClick={handleDoubleClick} >
                     <LargeContainer>
                         <CheckBoxDiv className='checkBox' isVisible={isSelected} >
                             <LargeCheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
@@ -146,7 +152,7 @@ const ListViewItem = props => {
                     <LargeWordDiv>{title}</LargeWordDiv>
                 </LargeItemDiv>}
             {isSmallIcon === true &&
-                <SmallItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
+                <SmallItemDiv isSelected={isSelected} title={title} onClick={handleClick} onDoubleClick={handleDoubleClick} >
                     <CheckBoxDiv className='checkBox' isVisible={isSelected === true} >
                         <CheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
                     </CheckBoxDiv>
