@@ -126,7 +126,7 @@ const ListViewItem = props => {
     const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false, contextMenuTriggerId } = props
     const handleClick = e => {
         if (onClick != null) {
-            onClick(id);
+           onClick(id);
         }
     }
 
@@ -136,6 +136,8 @@ const ListViewItem = props => {
         }
     }
     const handleDoubleClick = e => {
+        e.stopPropagation();
+        console.log('do double click');
         if (onDoubleClick != null) {
             onDoubleClick(id);
         }

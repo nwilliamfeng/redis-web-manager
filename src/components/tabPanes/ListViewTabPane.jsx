@@ -116,7 +116,7 @@ class ListViewTabPane extends Component {
     }
 
     handleDbNodeClick = id => {
-        console.log('click');?????2!!!
+        console.log('click');
         const { dispatch, selectedConnectionId } = this.props;
         dispatch(dbActions.selectDB(selectedConnectionId,id));
     }
