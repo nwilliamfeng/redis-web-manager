@@ -1,6 +1,6 @@
 import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
-import { dbActions } from '../../actions'
+import { connectionActions } from '../../actions'
 import { withContextMenuTrigger } from './withMenuTrigger'
 
 
@@ -14,7 +14,7 @@ export const ConnectionMenuTrigger = props => {
         const { dispatch, connection } = props;
         switch (data.action) {
             case commandConstants.CONNECT_CONNECTION:
-                dispatch(dbActions.getDbList(connection));
+                dispatch(connectionActions.getDbList(connection));
                 break;
             case commandConstants.REFRESH_CONNECTION:
             alert('refresh');

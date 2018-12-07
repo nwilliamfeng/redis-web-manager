@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { nodeTypes, contextMenuIds } from '../../constants'
+import { nodeTypes, contextMenuIds, connectionStates } from '../../constants'
 import { connectionActions, keyActions, dbActions } from '../../actions'
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
@@ -76,8 +76,9 @@ class ListViewTabPane extends Component {
 
     mapConnectionToItem = connection => {
         //格式必须包括listviewitem的所需数据和快捷菜单的数据
+       
         return {
-            iconId: iconKeys.CONNECTION_DEFAULT_ICON,
+            iconId:connection.connectionState===connectionStates.CONNECTED?iconKeys.CONNECTION_SUCCESS_ICON : iconKeys.CONNECTION_DEFAULT_ICON,
             title: connection.name,
             id: connection.name,
             onDoubleClick: this.handleConnectionNodeClick,
@@ -85,7 +86,8 @@ class ListViewTabPane extends Component {
             contextMenuProps:{ 
                 contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
                 connection:connection.name,
-                isConnected:false,
+                isConnected:connection.connectionState===connectionStates.CONNECTED,
+                dispatch:this.props.dispatch,
             },
         }
     }

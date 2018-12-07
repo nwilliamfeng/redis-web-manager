@@ -1,4 +1,4 @@
-import {connectionConstants,nodeTypes} from '../constants';
+import {connectionConstants,nodeTypes,connectionStates,dbConstants} from '../constants';
 import {redisApi} from '../api'
 
 
@@ -7,6 +7,10 @@ export const connectionActions={
     loadConnectionList,
 
     selectConnection,
+
+    updateConnectionState,
+
+    getDbList,
 }
 
 
@@ -16,6 +20,18 @@ export const connectionActions={
         const connections =await redisApi.getConfigs();
         dispatch({type:connectionConstants.LOAD_CONNECTION_LIST,connections});
     }
+}
+
+function getDbList(connectionId) {
+    return async dispatch => {
+        dispatch({type:connectionConstants.UPDATE_STATE,connectionId,connectionState:connectionStates.CONNECTING});
+        const dbList = await redisApi.connect(connectionId);
+        dispatch({ type: dbConstants.LOAD_DB_LIST, dbList, connectionId,connectionState:connectionStates.CONNECTED });
+    }
+}
+
+function updateConnectionState(connectionId,connectionState=connectionStates.NONE){
+    return {type:connectionConstants.UPDATE_STATE,connectionId,connectionState};
 }
 
 function selectConnection(connectionId){

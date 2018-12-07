@@ -15,7 +15,6 @@ export const dbReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 dbs: action.dbList,
-
             }
 
         case nodeTypes.CONNECTION:

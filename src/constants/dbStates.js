@@ -1,0 +1,10 @@
+export const dbStates={
+
+    NONE:'NONE',
+
+    KEY_LOADING:'KEY_LOADING',
+
+    KEY_LOAD_SUCCESS:'KEY_LOAD_SUCCESS',
+
+    KEY_LOAD_FAIL:'KEY_LOAD_FAIL',
+}

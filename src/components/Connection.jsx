@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Li, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg } from '../controls/parts'
 import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { nodeTypes } from '../constants'
+import { nodeTypes,connectionStates } from '../constants'
 import { withExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { DB } from './DB'
@@ -28,8 +28,9 @@ const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {
 class Connection extends Component {
 
     constructor(props) {
+        console.log('create connection');
         super(props);
-        this.state = {isConnected:false, dbs: [], isLoading: false, isExpand: true };
+        this.state = { dbs: [],  isExpand: true };
 
     }
 
@@ -43,46 +44,49 @@ class Connection extends Component {
 
     handleDoubleClick = () => {     
         if (!this.isConnected()) {
-            this.setState({ isLoading: true });
             const { dispatch, item } = this.props;
-            dispatch(dbActions.getDbList(item.name));
+           
+            dispatch(connectionActions.getDbList(item.name));
         }
     }
 
     isConnected=()=>{
-        const {isConnected} =this.state;
-        return isConnected===true;
+        const {connectionState} =this.props.item;
+        return connectionState=== connectionStates.CONNECTED ||connectionState=== connectionStates.FAIL ;
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
       
-        if (!this.isConnected() && this.state.isLoading===true) {
-            const { dbs, selectedConnectionId, item } = nextProps;
-            if (dbs != null && selectedConnectionId === item.name) {
-                this.setState({ dbs, isLoading: false ,isConnected:true});
+        const {id} =this.props.item;
+ 
+        if ( this.props.item.connectionState===connectionStates.CONNECTED ) {
+            const { dbs, selectedConnectionId } = nextProps;
+            if (dbs != null && selectedConnectionId === id) {
+                console.log('do set dbs '+id);
+                console.log(dbs);
+                console.log(selectedConnectionId);
+                this.setState({ dbs});
             }
         }
+       
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { item, selectedConnectionId, selectNodeType } = this.props;
-        const {  isLoading, isExpand,isConnected } = this.state;
+        const { isExpand } = this.state;
         if (nextState != null) {
           
-            if(isConnected!==nextState.isConnected){
-                return true;
-            }
-            if (nextState.isLoading !== isLoading) {
-                return true;
-            }
 
             if (nextState.isExpand !== isExpand) {
                 return true;
             }
         }
         if (nextProps != null) {
+            if ( nextProps.item.connectionState !==item.connectionState) {
+                return true;
+            }
           
-            if (selectedConnectionId === item.name && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
+            if (selectedConnectionId === item.id && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
                 return true;
             }
             if (item.name === selectedConnectionId && nextProps.selectedConnectionId !== item.name) {
@@ -104,8 +108,9 @@ class Connection extends Component {
     }
 
     render() {
-        const { item, selectedConnectionId, selectedNodeType,dispatch } = this.props;
-        const { dbs, isLoading, isExpand } = this.state;
+        const {  item, selectedConnectionId, selectedNodeType,dispatch } = this.props;
+        const {dbs ,isExpand } = this.state;
+     //   console.log(dbs);
         console.log('render connection ' + item.name);
         const isConnected=this.isConnected();
         const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionId === item.name;
@@ -118,7 +123,7 @@ class Connection extends Component {
                         isSelected={isSelected}
                         isConnected={isConnected}
                         dbs={dbs}
-                        isLoading={isLoading}
+                        isLoading={item.connectionState===connectionStates.CONNECTING}
                         handleExpand={this.handleExpand}
                         isExpand={isExpand}>
                         {dbs && dbs.length > 0 && dbs.map(x => <DB key={x.id} id={x.id} dbIdx={x.dbIdx} connectionName={item.name} isVisible={isExpand} />)}
