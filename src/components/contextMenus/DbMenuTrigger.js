@@ -11,10 +11,12 @@ const Trigger = withContextMenuTrigger(contextMenuIds.DB_CONTEXTMENU_ID);
 export const DbMenuTrigger = props => {
 
     const handleItemClick = (e, data, target) => {
+        console.log(props);
         const {dispatch, dbIdx, connectionName ,dbId} = props;
         switch (data.action) {
             case commandConstants.LOAD_KEYS:
                 dispatch(dbActions.getKeyList(connectionName,dbIdx,dbId));
+                
                 break;
             case commandConstants.REFRESH_CONNECTION:
             alert('refresh db');

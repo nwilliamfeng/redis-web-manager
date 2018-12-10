@@ -44,7 +44,7 @@ class RedisApi {
                 dbIdx: dbindex,
                 dbId,
                 connectionName: name,
-                connectionState:connectionStates.NONE,
+              
             }
         });
     }

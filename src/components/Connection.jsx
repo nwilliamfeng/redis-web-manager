@@ -54,7 +54,7 @@ class Connection extends Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         const { id } = this.props.item;
-        if (this.props.item.connectionState === connectionStates.CONNECTED) {
+        if (nextProps.item.connectionState === connectionStates.CONNECTED) {
             const { dbs, selectedConnectionId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
             if (dbs != null && selectedConnectionId === id) {
                 this.setState({ dbs, isExpand: true });

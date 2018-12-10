@@ -11,6 +11,8 @@ export const connectionActions={
     updateConnectionState,
 
     getDbList,
+
+    refreshDbList,
 }
 
 
@@ -27,6 +29,14 @@ function getDbList(connectionId) {
         dispatch({type:connectionConstants.UPDATE_STATE,connectionId,connectionState:connectionStates.CONNECTING});
         const dbList = await redisApi.connect(connectionId);
         dispatch({ type: dbConstants.LOAD_DB_LIST, dbList, connectionId,connectionState:connectionStates.CONNECTED });
+    }
+}
+
+function refreshDbList(connectionId) {
+    return async dispatch => {
+        dispatch({type:connectionConstants.UPDATE_STATE,connectionId,connectionState:connectionStates.CONNECTING});
+        const dbList = await redisApi.connect(connectionId);
+        dispatch({ type: dbConstants.REFRESH_DB_LIST, dbList, connectionId,connectionState:connectionStates.CONNECTED });
     }
 }
 

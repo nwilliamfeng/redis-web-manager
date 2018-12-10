@@ -1,4 +1,4 @@
-import { connectionConstants, dbConstants, nodeTypes, connectionStates } from '../constants';
+import { connectionConstants, dbConstants, nodeTypes } from '../constants';
 
 const defaultState = {
     connections: [],
@@ -22,6 +22,7 @@ export const connectionReducer = (state = defaultState, action) => {
                 connections: changeState(state.connections, action.connectionId, action.connectionState),
             }
         case dbConstants.LOAD_DB_LIST:
+        case dbConstants.REFRESH_DB_LIST:
             return {
                 ...state,
                 connections: changeState(state.connections, action.connectionId, action.connectionState),
@@ -57,7 +58,7 @@ export const connectionReducer = (state = defaultState, action) => {
 function changeState(connections, id, connectionState) {
     const idx = connections.findIndex(x => x.id === id);
 
-    let curr = connections[idx];
-    curr.connectionState = connectionState;
-    return [...connections.slice(0, idx), curr, ...connections.slice(idx + 1)]
+    const curr = connections[idx];
+    const nw ={...curr,  connectionState};
+    return [...connections.slice(0, idx), nw, ...connections.slice(idx + 1)]
 }

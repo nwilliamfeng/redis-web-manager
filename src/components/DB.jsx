@@ -58,12 +58,19 @@ class DB extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps!=null && nextProps.dbState === dbStates.KEY_LOAD_SUCCESS) {
+        if(nextProps==null){
+            return ;
+        }
+        if (nextProps.dbState === dbStates.KEY_LOAD_SUCCESS) {
             const { keys, selectedDbId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
             if (keys != null && selectedDbId === this.props.id) {
                 this.setState({keys });
             }
         }
+        else if (nextProps.dbState === dbStates.NONE) {
+            this.setState({keys:[]});
+        }
+        
     }
 
     isSelected = () => {
@@ -90,7 +97,6 @@ class DB extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { id, isVisible } = this.props;
-        const { keyLoaded, isLoading } = this.state;
       
 
         if (nextProps == null) {
@@ -146,7 +152,7 @@ class DB extends Component {
         console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}` );
 
         return <React.Fragment>
-            {isVisible && <DbMenuTrigger connectionName={connectionName} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
+            {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
 
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
@@ -154,6 +160,7 @@ class DB extends Component {
                     isSelected={this.isSelected()}
                     handleClick={this.handleClick}
                     isLoading={dbState===dbStates.KEY_LOADING}
+                    isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS}
                     style={offSetStyle}
                     paddingLeft={30}>
                     {keys && keys.length > 0 &&

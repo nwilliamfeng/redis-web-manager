@@ -17,7 +17,7 @@ export const ConnectionMenuTrigger = props => {
                 dispatch(connectionActions.getDbList(connection));
                 break;
             case commandConstants.REFRESH_CONNECTION:
-                dispatch(connectionActions.getDbList(connection));
+                dispatch(connectionActions.refreshDbList(connection));
                 break;
             default:
                 break;

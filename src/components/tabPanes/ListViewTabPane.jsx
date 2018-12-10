@@ -63,8 +63,8 @@ class ListViewTabPane extends Component {
                 return dbs.map(x => { return this.mapDBToItem(x) });
 
             case nodeTypes.DB:
-            console.log(this.props);
-           // console.log(keys);
+          //  console.log(this.props);
+           
             return keys.map(x => { return this.mapKeyToItem(x) });
             case nodeTypes.KEY:
           

@@ -8,17 +8,20 @@ const defaultState = {
 
 let dbCache = []
 
-  
+
 
 export const dbReducer = (state = defaultState, action) => {
     switch (action.type) {
         case dbConstants.LOAD_DB_LIST:
-            const others = dbCache.filter(x => x.connectionName !== action.connectionName);
+        case dbConstants.REFRESH_DB_LIST:
+            const others = dbCache.filter(x => x.connectionName !== action.connectionId);
             dbCache = [...others, ...action.dbList];
             return {
                 ...state,
                 dbs: action.dbList,
             }
+
+      
 
         case nodeTypes.CONNECTION:
             return {
@@ -47,13 +50,13 @@ export const dbReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedDbId: action.dbId,
-                dbs: changeState(action.dbId, action.dbState),
+                dbs: changeState(state.dbs,action.dbId, action.dbState),
             }
 
         case keyConstants.LOAD_KEY_LIST:
             return {
                 ...state,
-                dbs: changeStateWithDbIdx(action.connectionName, action.dbIdx),
+                dbs: changeStateWithDbIdx(state.dbs,action.connectionName, action.dbIdx),
             }
 
         default:
@@ -61,18 +64,20 @@ export const dbReducer = (state = defaultState, action) => {
     }
 }
 
-function changeState(id, dbState) {
+function changeState(dbs, id, dbState) {
     const idx = dbCache.findIndex(x => x.id === id);
-    let curr = dbCache[idx];
+    const curr = dbCache[idx];
     const nxt = { ...curr, dbState };
-    dbCache= [...dbCache.slice(0, idx), nxt, ...dbCache.slice(idx + 1)];
-    return dbCache;
+    dbCache = [...dbCache.slice(0, idx), nxt, ...dbCache.slice(idx + 1)];
+
+    const idx2 = dbs.findIndex(x => x.id === id);
+    return [...dbs.slice(0, idx2), nxt, ...dbs.slice(idx2 + 1)];
 }
 
-function changeStateWithDbIdx(connectionName, dbIdx) {
+function changeStateWithDbIdx(dbs,connectionName, dbIdx) {
     const db = dbCache.find(x => x.connectionName === connectionName && x.dbIdx === dbIdx);
     if (db == null) {
         return [];
     }
-    return changeState(db.id, dbStates.KEY_LOAD_SUCCESS);
+    return changeState(dbs,db.id, dbStates.KEY_LOAD_SUCCESS);
 }
