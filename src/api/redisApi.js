@@ -1,5 +1,5 @@
 import { ApiHelper } from './apiHelper'
-import {connectionStates} from '../constants'
+import {connectionStates,dbStates} from '../constants'
 
 class RedisApi {
 
@@ -25,9 +25,9 @@ class RedisApi {
         if (Code === 2)
             throw new Error(Message);
         if (name === 'conn2') {
-            return Data.slice(0, 3).map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name } });
+            return Data.slice(0, 3).map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name ,dbState:dbStates.NONE} });
         }
-        return Data.map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name } });
+        return Data.map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name,dbState:dbStates.NONE, } });
     }
 
     async getKeyTypes(name, dbindex = 0, dbId, key = '*', offset = 0) {

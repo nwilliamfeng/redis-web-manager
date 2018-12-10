@@ -11,7 +11,7 @@ let keyCache = [];
 export const keyReducer = (state = defaultState, action) => {
     switch (action.type) {
         case keyConstants.LOAD_KEY_LIST:
-            const others= keyCache.filter(x=>x.connectionName!==action.connectionName && x.dbIdx!==action.dbIdx);
+            const others= keyCache.filter(x=>x.connectionName!==action.connectionName && x.dbIdx!==action.dbIdx);??无法加载
             keyCache=[...others,...action.keyList];
             return {
                 ...state,
@@ -20,9 +20,6 @@ export const keyReducer = (state = defaultState, action) => {
 
             }
         case nodeTypes.DB:       
-        console.log('ccccc');
-        console.log([...keyCache]);
-        console.log([...keyCache.filter(x=>x.connectionName===action.connectionId && x.dbId===action.dbId)]);
             return {
                 ...state,
                 selectedKeyId: null,

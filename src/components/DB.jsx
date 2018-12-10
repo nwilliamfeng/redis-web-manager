@@ -3,7 +3,7 @@ import { NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, } from '../controls/par
 import { DbMenuTrigger } from './contextMenus'
 import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { nodeTypes } from '../constants'
+import { nodeTypes,dbStates } from '../constants'
 import { withSimpleExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { Key } from './Key'
@@ -26,13 +26,12 @@ const offSetStyle = { marginLeft: -40, width: 'calc(100% + 40px)' }
 const ExpandContent = compose(withSelectByClick, withSimpleExpand)(props => <Content {...props} />)
 
 
-
 class DB extends Component {
 
     constructor(props) {
         console.log('create db ' + props.dbIdx);
         super(props);
-        this.state = { keyLoaded: false, keys: [], isLoading: false };
+        this.state = {  keys: [] };
     }
 
     handleClick = () => {
@@ -51,22 +50,18 @@ class DB extends Component {
 
 
     handleDoubleClick = () => {
-        const { keyLoaded } = this.state;
-        if (keyLoaded === false) {
-            const { dbIdx, connectionName,id } = this.props;
-            this.setState({ isLoading: true });
+        const { dbIdx, connectionName,id ,dbState} = this.props;
+        if (dbState ===  dbStates.NONE) {            
             const { dispatch } = this.props;
-            dispatch(keyActions.getKeyList(connectionName, dbIdx,id));
+            dispatch(dbActions.getKeyList(connectionName, dbIdx,id));
         }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const { keyLoaded, isLoading } = this.state;
-        const { id } = this.props;
-        if (keyLoaded === false && isLoading === true) {
-            const { keys,  selectedDbId } = nextProps;
-            if (keys != null &&  selectedDbId === id) {
-                this.setState({ keyLoaded: true, keys, isLoading: false });
+        if (nextProps!=null && nextProps.dbState === dbStates.KEY_LOAD_SUCCESS) {
+            const { keys, selectedDbId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
+            if (keys != null && selectedDbId === this.props.id) {
+                this.setState({keys });
             }
         }
     }
@@ -96,14 +91,7 @@ class DB extends Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { id, isVisible } = this.props;
         const { keyLoaded, isLoading } = this.state;
-        if (nextState != null) {
-            if (nextState.keyLoaded !== keyLoaded) {//加载
-                return true;
-            }
-            if (nextState.isLoading !== isLoading) {
-                return true;
-            }
-        }
+      
 
         if (nextProps == null) {
             return false;
@@ -112,6 +100,11 @@ class DB extends Component {
         if (nextProps.isVisible !== isVisible) { //处理折叠
             return true;
         }
+
+        if (nextProps.dbState !== this.props.dbState) {
+            return true;
+        }
+
 
         const currConnectionName = this.props.connectionName;
      
@@ -147,20 +140,20 @@ class DB extends Component {
 
 
     render() {
-        const { id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, selectedKeyId } = this.props;
-        const { keys, isLoading, keyLoaded } = this.state;
+        const { id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType,dbState, selectedKeyId } = this.props;
+        const { keys  } = this.state;
 
-        console.log(`render db:dbIdx ${dbIdx} selectedDbId ${selectedDbId}  selectedConnection ${selectedConnectionId} connection ${connectionName}`);
+        console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}` );
 
         return <React.Fragment>
-            {isVisible && <DbMenuTrigger connectionName={connectionName} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={keyLoaded} >
+            {isVisible && <DbMenuTrigger connectionName={connectionName} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
 
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
                     onDoubleClick={this.handleDoubleClick}
                     isSelected={this.isSelected()}
                     handleClick={this.handleClick}
-                    isLoading={isLoading}
+                    isLoading={dbState===dbStates.KEY_LOADING}
                     style={offSetStyle}
                     paddingLeft={30}>
                     {keys && keys.length > 0 &&

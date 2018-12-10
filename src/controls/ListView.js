@@ -105,18 +105,21 @@ const SmallWordDiv = styled.div`
     text-overflow:ellipsis;
 `
 
+
+
 const Trigger = (props) => {
-    const { contextMenuProps } = props;
+    const { contextMenuProps} = props;
     if(contextMenuProps==null){
-       return <div {...props} />
+       return <div >{props.children}</div>
     }
     const regist = ContextMenuTriggerRegists.find(x => x.key === contextMenuProps.contextMenuTriggerId);
     if (regist == null) {
-        return <div {...props} />
+        return <div >{props.children}</div>
     }
     const ItemTrigger = regist.trigger;
+   
     return <ItemTrigger  {...contextMenuProps}>
-        <div {...props} />
+       {props.children}  
     </ItemTrigger>
 
 }

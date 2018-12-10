@@ -1,6 +1,6 @@
 import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
-import { keyActions } from '../../actions'
+import { keyActions,dbActions } from '../../actions'
 import { withContextMenuTrigger } from './withMenuTrigger'
 
 
@@ -11,10 +11,10 @@ const Trigger = withContextMenuTrigger(contextMenuIds.DB_CONTEXTMENU_ID);
 export const DbMenuTrigger = props => {
 
     const handleItemClick = (e, data, target) => {
-        const {dispatch, dbIdx, connectionName } = props;
+        const {dispatch, dbIdx, connectionName ,dbId} = props;
         switch (data.action) {
             case commandConstants.LOAD_KEYS:
-                dispatch(keyActions.getKeyList(connectionName,dbIdx));
+                dispatch(dbActions.getKeyList(connectionName,dbIdx,dbId));
                 break;
             case commandConstants.REFRESH_CONNECTION:
             alert('refresh db');
