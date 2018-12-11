@@ -8,6 +8,9 @@ import { Toolbar } from './Toolbar'
 import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
 
+
+import { ReplyList } from './ReplyList'
+
 const ShellDiv = styled.div`
     display:flex;
     justify-content:center;
@@ -53,7 +56,7 @@ const MenuBarDiv = styled.div`
     width:400px;
 `
 
-const OutListDiv=styled.div`
+const OutListDiv = styled.div`
      height:100%;
     padding:0px 1px 0px 0px; 
 `
@@ -62,11 +65,21 @@ const ListContainer = withScroll(props => <div {...props} />)
 
 const VerticalSplit = withSplit()
 
+//---------------------------------------------------------
+const CommentOutContainer = styled.div`
+    display:flex;
+    flex-direction:column;
+    background: white;
+    height:100vh;
+    width:50%;
+`
+const CommentContainer = withScroll(props => <div style={{height:'100%',}} {...props} />)
+
 class Shell extends Component {
     render() {
         return <ShellDiv>
             <Background img={BackgroundImg} />
-            <Container>
+            {/* <Container>      
                 <MenuBarDiv>
                     <Menubar />
                 </MenuBarDiv>
@@ -84,7 +97,12 @@ class Shell extends Component {
                         <TabPaneList />
                     </TabDiv>
                 </VerticalSplit>
-            </Container>
+            </Container> */}
+            <CommentOutContainer>
+                <CommentContainer>
+                    <ReplyList />
+                </CommentContainer>
+            </CommentOutContainer>
 
         </ShellDiv>
     }

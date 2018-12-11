@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { KeySearch } from './KeySearch'
-
+import {FolderIcon, PreviousIcon} from './icons'
 
 
 
@@ -23,7 +23,41 @@ const PathDiv = styled.div`
     width:100px;
 `
 
+const Svg=styled.svg`
+    fill:blue;
+    width:32px;
+    height:32px;
+    pointer-events: all;
+    &:hover{
+        fill:red;
+    }
+
+`
+
  
+
+// const d=FolderIcon({});
+// const SvgBtn=props=> {
+    
+//     console.log(props);
+//     const {children,...others}=props.props;
+//     return <Svg {...others}>
+//     { children}
+//     </Svg>
+// }
+
+const d=FolderIcon({});
+
+const withSvg=props=>icon=> {
+    
+  console.log(icon );
+    const {children,...others}=icon.props;
+    return <Svg {...others}>
+    { children}
+    </Svg>
+}
+
+const y=withSvg(props=><PreviousIcon/>);
 
 
 export class Toolbar extends Component {
@@ -31,7 +65,7 @@ export class Toolbar extends Component {
     render() {
         return <ToolbarDiv>
             <PathDiv>
-              
+              <y/>
             </PathDiv>
             <button>{'abc'}</button>
             <button>{'abc'}</button>

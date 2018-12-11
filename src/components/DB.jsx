@@ -8,6 +8,7 @@ import { withSimpleExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { Key } from './Key'
 import { DBIcon } from './icons'
+import {isEqual} from 'lodash'
 
 const Content = props => {
     const { name, isLoading, keys } = props;
@@ -111,6 +112,11 @@ class DB extends Component {
             return true;
         }
 
+        if(this.props.selectedDbId===this.props.id){
+            if(!isEqual( this.props.keys,nextProps.keys)){ //检查keys的状态是否变化，比如刷新键
+                return true;
+            }
+        }
 
         const currConnectionName = this.props.connectionName;
      

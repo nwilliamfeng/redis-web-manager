@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { nodeTypes, contextMenuIds, connectionStates } from '../../constants'
+import { nodeTypes, contextMenuIds, connectionStates, dbStates } from '../../constants'
 import { connectionActions, keyActions, dbActions } from '../../actions'
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
@@ -51,6 +51,8 @@ class ListViewTabPane extends Component {
             }
         }
         add({ key: contextMenuIds.CONNECTION_CONTEXTMENU_ID, trigger: ConnectionMenuTrigger });
+        add({ key: contextMenuIds.DB_CONTEXTMENU_ID, trigger: DbMenuTrigger });
+        add({ key: contextMenuIds.KEY_CONTEXTMENU_ID, trigger: KeyMenuTrigger });
     }
 
     getListViewItems = () => {
@@ -100,6 +102,14 @@ class ListViewTabPane extends Component {
             id: db.id,
             onDoubleClick: this.handleDbNodeClick,
             isSmallIcon: true,
+            contextMenuProps:{ 
+                contextMenuTriggerId: contextMenuIds.DB_CONTEXTMENU_ID,
+                connectionName:db.connectionName,
+                dbId:db.id,
+                dbIdx:db.dbIdx,
+                isKeyLoaded:db.dbState===dbStates.KEY_LOAD_SUCCESS,
+                dispatch:this.props.dispatch,
+            },
         }
     }
 
@@ -110,6 +120,15 @@ class ListViewTabPane extends Component {
             id: key.id,
             onDoubleClick: this.handleKeyNodeClick,
             isSmallIcon: true,
+            contextMenuProps:{ 
+                contextMenuTriggerId: contextMenuIds.KEY_CONTEXTMENU_ID,
+                connection:key.connectionName,
+                keyName:key.key,
+               
+                dbIdx:key.dbIdx,
+              
+                dispatch:this.props.dispatch,
+            },
         }
     }
 

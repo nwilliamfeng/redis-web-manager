@@ -54,6 +54,7 @@ export const dbReducer = (state = defaultState, action) => {
             }
 
         case keyConstants.LOAD_KEY_LIST:
+     
             return {
                 ...state,
                 dbs: changeStateWithDbIdx(state.dbs,action.connectionName, action.dbIdx),

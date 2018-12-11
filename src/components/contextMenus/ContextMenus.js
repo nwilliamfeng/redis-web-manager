@@ -24,7 +24,7 @@ const DbMenu = (props) => {
         {trigger && trigger.isRefreshEnable === false &&
             <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'加载键'}</MenuItem>}
         {trigger && trigger.isRefreshEnable === true
-            && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.REFRESH_KEYS }}>{'刷新'}</MenuItem>}
+            && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'刷新'}</MenuItem>}
     </ContextMenu>
 }
 

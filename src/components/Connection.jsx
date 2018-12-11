@@ -69,7 +69,7 @@ class Connection extends Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
 
         if(this.props.selectedConnectionId===this.props.item.id){
-            if(!isEqual( this.props.dbs,nextProps.dbs)){ //检查dbs的状态是否变化，比如加载键
+            if(!isEqual( this.props.dbs,nextProps.dbs)){ //检查dbs的状态是否变化，比如刷新键
                 return true;
             }
         }

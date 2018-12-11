@@ -14,13 +14,14 @@ export const KeyMenuTrigger = props => {
         const { dispatch, connection,dbIdx,keyName } = props;
         switch (data.action) {
             case commandConstants.OPEN_KEY:
-            alert('open');
+            alert(`open:${connection},${dbIdx},${keyName}`);
                // dispatch(dbActions.getDbList(connection.name));
                 break;
             case commandConstants.DELETE_KEY:
-                alert('delete');
+            alert(`open:${connection},${dbIdx},${keyName}`);
                 // dispatch(dbActions.getDbList(connection.name));
                 break;
+            
             default:
                 break;
         }

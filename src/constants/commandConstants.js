@@ -25,13 +25,16 @@ export const commandConstants={
      */
     CONNECT_CONNECTION:'CONNECT_CONNECTION',
 
-    /**
-     * 刷新连接
-     */
-    REFRESH_CONNECTION:'REFRESH_CONNECTION',
+     
 
+    /**
+     * 加载键
+     */
     LOAD_KEYS:'LOAD_KEYS',
 
+    /**
+     * 刷新键
+     */
     REFRESH_KEYS:'REFRESH_KEYS',
 
     OPEN_KEY:'OPEN_KEY',
