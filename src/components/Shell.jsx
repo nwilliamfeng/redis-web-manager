@@ -9,7 +9,7 @@ import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
 
 
-import { ReplyList } from './ReplyList'
+import { ReplyList } from './replys/ReplyList'
 
 const ShellDiv = styled.div`
     display:flex;
@@ -71,7 +71,7 @@ const CommentOutContainer = styled.div`
     flex-direction:column;
     background: white;
     height:100vh;
-    width:50%;
+    width:30%;
 `
 const CommentContainer = withScroll(props => <div style={{height:'100%',}} {...props} />)
 
