@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { ColumnFlexDiv, ClickImg, Img } from './parts'
 
 import { isEqual } from 'lodash'
-import { Reply, Comment } from './Reply'
+import { Reply, Comment,PageNavigator } from './Reply'
 import { withScroll } from '../../controls'
 import { Pages } from '../../constants';
 
@@ -28,13 +28,7 @@ const Div = styled.div`
     flex-direction:column;
     padding:10px;
 `
-
-const ReplyCountDiv = styled.div`
-    align-self: flex-end;
-    font-size:14px;
-    background:orange;
-    padding:5px;
-`
+ 
 
 const HeaderDiv = styled(ColumnFlexDiv)`
     margin:0px 0px 20px 0px;
@@ -73,32 +67,49 @@ class ReplyList extends Component {
     constructor(props) {
         console.log('create replyList');
         super(props);
-        this.state = { data: null, };
+        this.state={pageCount:0};
     }
 
-    componentDidMount() {
-        // const { dispatch } = this.props;
-        // dispatch(commentActions.loadReplyList());
-    }
-
-
+    
     componentWillReceiveProps(nextProps, nextContext) {
 
         if (nextProps != null) {
-            this.setState({ data: nextProps.replyData })
+            const { replyPageSize, replyData } = nextProps;
+            const pageCount = this.state.pageCount === 0 ? Math.ceil(replyData.count / replyPageSize) : this.state.pageCount;
+            console.log(pageCount);
+            this.setState({  pageCount: pageCount });
         }
 
-    }
-
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-
-        return true;
     }
 
     handleBackClick = e => {
         e.stopPropagation();
         const { dispatch } = this.props;
         dispatch(commentActions.directToCommentPage(Pages.COMMENT));
+    }
+
+    loadNextPage = () => {
+        const { replySortType, replyPageSize,postId,replyId, replyPage } = this.props;
+        if (replyPage >= this.state.pageCount) {
+            alert('已经是最后一页了');
+            return;
+        }
+        this.props.dispatch(commentActions.loadReplyList(postId,replyId,replySortType, replyPage + 1, replyPageSize));
+    }
+
+    loadPreviousPage = () => {
+        const { replySortType, replyPageSize, replyPage,postId,replyId, } = this.props;
+        if (replyPage === 1) {
+            alert('已经是第一页了');
+            return;
+        }
+        this.props.dispatch(commentActions.loadReplyList(postId,replyId,replySortType, replyPage - 1, replyPageSize));
+    }
+
+    sortComments = () => {
+        const { replySortType, replyPageSize, replyPage,postId,replyId } = this.props;
+        const nwSortType = replySortType === -1 ? 1 : -1;
+        this.props.dispatch(commentActions.loadReplyList(postId,replyId,nwSortType, replyPage, replyPageSize));
     }
 
     renderReplys = ({ re }) => {
@@ -115,12 +126,12 @@ class ReplyList extends Component {
 
             <ListHeaderDiv>
                 {'全部回复'}
-                <div style={{ color: '#4169E1' }}>{'智能排序'}</div>
+                <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{this.props.replySortType === -1 ? '智能排序' : '时间排序'}</div>
             </ListHeaderDiv>
             <ReplyListContainer>
                 {child_replys && child_replys.map(x => <Reply key={x.reply_id} {...x} />)}
             </ReplyListContainer>
-
+            <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage}/>
         </React.Fragment>
     }
 
@@ -128,14 +139,14 @@ class ReplyList extends Component {
 
     render() {
         console.log('render reply list');
-        const { data } = this.state;
-        if (data == null) {
+        const { replyData } = this.props;
+        if (replyData == null) {
             return <InfoDiv>
-                {'没有回复数据'}
+                {'正在加载数据...'}
                 <div style={{color:'blue'}} onClick={this.directToCommentPage}>{'点击返回'}</div>
             </InfoDiv>
         }
-        const { rc, me, re } = data;
+        const { rc, me, re } = replyData;
         return <Div>
             {rc === 0 && <InfoDiv> {`加载回复消息失败：${me}`} </InfoDiv>}
             {rc === 1 && this.renderReplys({ re })}
@@ -144,8 +155,8 @@ class ReplyList extends Component {
 }
 
 function mapStateToProps(state) {
-    const { replyData } = state.comment;
-    return { replyData };
+    const { replyData , replyPage, replyPageSize, replySortType ,postId,replyId} = state.comment;
+    return { replyData, replyPage, replyPageSize, replySortType,postId,replyId  };
 }
 
 

@@ -7,6 +7,13 @@ const defaultState = {
     commentSortType:-1,
     commentPage:1,
     commentPageSize:10,
+    replySortType:-1,
+    replyPage:1,
+    replyPageSize:3,
+
+    postId:null,
+    replyId:null,
+  
 }
 
 export const commentReducer = (state = defaultState, action) => {
@@ -16,14 +23,21 @@ export const commentReducer = (state = defaultState, action) => {
                 ...state,
 
                 replyData: action.replyData,
+                replySortType:action.sortType,
+               
+                replyPage:action.page,
+                replyPageSize:action.pageSize,
+                postId:action.postId,
+                replyId:action.replyId,
             }
         case commentConstants.LOAD_COMMENTS:
             return {
                 ...state,
-                sortType:action.sortType,
+                commentSortType:action.sortType,
                 commentData: action.commentData,
                 commentPage:action.page,
                 commentPageSize:action.pageSize,
+
             }
 
         case commentConstants.DIRECT_PAGE:

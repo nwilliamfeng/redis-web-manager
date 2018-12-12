@@ -11,12 +11,12 @@ export const commentActions={
 }
 
 
-function loadReplyList(postid,replyid){
+function loadReplyList(postId,replyId,sortType=-1,page=1,pageSize=20){
     return async dispatch=>{
         dispatch({type:commentConstants.DIRECT_PAGE,page:Pages.REPLY});
-        const replyData =await commentApi.getReplys(postid,replyid);
+        const replyData =await commentApi.getReplys(postId,replyId,sortType,page,pageSize);
         
-        dispatch({type:commentConstants.LOAD_REPLYS,replyData});
+        dispatch({type:commentConstants.LOAD_REPLYS,replyData,postId,replyId,});
     }
 }
 

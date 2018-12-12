@@ -3,15 +3,14 @@ import React, { Component } from 'react'
 import { commentActions } from '../../actions'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { ColumnFlexDiv, ClickImg, Img } from './parts'
+import { ColumnFlexDiv } from './parts'
 
 import { isEqual } from 'lodash'
-import { Reply } from './Reply'
+import { Reply,PageNavigator } from './Reply'
 import { withScroll } from '../../controls'
 import { Pages } from '../../constants';
 
-const backIconSrc = require('../../assets/imgs/reply/back.png')
-const logoIconSrc = require('../../assets/imgs/reply/logo.jpg')
+
 
 const InfoDiv = styled.div`
     display:flex;
@@ -68,103 +67,95 @@ class CommentList extends Component {
     constructor(props) {
         console.log('create commentList');
         super(props);
-        this.state={comments:[],pageCount:0};
+        this.state = { comments: [], pageCount: 0 };
     }
 
     componentDidMount() {
-        const { dispatch ,sortType,commentPage,commentPageSize} = this.props;
-        dispatch(commentActions.loadCommentList(sortType,commentPage,commentPageSize));
+        const { dispatch, commentSortType, commentPage, commentPageSize } = this.props;
+        dispatch(commentActions.loadCommentList(commentSortType, commentPage, commentPageSize));
     }
 
 
     componentWillReceiveProps(nextProps, nextContext) {
 
         if (nextProps != null) {
-            const {commentPageSize,commentData}=nextProps;
-            const pageCount=this.state.pageCount===0?Math.ceil (commentData.count /commentPageSize) :this.state.pageCount;
-            
-            this.setState({ comments: nextProps.commentData.re,pageCount:pageCount });
+            const { commentPageSize, commentData } = nextProps;
+            const pageCount = this.state.pageCount === 0 ? Math.ceil(commentData.count / commentPageSize) : this.state.pageCount;
+
+            this.setState({ comments: nextProps.commentData.re, pageCount: pageCount });
         }
 
     }
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    sortComments = () => {
+        const { commentSortType, commentPageSize, commentPage } = this.props;
+        const nwSortType = commentSortType === -1 ? 1 : -1;
+        this.props.dispatch(commentActions.loadCommentList(nwSortType, commentPage, commentPageSize));
+    }
 
-        return true;
+    loadNextPage = () => {
+        const { commentSortType, commentPageSize, commentPage } = this.props;
+        if (commentPage >= this.state.pageCount) {
+            alert('已经是最后一页了');
+            return;
+        }
+        this.props.dispatch(commentActions.loadCommentList(commentSortType, commentPage + 1, commentPageSize));
+    }
+
+    loadPreviousPage = () => {
+        const { commentSortType, commentPageSize, commentPage } = this.props;
+        if (commentPage === 1) {
+            alert('已经是第一页了');
+            return;
+        }
+        this.props.dispatch(commentActions.loadCommentList(commentSortType, commentPage - 1, commentPageSize));
     }
 
 
-    sortComments=()=>{
-        const {sortType,commentPageSize,commentPage} =this.props;
-        const nwSortType=sortType===-1?1:-1; 
-        this.props.dispatch(commentActions.loadCommentList(nwSortType,commentPage,commentPageSize));
-    }
-
-    loadNextPage=()=>{
-        const {sortType,commentPageSize,commentPage} =this.props;
-         if(commentPage>=this.state.pageCount){
-             alert('已经是最后一页了');
-             return;
-         }
-        this.props.dispatch(commentActions.loadCommentList(sortType,commentPage+1,commentPageSize));
-    }
-
-    loadPreviousPage=()=>{
-        const {sortType,commentPageSize,commentPage} =this.props;
-         if(commentPage==1){
-             alert('已经是第一页了');
-             return;
-         }
-        this.props.dispatch(commentActions.loadCommentList(sortType,commentPage-1,commentPageSize));
-    }
-
-     
 
     renderComments = ({ count, comments }) => {
-        const {dispatch,sortType}=this.props;
-        
+        const { dispatch, commentSortType,replyPageSize } = this.props;
+
         return <React.Fragment>
 
 
             <ListHeaderDiv>
-                <div style={{ fontWeight:'bold' }}> {`评论${count}`}</div>
-                <div onClick={this.sortComments} style={{ color: '#4169E1' ,cursor:'pointer'}}>{sortType===-1?'智能排序':'时间排序'}</div>
+                <div style={{ fontWeight: 'bold' }}> {`评论${count}`}</div>
+                <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{commentSortType === -1 ? '智能排序' : '时间排序'}</div>
             </ListHeaderDiv>
             <ReplyListContainer>
-                {comments.map(x => <Reply key={x.reply_id} {...x}  dispatch={dispatch}/>)}
+                {comments.map(x => <Reply key={x.reply_id} {...x} dispatch={dispatch} replyPageSize={replyPageSize}/>)}
             </ReplyListContainer>
-            <ColumnFlexDiv style={{justifyContent:'center',width:'100%',alignItems:'center',padding:10,background:'#F5F5F5'}}>
-            <div onClick={this.loadPreviousPage} style={{ color: '#4169E1' ,cursor:'pointer'}}>{'上一页'}</div>
-            <div onClick={this.loadNextPage} style={{ marginLeft:10, color: '#4169E1' ,cursor:'pointer'}}>{'下一页'}</div>
-            </ColumnFlexDiv>
-            
+           
+            <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage}/>
+
 
         </React.Fragment>
     }
 
-    directToReplyPage = ({}) => {
+    directToReplyPage = ( ) => {
         const { dispatch } = this.props;
         dispatch(commentActions.directToCommentPage(Pages.REPLY));
     }
 
 
-    
+
 
 
     render() {
         console.log('render comment list');
-      
 
-        const {page, commentData } = this.props;
-        if(page===Pages.REPLY){
-            return <React.Fragment/>
+
+        const { page, commentData } = this.props;
+        if (page === Pages.REPLY) {
+            return <React.Fragment />
         }
         if (commentData == null) {
-            return <InfoDiv> {'没有评论数据'} </InfoDiv>
+            return <InfoDiv> {'正在加载数据...'} </InfoDiv>
         }
         const { rc, count, me } = commentData;
-        const {comments} =this.state;
-     
+        const { comments } = this.state;
+
         return <Div>
             {rc === 0 && <InfoDiv> {`加载评论消息失败：${me}`} </InfoDiv>}
             {rc === 1 && this.renderComments({ count, comments })}
@@ -173,8 +164,8 @@ class CommentList extends Component {
 }
 
 function mapStateToProps(state) {
-    const { commentData ,page,commentPage,commentPageSize,sortType} = state.comment;
-    return { commentData,page ,commentPage,commentPageSize,sortType};
+    const { commentData, page, commentPage, commentPageSize,replyPageSize, commentSortType } = state.comment;
+    return { commentData, page, commentPage, commentPageSize,replyPageSize, commentSortType };
 }
 
 

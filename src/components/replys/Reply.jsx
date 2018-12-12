@@ -99,7 +99,7 @@ const ChildReplys = ({ items }) => {
     </ChildReplyListDiv>
 }
 
- 
+
 
 const ShowMoreDiv = styled(ColumnFlexDiv)`
     justify-self: flex-start;
@@ -109,9 +109,9 @@ const ShowMoreDiv = styled(ColumnFlexDiv)`
 `
 
 export const Reply = props => {
-    const {user_id, reply_id, reply_like_count, reply_text, reply_user, reply_time, reply_picture, child_replys, reply_count, showMoreHandle, source_reply, dispatch } = props;
+    const { user_id, reply_id, reply_like_count, reply_text, reply_user, reply_time, reply_picture, child_replys, reply_count, source_reply, dispatch,replyPageSize } = props;
     const handleClick = () => {
-        dispatch(commentActions.loadReplyList('5127', reply_id));
+        dispatch(commentActions.loadReplyList('5127', reply_id,-1,1,replyPageSize));
     }
     return <ReplyDiv>
         <UserAvataImg alt='' src={`https://avator.eastmoney.com/qface/${user_id}/120`} />
@@ -121,14 +121,14 @@ export const Reply = props => {
                     <ReplyUser value={reply_user} />
                 </UserInfoDiv>
                 <LikeDiv>
-                    <ClickImg src={likeImgSrc} onClick={handleClick} />
+                    <ClickImg src={likeImgSrc}  />
                     {reply_like_count}
                 </LikeDiv>
             </ColumnFlexDiv>
             <ContentDiv>
                 {source_reply && <span>{`回复${source_reply[0].source_reply_user_nickname}：`}</span>}{reply_text}
             </ContentDiv>
-            <img alt='' src={reply_picture} style={{ maxWidth: '100%',maxHeight:'400px' }} />
+            <img alt='' src={reply_picture} style={{ maxWidth: '100%', maxHeight: '400px' }} />
             <FooterDiv>
                 {reply_time}
                 <ReplyButton>{'回复'}</ReplyButton>
@@ -145,8 +145,8 @@ export const Reply = props => {
 }
 
 export const Comment = props => {
-    const {user_id, reply_id, reply_like_count, reply_text, reply_user, reply_time, reply_picture,  reply_count,   dispatch } = props;
-     
+    const { user_id,  reply_like_count, reply_text, reply_user, reply_time, reply_picture } = props;
+
     return <ReplyDiv>
         <UserAvataImg alt='' src={`https://avator.eastmoney.com/qface/${user_id}/120`} />
         <ContainerDiv >
@@ -155,24 +155,29 @@ export const Comment = props => {
                     <ReplyUser value={reply_user} />
                 </UserInfoDiv>
                 <LikeDiv>
-                    <ClickImg src={likeImgSrc}  />
+                    <ClickImg src={likeImgSrc} />
                     {reply_like_count}
                 </LikeDiv>
             </ColumnFlexDiv>
             <ContentDiv>
-               {reply_text}
+                {reply_text}
             </ContentDiv>
             <img alt='' src={reply_picture} style={{ maxWidth: '100%' }} />
             <FooterDiv>
                 {reply_time}
                 <ReplyButton>{'回复'}</ReplyButton>
-                
+
             </FooterDiv>
-            
+
 
         </ContainerDiv>
 
     </ReplyDiv>
 }
 
- 
+export const PageNavigator = ({onPreviousClick,onNextClick}) => {
+    return <ColumnFlexDiv style={{ justifyContent: 'center', width: '100%', alignItems: 'center', padding: 10, background: '#F5F5F5' }}>
+        <div onClick={onPreviousClick} style={{ color: '#4169E1', cursor: 'pointer' }}>{'上一页'}</div>
+        <div onClick={onNextClick} style={{ marginLeft: 10, color: '#4169E1', cursor: 'pointer' }}>{'下一页'}</div>
+    </ColumnFlexDiv>
+}

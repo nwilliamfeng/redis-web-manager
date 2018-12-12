@@ -1,10 +1,8 @@
 import { ApiHelper } from './apiHelper'
-import {connectionStates,dbStates} from '../constants'
+
 
 class CommentApi {
 
-
-   
     // async getCommentList() {
     //     const json = await ApiHelper.get('/config/getlist');
     //     const { Data, Message, Code } = json;
@@ -30,13 +28,12 @@ class CommentApi {
     async getComments(sortType=-1,page=1,pageSize=20) {
        
         const url =`/reply/api/Reply/ArticleNewReplyList?deviceid=a21323asdf21a32f&version=300&product=guba&plat=web&postid=5127&p=${page}&ps=${pageSize}&sortType=${sortType}`
-        console.log(url);
         return await ApiHelper.get(url);
     }
 
-    async getReplys(postid,replyid) {
+    async getReplys(postid,replyid,sortType=-1,page=1,pageSize=20) {
       
-        const url =`/reply/api/Reply/ArticleReplyDetail?deviceid=a21323asdf21a32f&version=300&product=guba&plat=web&postid=${postid}&replyid=${replyid}`;
+        const url =`/reply/api/Reply/ArticleReplyDetail?deviceid=a21323asdf21a32f&version=300&product=guba&plat=web&postid=${postid}&replyid=${replyid}&p=${page}&ps=${pageSize}&sortType=${sortType}`;
         return await ApiHelper.get(url);
     }
 
