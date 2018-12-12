@@ -9,7 +9,7 @@ import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
 
 
-import { ReplyList } from './replys/ReplyList'
+import { Home } from './replys/Home'
 
 const ShellDiv = styled.div`
     display:flex;
@@ -100,7 +100,7 @@ class Shell extends Component {
             </Container> */}
             <CommentOutContainer>
                 <CommentContainer>
-                    <ReplyList />
+                    <Home />
                 </CommentContainer>
             </CommentOutContainer>
 

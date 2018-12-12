@@ -3,10 +3,12 @@ import React, { Component } from 'react'
 import { commentActions } from '../../actions'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { ColumnFlexDiv, ClickImg ,Img} from './parts'
+import { ColumnFlexDiv, ClickImg, Img } from './parts'
 
 import { isEqual } from 'lodash'
-import { Reply } from './Reply'
+import { Reply, Comment } from './Reply'
+import { withScroll } from '../../controls'
+import { Pages } from '../../constants';
 
 const backIconSrc = require('../../assets/imgs/reply/back.png')
 const logoIconSrc = require('../../assets/imgs/reply/logo.jpg')
@@ -36,17 +38,18 @@ const ReplyCountDiv = styled.div`
 
 const HeaderDiv = styled(ColumnFlexDiv)`
     margin:0px 0px 20px 0px;
-
+   
 `
 
 const ReplyListDiv = styled.div`
     width:100%;
-    background:	#F5F5F5;
-    padding:10px 0px;
-
+    /* background:	#F5F5F5; */
+    
 `
 
-const HeaderTitleDiv=styled.div`
+const ReplyListContainer = withScroll(props => <ReplyListDiv {...props} />)
+
+const HeaderTitleDiv = styled.div`
     font-weight:bold;
     font-size:16px;
     text-align:center;
@@ -56,18 +59,26 @@ const HeaderTitleDiv=styled.div`
    
 `
 
+const ListHeaderDiv = styled.div`
+    display:flex;
+    justify-content: space-between;
+    color:gray;
+    margin-top:10px;
+    margin-bottom:10px;
+`
+
 
 class ReplyList extends Component {
 
     constructor(props) {
-
+        console.log('create replyList');
         super(props);
         this.state = { data: null, };
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch(commentActions.loadReplyList());
+        // const { dispatch } = this.props;
+        // dispatch(commentActions.loadReplyList());
     }
 
 
@@ -86,23 +97,29 @@ class ReplyList extends Component {
 
     handleBackClick = e => {
         e.stopPropagation();
-        alert('back');
+        const { dispatch } = this.props;
+        dispatch(commentActions.directToCommentPage(Pages.COMMENT));
     }
 
-    renderReplys = ({ count, re }) => {
-
+    renderReplys = ({ re }) => {
+        const { child_replys } = re[0];
         return <React.Fragment>
-            {/* <ReplyCountDiv>
-                {`共 ${count} 条回复`}
-            </ReplyCountDiv> */}
             <HeaderDiv>
                 <ClickImg alt='' title='返回' src={backIconSrc} height={32} width={32} onClick={this.handleBackClick} />
-                <Img src={logoIconSrc}   height={36} width={42}/>
+                <Img src={logoIconSrc} height={36} width={42} />
                 <HeaderTitleDiv>{'评论详情'}</HeaderTitleDiv>
             </HeaderDiv>
-            <ReplyListDiv>
-                {re.map(x => <Reply key={x.reply_id} {...x} />)}
-            </ReplyListDiv>
+            <div style={{ marginBottom: 20 }}>
+                <Comment {...re[0]} />
+            </div>
+
+            <ListHeaderDiv>
+                {'全部回复'}
+                <div style={{ color: '#4169E1' }}>{'智能排序'}</div>
+            </ListHeaderDiv>
+            <ReplyListContainer>
+                {child_replys && child_replys.map(x => <Reply key={x.reply_id} {...x} />)}
+            </ReplyListContainer>
 
         </React.Fragment>
     }
@@ -113,13 +130,15 @@ class ReplyList extends Component {
         console.log('render reply list');
         const { data } = this.state;
         if (data == null) {
-            return <InfoDiv> {'没有回复数据'} </InfoDiv>
+            return <InfoDiv>
+                {'没有回复数据'}
+                <div style={{color:'blue'}} onClick={this.directToCommentPage}>{'点击返回'}</div>
+            </InfoDiv>
         }
-        const { rc, count, me, re } = data;
-        console.log(re);
+        const { rc, me, re } = data;
         return <Div>
             {rc === 0 && <InfoDiv> {`加载回复消息失败：${me}`} </InfoDiv>}
-            {rc === 1 && this.renderReplys({ count, re })}
+            {rc === 1 && this.renderReplys({ re })}
         </Div>
     }
 }

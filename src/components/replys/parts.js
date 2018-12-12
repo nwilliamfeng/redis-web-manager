@@ -29,3 +29,16 @@ export const ClickImg = styled(Img)`
         border-radius:24px;
     }
 `
+
+export const ButtonDiv = styled.div`
+    opacity:0.8;
+    color:#4169E1;
+    padding:1px 3px;
+    &:hover{
+        opacity:1;
+    }
+    cursor: pointer;
+    &:active{
+        background:	#F5F5F5;
+    }
+`

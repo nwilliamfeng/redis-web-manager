@@ -10,4 +10,4 @@ export * from './dbStates'
 
 
 
-export * from './commentConstants'
+export {commentConstants,Pages} from './commentConstants'
