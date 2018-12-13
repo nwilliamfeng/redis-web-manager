@@ -11,4 +11,5 @@ export const commentConstants={
 export const Pages={
     COMMENT:'COMMENT',
     REPLY:'REPLY',
+    HOME:'HOME',
 }

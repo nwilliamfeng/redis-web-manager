@@ -75,7 +75,7 @@ class ReplyList extends Component {
 
         if (nextProps != null) {
             const { replyPageSize, replyData } = nextProps;
-            const pageCount = this.state.pageCount === 0 ? Math.ceil(replyData.re[0].reply_count / replyPageSize) : this.state.pageCount;
+            const pageCount = this.state.pageCount === 0 ? Math.ceil(replyData.re.reply_count / replyPageSize) : this.state.pageCount;
             this.setState({  pageCount: pageCount });
         }
 
@@ -112,7 +112,7 @@ class ReplyList extends Component {
     }
 
     renderReplys = ({ re }) => {
-        const { child_replys,reply_count } = re[0];
+        const { child_replys,reply_count } = re;
         return <React.Fragment>
             <HeaderDiv>
                 <ClickImg alt='' title='返回' src={backIconSrc} height={32} width={32} onClick={this.handleBackClick} />
@@ -120,7 +120,7 @@ class ReplyList extends Component {
                 <HeaderTitleDiv>{'评论详情'}</HeaderTitleDiv>
             </HeaderDiv>
             <div style={{ marginBottom: 20 }}>
-                <Comment {...re[0]} />
+                <Comment {...re} />
             </div>
 
             <ListHeaderDiv>
