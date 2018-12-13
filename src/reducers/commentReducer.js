@@ -37,7 +37,7 @@ export const commentReducer = (state = defaultState, action) => {
                 commentData: action.commentData,
                 commentPage:action.page,
                 commentPageSize:action.pageSize,
-
+                postId:action.postId,
             }
 
         case commentConstants.DIRECT_PAGE:

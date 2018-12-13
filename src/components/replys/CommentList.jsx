@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { commentActions } from '../../actions'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { ColumnFlexDiv } from './parts'
+import { ColumnFlexDiv,PostIdInput } from './parts'
 
 import { isEqual } from 'lodash'
 import { Reply,PageNavigator } from './Reply'
@@ -70,10 +70,10 @@ class CommentList extends Component {
         this.state = { comments: [], pageCount: 0 };
     }
 
-    componentDidMount() {
-        const { dispatch, commentSortType, commentPage, commentPageSize } = this.props;
-        dispatch(commentActions.loadCommentList(commentSortType, commentPage, commentPageSize));
-    }
+    // componentDidMount() {
+    //     const { dispatch, commentSortType, commentPage, commentPageSize } = this.props;
+    //     dispatch(commentActions.loadCommentList(commentSortType, commentPage, commentPageSize));
+    // }
 
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -88,43 +88,51 @@ class CommentList extends Component {
     }
 
     sortComments = () => {
-        const { commentSortType, commentPageSize, commentPage } = this.props;
+        const { commentSortType, commentPageSize, commentPage,postId } = this.props;
         const nwSortType = commentSortType === -1 ? 1 : -1;
-        this.props.dispatch(commentActions.loadCommentList(nwSortType, commentPage, commentPageSize));
+        this.props.dispatch(commentActions.loadCommentList(postId,nwSortType, commentPage, commentPageSize));
     }
 
     loadNextPage = () => {
-        const { commentSortType, commentPageSize, commentPage } = this.props;
+        const { commentSortType, commentPageSize, commentPage,postId } = this.props;
         if (commentPage >= this.state.pageCount) {
             alert('已经是最后一页了');
             return;
         }
-        this.props.dispatch(commentActions.loadCommentList(commentSortType, commentPage + 1, commentPageSize));
+        this.props.dispatch(commentActions.loadCommentList(postId,commentSortType, commentPage + 1, commentPageSize));
     }
 
     loadPreviousPage = () => {
-        const { commentSortType, commentPageSize, commentPage } = this.props;
+        const { commentSortType, commentPageSize, commentPage,postId } = this.props;
         if (commentPage === 1) {
             alert('已经是第一页了');
             return;
         }
-        this.props.dispatch(commentActions.loadCommentList(commentSortType, commentPage - 1, commentPageSize));
+        this.props.dispatch(commentActions.loadCommentList(postId,commentSortType, commentPage - 1, commentPageSize));
     }
 
 
+    inputKeyPress=e=>{
+        if(e.nativeEvent.keyCode === 13){ //e.nativeEvent获取原生的事件对像
+            const postId=this.postIdInput.value ;
+            const { commentSortType, commentPageSize, commentPage,dispatch } = this.props;
+            dispatch(commentActions.loadCommentList(postId, commentSortType, commentPage, commentPageSize));
+       }
+    }
 
     renderComments = ({ count, comments }) => {
-        const { dispatch, commentSortType,replyPageSize } = this.props;
+        const { dispatch, commentSortType,replyPageSize,postId } = this.props;
 
         return <React.Fragment>
 
 
             <ListHeaderDiv>
                 <div style={{ fontWeight: 'bold' }}> {`评论${count}`}</div>
+                <PostIdInput   class="form-control btn-group-xs" ref={el=>this.postIdInput=el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></PostIdInput>
                 <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{commentSortType === -1 ? '智能排序' : '时间排序'}</div>
             </ListHeaderDiv>
             <ReplyListContainer>
-                {comments.map(x => <Reply key={x.reply_id} {...x} dispatch={dispatch} replyPageSize={replyPageSize}/>)}
+                {comments.map(x => <Reply key={x.reply_id} {...x} dispatch={dispatch} replyPageSize={replyPageSize} postId={postId}/>)}
             </ReplyListContainer>
            
             <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage}/>
@@ -142,6 +150,26 @@ class CommentList extends Component {
 
 
 
+    // render() {
+    //     console.log('render comment list');
+
+
+    //     const { page, commentData } = this.props;
+    //     if (page === Pages.REPLY) {
+    //         return <React.Fragment />
+    //     }
+    //     if (commentData == null) {
+    //         return <InfoDiv> {'正在加载数据...'} </InfoDiv>
+    //     }
+    //     const { rc, count, me } = commentData;
+    //     const { comments } = this.state;
+
+    //     return <Div>
+    //         {rc === 0 && <InfoDiv> {`加载评论消息失败：${me}`} </InfoDiv>}
+    //         {rc === 1 && this.renderComments({ count, comments })}
+    //     </Div>
+    // }
+
     render() {
         console.log('render comment list');
 
@@ -151,7 +179,10 @@ class CommentList extends Component {
             return <React.Fragment />
         }
         if (commentData == null) {
-            return <InfoDiv> {'正在加载数据...'} </InfoDiv>
+            return <ColumnFlexDiv style={{justifyContent:'center',alignItems:'center',height:'100%',padding:50}} >
+            <input  class="form-control btn-group-xs" ref={el=>this.postIdInput=el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></input>
+            </ColumnFlexDiv>
+            
         }
         const { rc, count, me } = commentData;
         const { comments } = this.state;
@@ -164,8 +195,8 @@ class CommentList extends Component {
 }
 
 function mapStateToProps(state) {
-    const { commentData, page, commentPage, commentPageSize,replyPageSize, commentSortType } = state.comment;
-    return { commentData, page, commentPage, commentPageSize,replyPageSize, commentSortType };
+    const { commentData, page, commentPage, commentPageSize,replyPageSize, commentSortType,postId } = state.comment;
+    return { commentData, page, commentPage, commentPageSize,replyPageSize, commentSortType,postId };
 }
 
 

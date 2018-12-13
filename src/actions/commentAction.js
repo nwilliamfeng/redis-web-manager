@@ -16,15 +16,15 @@ function loadReplyList(postId,replyId,sortType=-1,page=1,pageSize=20){
         dispatch({type:commentConstants.DIRECT_PAGE,page:Pages.REPLY});
         const replyData =await commentApi.getReplys(postId,replyId,sortType,page,pageSize);
         
-        dispatch({type:commentConstants.LOAD_REPLYS,replyData,postId,replyId,});
+        dispatch({type:commentConstants.LOAD_REPLYS,replyData,postId,replyId,page,pageSize,sortType});
     }
 }
 
-function loadCommentList(sortType=-1,page=1,pageSize=20){
+function loadCommentList(postId, sortType=-1,page=1,pageSize=20){
     return async dispatch=>{
-        const commentData =await commentApi.getComments(sortType,page,pageSize);
+        const commentData =await commentApi.getComments(postId,sortType,page,pageSize);
         
-        dispatch({type:commentConstants.LOAD_COMMENTS,commentData,sortType,page,pageSize});
+        dispatch({type:commentConstants.LOAD_COMMENTS,commentData,sortType,page,pageSize,postId});
     }
 }
 
