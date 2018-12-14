@@ -80,7 +80,7 @@ class CommentList extends Component {
 
         if (nextProps != null) {
             const { commentPageSize, commentData } = nextProps;
-            const pageCount = this.state.pageCount === 0 ? Math.ceil(commentData.count / commentPageSize) : this.state.pageCount;
+            const pageCount = Math.ceil(commentData.count / commentPageSize);
 
             this.setState({ comments: nextProps.commentData.re, pageCount: pageCount });
         }
@@ -128,7 +128,7 @@ class CommentList extends Component {
 
             <ListHeaderDiv>
                 <div style={{ fontWeight: 'bold' }}> {`评论${count}`}</div>
-                <PostIdInput className="form-control btn-group-xs" ref={el => this.postIdInput = el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></PostIdInput>
+                <PostIdInput   ref={el => this.postIdInput = el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></PostIdInput>
                 <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{commentSortType === -1 ? '智能排序' : '时间排序'}</div>
             </ListHeaderDiv>
             <ReplyListContainer>

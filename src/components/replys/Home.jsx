@@ -20,7 +20,7 @@ class Home extends Component {
         const { cookies } = this.props;
     //    cookies.set('name', 'name', { path: 'abc' });
     //https://github.com/reactivestack/cookies/blob/cb26b0caa101dc4760812ff61697deaf1c700ada/packages/universal-cookie/README.md
-           console.log( cookies.get('ct')  )
+          console.log(document.cookie  )
      
         dispatch(commentActions.directToCommentPage(Pages.COMMENT));
     }

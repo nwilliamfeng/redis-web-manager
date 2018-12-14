@@ -49,3 +49,14 @@ export const PostIdInput=styled.input`
     padding:2px 6px;
      
 `
+
+export const TextSpan=styled.span`
+    text-align:${props=>props.position?props.position:'center' };
+    color:${props=>props.color?props.color:'black'};
+    font-size:${props=>props.size?props.size:'12'};
+`
+
+export const Linker=styled.a`
+    text-decoration:none; 
+    font-size:${props=>props.size?props.size:'12'};
+`
