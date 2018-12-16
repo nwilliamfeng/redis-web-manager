@@ -50,13 +50,16 @@ export const PostIdInput=styled.input`
      
 `
 
-export const TextSpan=styled.span`
+export const Span=styled.span`
     text-align:${props=>props.position?props.position:'center' };
+    margin:${props=>props.margin?props.margin:'0px'};
     color:${props=>props.color?props.color:'black'};
-    font-size:${props=>props.size?props.size:'12'};
+    font-size:${props=>props.fontSize?props.fontSize:'12px'};
+    padding:${props=>props.padding?props.padding:'0px'};
+    background:${props=>props.background?props.background:'transparent'};
 `
 
 export const Linker=styled.a`
     text-decoration:none; 
-    font-size:${props=>props.size?props.size:'12'};
+    font-size:${props=>props.fontSize?props.fontSize:'12'};
 `

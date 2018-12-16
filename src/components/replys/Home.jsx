@@ -4,12 +4,8 @@ import { commentActions } from '../../actions'
 import { connect } from 'react-redux';
 import { Pages } from '../../constants'
 import styled from 'styled-components'
-
-
 import { ReplyList } from './ReplyList'
-
 import { CommentList } from './CommentList'
-
 import { withCookies, Cookies } from 'react-cookie';
 
 class Home extends Component {

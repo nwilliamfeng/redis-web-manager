@@ -4,9 +4,10 @@ import { commentActions } from '../../actions'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Colors } from './Colors'
-import { ColumnFlexDiv, ClickImg, ButtonDiv } from './parts'
-import { User } from './user'
-import {take} from 'lodash'
+import { ColumnFlexDiv, ClickImg, ButtonDiv,Span } from './parts'
+import { User, withStickTag, withAuthorTag, withUserInfo, withColonTag } from './user'
+import { take } from 'lodash'
+import { compose } from 'recompose';
 
 const likeImgSrc = require('../../assets/imgs/reply/like.png')
 
@@ -74,24 +75,20 @@ const FooterDiv = styled(ColumnFlexDiv)`
     align-items:center;
 `
 
-const ReplyUser = ({ value, isAuthor, isTop }) => {
-    if (value == null) {
-        return <React.Fragment />
-    }
-    const { user_nickname, user_influ_level, user_age } = value;
-    return <div>
-        <User nickName={user_nickname} />{isAuthor === true && <span style={{ background: '#4169E1', padding: '1px 3px', color: 'white', fontSize: 10, marginLeft: 5 }}>{'作者'}</span>}
-        {isTop === true && <span style={{ background: 'gray', padding: '1px 3px', color: 'white', fontSize: 10, marginLeft: 5 }}>{'置顶'}</span>}
+const CommentUser = compose(withUserInfo, withStickTag, withAuthorTag)(props => <User {...props} />)
 
-        <ColumnFlexDiv style={{ color: 'gray', fontSize: '8px' }}>
-            {`影响力: ${user_influ_level}，注册时长: ${user_age}`}
+const ReplyUser= compose(withColonTag, withAuthorTag)(props => <User {...props} />)
 
-        </ColumnFlexDiv>
-    </div>
+const renderReplyUser=({ reply_user, reply_is_author,  }) => {
+    const { user_nickname } = reply_user;
+    return <ReplyUser nickName={user_nickname} fontSize={'14px'} isAuthor={reply_is_author}/>
 }
 
-const ChildReplyDiv = styled(ColumnFlexDiv)`     
-`
+const renderCommentUser = ({ reply_user, reply_is_author, reply_is_top }) => {
+    const { user_nickname, user_influ_level, user_age, } = reply_user;
+    return <CommentUser nickName={user_nickname} influenceLevel={user_influ_level} registDuration={user_age} isAuthor={reply_is_author} isStick={reply_is_top} />
+}
+
 
 const ChildReplyListDiv = styled.div`
     padding:5px 0px 5px 10px;
@@ -115,10 +112,19 @@ export class ChildReply extends Component {
         const { needContentExpand } = this.state;
         return <div>
             {needContentExpand === true && <ExpandContentDiv>
-                <span style={{ color: Colors.LINK_COLOR }}>{reply_user.user_nickname}</span>{reply_is_author === true && <span style={{ background: '#4169E1', padding: '1px 3px', color: 'white', fontSize: 10, marginLeft: 5 }}>{'作者'}</span>}{`：  ${reply_text}`}
+                <span>
+                {renderReplyUser({reply_user,reply_is_author})}
+                {`${reply_text}`}
+                </span>
+               
+                {/* <span style={{ color: Colors.LINK_COLOR }}>{reply_user.user_nickname}</span>{reply_is_author === true && <span style={{ background: '#4169E1', padding: '1px 3px', color: 'white', fontSize: 10, marginLeft: 5 }}>{'作者'}</span>}{`：  ${reply_text}`} */}
             </ExpandContentDiv>}
             {needContentExpand === false && <ContentDiv>
-                <span style={{ color: Colors.LINK_COLOR }}>{reply_user.user_nickname}</span>{reply_is_author === true && <span style={{ background: '#4169E1', padding: '1px 3px', color: 'white', fontSize: 10, marginLeft: 5 }}>{'作者'}</span>}{`：  ${reply_text}`}
+                <Span >
+                {renderReplyUser({reply_user,reply_is_author})}
+                {`${reply_text}`}
+                </Span>
+                {/* <span style={{ color: Colors.LINK_COLOR }}>{reply_user.user_nickname}</span>{reply_is_author === true && <span style={{ background: '#4169E1', padding: '1px 3px', color: 'white', fontSize: 10, marginLeft: 5 }}>{'作者'}</span>}{`：  ${reply_text}`} */}
             </ContentDiv>}
             <ShowMoreTextDiv>
                 {showMoreContent === true && needContentExpand === false && <ButtonDiv style={{ justifySelf: 'flex-end' }} onClick={this.handleShowExpand}>{'展开'}</ButtonDiv>}
@@ -130,9 +136,9 @@ export class ChildReply extends Component {
 
 
 const ChildReplys = ({ items, sourceReplyId }) => {
-    let crs =items;
-    if(items.length>4){
-        crs=take(items,4);
+    let crs = items;
+    if (items.length > 4) {
+        crs = take(items, 4);
     }
     return <ChildReplyListDiv>
         {crs.map(x => <ChildReply key={x.reply_id} {...x} sourceReplyId={sourceReplyId} />)}
@@ -154,11 +160,6 @@ const ShowMoreTextDiv = styled(ColumnFlexDiv)`
     justify-content:flex-end;
   
 `
-
-// const ReplyContentHeader=({source_reply})=>{
-//     const {source_reply_user_nickname} =source_reply;
-//   return  <span>{`回复${source_reply[0].source_reply_user_nickname}：`}</span>}
-// }
 
 export class Reply extends Component {
 
@@ -187,7 +188,8 @@ export class Reply extends Component {
             <ContainerDiv >
                 <ColumnFlexDiv>
                     <UserInfoDiv>
-                        <ReplyUser value={reply_user} isAuthor={reply_is_author} isTop={reply_is_top} />
+
+                        {renderCommentUser({ reply_user, reply_is_author, reply_is_top })}
                     </UserInfoDiv>
                     <LikeDiv>
                         <ClickImg src={likeImgSrc} />
@@ -227,13 +229,14 @@ export class Reply extends Component {
 
 
 export const Comment = props => {
-    const { user_id, reply_is_author, reply_like_count, reply_text, reply_user, reply_time, reply_picture } = props;
+    const { user_id, reply_is_author, reply_like_count, reply_text, reply_user, reply_time, reply_picture, reply_is_top } = props;
+
     return <ReplyDiv>
         <UserAvataImg alt='' src={`https://avator.eastmoney.com/qface/${user_id}/120`} />
         <ContainerDiv >
             <ColumnFlexDiv>
                 <UserInfoDiv>
-                    <ReplyUser value={reply_user} isAuthor={reply_is_author} />
+                    {renderCommentUser({ reply_user, reply_is_author, reply_is_top })}
                 </UserInfoDiv>
                 <LikeDiv>
                     <ClickImg src={likeImgSrc} />
@@ -243,7 +246,7 @@ export const Comment = props => {
             <ContentDiv>
                 {reply_text}
             </ContentDiv>
-            <img alt='' src={reply_picture} style={{ maxWidth: '100%',maxHeight:200 }} />
+            <img alt='' src={reply_picture} style={{ maxWidth: '100%', maxHeight: 200 }} />
             <FooterDiv>
                 {reply_time}
                 <ReplyButton>{'回复'}</ReplyButton>

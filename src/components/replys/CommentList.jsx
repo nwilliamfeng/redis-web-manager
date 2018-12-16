@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
-
 import { commentActions } from '../../actions'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { ColumnFlexDiv, PostIdInput } from './parts'
-
-import { isEqual } from 'lodash'
 import { Reply, PageNavigator } from './Reply'
 import { withScroll } from '../../controls'
 import { Pages } from '../../constants';
-
 
 
 const InfoDiv = styled.div`
@@ -28,30 +24,14 @@ const Div = styled.div`
     padding:10px;
 `
 
-
-
-const HeaderDiv = styled(ColumnFlexDiv)`
-    margin:0px 0px 20px 0px;
-   
-`
-
 const ReplyListDiv = styled.div`
     width:100%;
     /* background:	#F5F5F5; */
-    
 `
+
+ 
 
 const ReplyListContainer = withScroll(props => <ReplyListDiv {...props} />)
-
-const HeaderTitleDiv = styled.div`
-    font-weight:bold;
-    font-size:16px;
-    text-align:center;
-    padding:4px 0px;
-    
-    flex:0 1 100%;
-   
-`
 
 const ListHeaderDiv = styled.div`
     display:flex;
@@ -60,7 +40,6 @@ const ListHeaderDiv = styled.div`
     margin-top:10px;
     margin-bottom:10px;
 `
-
 
 class CommentList extends Component {
 
@@ -84,7 +63,6 @@ class CommentList extends Component {
 
             this.setState({ comments: nextProps.commentData.re, pageCount: pageCount });
         }
-
     }
 
     sortComments = () => {
@@ -111,7 +89,6 @@ class CommentList extends Component {
         this.props.dispatch(commentActions.loadCommentList(postId, commentSortType, commentPage - 1, commentPageSize));
     }
 
-
     inputKeyPress = e => {
         if (e.nativeEvent.keyCode === 13) { //e.nativeEvent获取原生的事件对像
             const postId = this.postIdInput.value;
@@ -120,61 +97,28 @@ class CommentList extends Component {
         }
     }
 
-    renderComments = ({ count, comments }) => {
-        const { dispatch, commentSortType, replyPageSize, postId } = this.props;
-
-        return <React.Fragment>
-
-
-            <ListHeaderDiv>
-                <div style={{ fontWeight: 'bold' }}> {`评论${count}`}</div>
-                <PostIdInput   ref={el => this.postIdInput = el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></PostIdInput>
-                <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{commentSortType === -1 ? '智能排序' : '时间排序'}</div>
-            </ListHeaderDiv>
-            <ReplyListContainer>
-                {comments.map(x => <Reply key={x.reply_id} {...x} dispatch={dispatch} replyPageSize={replyPageSize} postId={postId} />)}
-            </ReplyListContainer>
-
-            <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage} />
-
-
-        </React.Fragment>
-    }
-
-    directToReplyPage = () => {
-        const { dispatch } = this.props;
-        dispatch(commentActions.directToCommentPage(Pages.REPLY));
-    }
-
-
-
-
-
 
     render() {
         console.log('render comment list');
-
-
-        const { page, commentData } = this.props;
+        const { page, commentData, commentSortType, replyPageSize, postId ,dispatch} = this.props;
         if (page === Pages.REPLY) {
             return <React.Fragment />
         }
-        if (commentData == null) {
-            return <ColumnFlexDiv style={{ justifyContent: 'center', alignItems: 'center', height: '100%', padding: 50 }} >
-                <div style={{wdith:'100%'}}>
-                    <div style={{fontSize:20,fontWeight:'bold'}}>{'股吧评论列表测试'}</div>
-                    <input style={{width:400,marginTop:20}} className="form-control btn-group-xs" ref={el => this.postIdInput = el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></input>
-                </div>
-
-            </ColumnFlexDiv>
-
-        }
+       
         const { rc, count, me } = commentData;
         const { comments } = this.state;
-
         return <Div>
+            <ListHeaderDiv>
+                <div style={{ fontWeight: 'bold' }}> {`评论${count}`}</div>
+                <PostIdInput ref={el => this.postIdInput = el} onKeyPress={this.inputKeyPress} placeholder="请输入贴子id"></PostIdInput>
+                <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{commentSortType === -1 ? '智能排序' : '时间排序'}</div>
+            </ListHeaderDiv>
+            {rc === 1 && <ReplyListContainer>
+                {comments.map(x => <Reply key={x.reply_id} {...x} replyPageSize={replyPageSize} postId={postId} dispatch={dispatch}/>)}
+            </ReplyListContainer>}
             {rc === 0 && <InfoDiv> {`加载评论消息失败：${me}`} </InfoDiv>}
-            {rc === 1 && this.renderComments({ count, comments })}
+            {count > 0 && <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage} />}
+
         </Div>
     }
 }

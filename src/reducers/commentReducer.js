@@ -1,7 +1,7 @@
 import { commentConstants, Pages } from '../constants';
 
 const defaultState = {
-    commentData: null,
+    commentData: { rc:1, count:0, me:'' },
     replyData: null,
     page: Pages.COMMENT,
     commentSortType:-1,
@@ -21,10 +21,8 @@ export const commentReducer = (state = defaultState, action) => {
         case commentConstants.LOAD_REPLYS:
             return {
                 ...state,
-
                 replyData: action.replyData,
-                replySortType:action.sortType,
-               
+                replySortType:action.sortType,            
                 replyPage:action.page,
                 replyPageSize:action.pageSize,
                 postId:action.postId,
@@ -41,6 +39,7 @@ export const commentReducer = (state = defaultState, action) => {
             }
 
         case commentConstants.DIRECT_PAGE:
+        console.log('change '+action.page);
             return {
                 ...state,
 
