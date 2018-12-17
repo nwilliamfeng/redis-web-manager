@@ -4,12 +4,22 @@ import {commentApi} from '../api'
 export const commentActions={
     loadReplyList,
 
-    directToCommentPage,
+    directToPage,
 
     loadCommentList,
 
+    loadPostList,
+
 }
 
+
+function loadPostList(code,sort=-1,page=1,pageSize=20){
+    return async dispatch=>{
+       
+        const articleNewListData =await commentApi.getArticleNewList(code,sort,page,pageSize);
+        dispatch({type:commentConstants.LOAD_ARTICLE_NEW_LIST,articleNewListData});
+    }
+}
 
 function loadReplyList(postId,replyId,sortType=-1,page=1,pageSize=20){
     return async dispatch=>{
@@ -28,7 +38,7 @@ function loadCommentList(postId, sortType=-1,page=1,pageSize=20){
     }
 }
 
-function directToCommentPage(page){
+function directToPage(page){
     return {type:commentConstants.DIRECT_PAGE,page};
 }
 

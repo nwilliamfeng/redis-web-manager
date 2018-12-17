@@ -84,7 +84,7 @@ class ReplyList extends Component {
     handleBackClick = e => {
         e.stopPropagation();
         const { dispatch } = this.props;
-        dispatch(commentActions.directToCommentPage(Pages.COMMENT));
+        dispatch(commentActions.directToPage(Pages.COMMENT));
     }
 
     loadNextPage = () => {
@@ -130,7 +130,7 @@ class ReplyList extends Component {
             <ReplyListContainer>
                 {child_replys && child_replys.map(x => <Reply key={x.reply_id} {...x} />)}
             </ReplyListContainer>
-            <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage}/>
+            <PageNavigator pageCount={this.state.pageCount} onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage}/>
         </React.Fragment>
     }
 

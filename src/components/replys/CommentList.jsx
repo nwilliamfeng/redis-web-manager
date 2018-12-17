@@ -4,7 +4,9 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { ColumnFlexDiv, PostIdInput } from './parts'
 import { Reply, PageNavigator } from './Reply'
+import { ReplyList } from './ReplyList'
 import { withScroll } from '../../controls'
+
 import { Pages } from '../../constants';
 
 
@@ -22,6 +24,8 @@ const Div = styled.div`
     height:100%;
     flex-direction:column;
     padding:10px;
+    width:500px;
+    max-width:500px;
 `
 
 const ReplyListDiv = styled.div`
@@ -29,7 +33,6 @@ const ReplyListDiv = styled.div`
     /* background:	#F5F5F5; */
 `
 
- 
 
 const ReplyListContainer = withScroll(props => <ReplyListDiv {...props} />)
 
@@ -101,7 +104,10 @@ class CommentList extends Component {
     render() {
         console.log('render comment list');
         const { page, commentData, commentSortType, replyPageSize, postId ,dispatch} = this.props;
-        if (page === Pages.REPLY) {
+        if(page===Pages.REPLY){
+           return  <ReplyList />
+        }
+        if (page !== Pages.COMMENT) {
             return <React.Fragment />
         }
        
@@ -114,10 +120,10 @@ class CommentList extends Component {
                 <div onClick={this.sortComments} style={{ color: '#4169E1', cursor: 'pointer' }}>{commentSortType === -1 ? '智能排序' : '时间排序'}</div>
             </ListHeaderDiv>
             {rc === 1 && <ReplyListContainer>
-                {comments.map(x => <Reply key={x.reply_id} {...x} replyPageSize={replyPageSize} postId={postId} dispatch={dispatch}/>)}
+                {comments && comments.map(x => <Reply key={x.reply_id} {...x} replyPageSize={replyPageSize} postId={postId} dispatch={dispatch}/>)}
             </ReplyListContainer>}
             {rc === 0 && <InfoDiv> {`加载评论消息失败：${me}`} </InfoDiv>}
-            {count > 0 && <PageNavigator onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage} />}
+            {count > 0 && <PageNavigator pageCount={this.state.pageCount} onPreviousClick={this.loadPreviousPage} onNextClick={this.loadNextPage} />}
 
         </Div>
     }

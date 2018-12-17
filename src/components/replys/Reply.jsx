@@ -259,8 +259,9 @@ export const Comment = props => {
     </ReplyDiv>
 }
 
-export const PageNavigator = ({ onPreviousClick, onNextClick }) => {
+export const PageNavigator = ({pageCount, onPreviousClick, onNextClick }) => {
     return <ColumnFlexDiv style={{ justifyContent: 'center', width: '100%', alignItems: 'center', padding: 10, background: '#F5F5F5' }}>
+        {`共 ${pageCount} 页`}
         <div onClick={onPreviousClick} style={{ color: '#4169E1', cursor: 'pointer' }}>{'上一页'}</div>
         <div onClick={onNextClick} style={{ marginLeft: 10, color: '#4169E1', cursor: 'pointer' }}>{'下一页'}</div>
     </ColumnFlexDiv>

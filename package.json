@@ -13,7 +13,6 @@
     "react": "^16.6.3",
     "react-autocomplete": "^1.8.1",
     "react-contextmenu": "^2.10.0",
-    "react-cookie": "^3.0.8",
     "react-dom": "^16.6.3",
     "react-flex-split-pane": "github:instea/react-flex-split-pane",
     "react-redux": "^5.1.1",

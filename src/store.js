@@ -7,7 +7,10 @@ const reducer= combineReducers({
   db:dbReducer,
   key:keyReducer,
   state:stateReducer,
+
+
   comment:commentReducer,
+
   // command:commandReducer,
 })
  

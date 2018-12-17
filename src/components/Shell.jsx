@@ -72,8 +72,7 @@ const CommentOutContainer = styled.div`
     flex-direction:column;
     background: white;
     height:100vh;
-    width:500px;
-    max-width:500px;
+    
     min-width:500px;
 `
 const CommentContainer = withScroll(props => <div style={{height:'100%',}} {...props} />)
