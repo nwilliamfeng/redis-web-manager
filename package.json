@@ -2,12 +2,14 @@
   "name": "redis-web-manager",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://gbapi-test.eastmoney.com/",
+  "proxy": "http://localhost:39654/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
     "@fortawesome/free-solid-svg-icons": "^5.5.0",
     "@fortawesome/react-fontawesome": "^0.1.3",
     "bootstrap": "^3.3.7",
+    "classnames": "^2.2.6",
+    "formik": "^1.4.1",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
@@ -23,7 +25,8 @@
     "redux-thunk": "^2.3.0",
     "rx": "^4.1.0",
     "styled-components": "^4.1.1",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "yup": "^0.26.6"
   },
   "scripts": {
     "start": "react-scripts start",

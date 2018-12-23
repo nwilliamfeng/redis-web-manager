@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {commandAction} from '../actions'
 import { FolderIcon,SettingIcon} from './icons'
-import { nodeTypes, tabPaneIds } from '../constants'
+import {  tabPaneIds } from '../constants'
 import { TabPanes,withScroll,IconList } from '../controls'
 import {ListViewTabPane,SettingTabPane} from './tabPanes'
 

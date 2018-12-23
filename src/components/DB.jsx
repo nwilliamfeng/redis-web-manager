@@ -178,6 +178,7 @@ class DB extends Component {
                             key={x.key}
                             handleClick={this.handleKeyItemClick}
                             dbIdx={dbIdx}
+                            dbId={id}
                             connectionName={connectionName}
                             dispatch={dispatch}
                         />)}

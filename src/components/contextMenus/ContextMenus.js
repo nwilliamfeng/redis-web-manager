@@ -25,6 +25,8 @@ const DbMenu = (props) => {
             <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'加载键'}</MenuItem>}
         {trigger && trigger.isRefreshEnable === true
             && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'刷新'}</MenuItem>}
+        {trigger && <MenuItem divider={true} />}
+        <MenuItem disabled={trigger && trigger.isRefreshEnable === false} onClick={handleItemClick} data={{ action: commandConstants.ADD_KEY }}>{'添加键'}</MenuItem>
     </ContextMenu>
 }
 
@@ -36,7 +38,7 @@ const KeyMenu = (props) => {
 
     return <ContextMenu id={id}>
         {trigger && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.OPEN_KEY }}>{'打开'}</MenuItem>}
-        {trigger && <MenuItem divider={true}/>}
+        {trigger && <MenuItem divider={true} />}
         {trigger && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.DELETE_KEY }}>{'删除'}</MenuItem>}
     </ContextMenu>
 }

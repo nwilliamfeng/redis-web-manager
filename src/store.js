@@ -1,4 +1,4 @@
-import {connectionReducer,dbReducer,keyReducer,stateReducer,commandReducer, commentReducer} from './reducers';
+import {connectionReducer,dbReducer,keyReducer,stateReducer,dialogReducer } from './reducers';
 import thunkMiddleware from 'redux-thunk'; 
 import {combineReducers,createStore,applyMiddleware} from 'redux';
 
@@ -7,9 +7,7 @@ const reducer= combineReducers({
   db:dbReducer,
   key:keyReducer,
   state:stateReducer,
-
-
-  comment:commentReducer,
+  dialog:dialogReducer
 
   // command:commandReducer,
 })

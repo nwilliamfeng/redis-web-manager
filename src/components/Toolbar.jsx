@@ -65,7 +65,7 @@ export class Toolbar extends Component {
     render() {
         return <ToolbarDiv>
             <PathDiv>
-              <y/>
+           
             </PathDiv>
             <button>{'abc'}</button>
             <button>{'abc'}</button>

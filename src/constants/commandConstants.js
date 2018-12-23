@@ -33,6 +33,11 @@ export const commandConstants={
     LOAD_KEYS:'LOAD_KEYS',
 
     /**
+     * 添加键
+     */
+    ADD_KEY:'ADD_KEY',
+
+    /**
      * 刷新键
      */
     REFRESH_KEYS:'REFRESH_KEYS',

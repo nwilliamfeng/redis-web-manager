@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import BackgroundImg from '../assets/imgs/background.jpg';
 import { withScroll, withSplit } from '../controls'
@@ -7,9 +6,7 @@ import { ConnectionList } from './ConnectionList'
 import { Toolbar } from './Toolbar'
 import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
-
-
-import { Home } from './replys/Home'
+import {Dialog} from './Dialog'
 
 
 const ShellDiv = styled.div`
@@ -66,56 +63,35 @@ const ListContainer = withScroll(props => <div {...props} />)
 
 const VerticalSplit = withSplit()
 
-//---------------------------------------------------------
-const CommentOutContainer = styled.div`
-    display:flex;
-    flex-direction:column;
-    background: white;
-    height:100vh;
-    
-    min-width:500px;
-`
-const CommentContainer = withScroll(props => <div style={{height:'100%',}} {...props} />)
 
-class Shell extends Component {
+
+
+export class Shell extends Component {
     render() {
         return <ShellDiv>
             <Background img={BackgroundImg} />
-            {/* <Container>      
+            <Container>
                 <MenuBarDiv>
                     <Menubar />
                 </MenuBarDiv>
 
                 <Toolbar />
                 <VerticalSplit size={240} minSize={240} maxSize={290}>
-                <OutListDiv>
-                <ListContainer>
-                        <ConnectionList />
-                    </ListContainer>
-                </OutListDiv>
-                   
+                    <OutListDiv>
+                        <ListContainer>
+                            <ConnectionList />
+                        </ListContainer>
+                    </OutListDiv>
+
 
                     <TabDiv>
                         <TabPaneList />
                     </TabDiv>
                 </VerticalSplit>
-            </Container> */}
-            <CommentOutContainer>
-                <CommentContainer>
-                    <Home />
-                </CommentContainer>
-            </CommentOutContainer>
+            </Container>
+            <Dialog/>
 
         </ShellDiv>
     }
 }
 
-
-const mapStateToProps = state => {
-    // const state=state.shell
-    return { ...state } = state;
-}
-
-const shell = connect(mapStateToProps)(Shell);
-
-export { shell as Shell };
