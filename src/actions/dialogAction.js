@@ -6,12 +6,12 @@ export const dialogAction={
     closeDialog,
 }
 
-function openConfirm(title,renderContent,onConfirm){
-    return {type:dialogConstants.OPEN_CONFIRM_DIALOG,title,renderContent,onConfirm};
+function openConfirm(title,renderContent,onConfirm,size){
+    return {type:dialogConstants.OPEN_CONFIRM_DIALOG,title,renderContent,onConfirm,size};
 }
 
-function openForm(title,renderForm){
-    return {type:dialogConstants.OPEN_FORM_DIALOG,title,renderForm};
+function openForm(title,renderForm,size){
+    return {type:dialogConstants.OPEN_FORM_DIALOG,title,renderForm,size};
 }
 
 function closeDialog(){

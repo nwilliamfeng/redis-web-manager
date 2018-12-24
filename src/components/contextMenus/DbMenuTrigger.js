@@ -2,14 +2,12 @@ import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
 import { dbActions, dialogAction } from '../../actions'
 import { withContextMenuTrigger } from './withMenuTrigger'
-import { Formik, Form, Field, withFormik, ErrorMessage } from 'formik';
-import { TextInput, Select } from '../../controls'
+import { Formik, Form } from 'formik';
 import styled from 'styled-components'
 import * as Yup from 'yup';
+import { FormField } from '../../controls'
 
-const FlexDiv = styled.div`
-    display:flex;
-`
+
 
 const validationSchema = Yup.object().shape({
     keyType: Yup.string().required('类型不能为空。'),
@@ -19,107 +17,14 @@ const validationSchema = Yup.object().shape({
 
 
 
-const formikEnhancer = withFormik({
-    validationSchema: Yup.object().shape({
-        keyType: Yup.string().required('类型不能为空。'),
-        keyId: Yup.string().required('键Id不能为空。'),
-        keyValue: Yup.string().required('键值不能为空。'),
-    }),
-
-    mapPropsToValues: ({ key }) => ({
-        ...key,
-    }),
-    handleSubmit: (payload, { setSubmitting }) => {
-        console.log(payload);
-        // alert(payload.email);
-        setSubmitting(false);
-    },
-});
-
-
-
-const MyForm = props => {
-    const {
-        values,
-        touched,
-        errors,
-        dirty,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        handleReset,
-        isSubmitting,
-    } = props;
-    return <div style={{ padding: 10 }}>
-        <form onSubmit={handleSubmit} className={'form-horizontal'}>
-            <Select
-                id="keyType"
-                type="text"
-                label="类型"
-                placeholder="请输入类型"
-                error={touched.keyType && errors.keyType}
-                value={values.keyType}
-                onChange={handleChange}
-                onBlur={handleBlur}
-
-            />
-            <TextInput
-                id="keyId"
-                type="text"
-                label="键Id"
-                placeholder="请输入键的Id"
-                error={touched.keyId && errors.keyId}
-                value={values.keyId}
-                onChange={handleChange}
-                onBlur={handleBlur}
-            />
-            <TextInput
-                id="keyValue"
-                type="text"
-                label="键值"
-                placeholder="请输入键的值内容"
-                error={touched.keyValue && errors.keyValue}
-                value={values.keyValue}
-                onChange={handleChange}
-                onBlur={handleBlur}
-            />
-
-            <button type="submit" className={'btn btn-primary'} disabled={isSubmitting}>{'确定'}</button>
-            <button type="button" style={{ marginLeft: 10 }} className={'btn btn-default'} onClick={handleReset} disabled={!dirty || isSubmitting}>
-                {'重置'}
-            </button>
-
-        </form>
-    </div>
-
-};
-
-const MyEnhancedForm = formikEnhancer(MyForm);
-
-const BootstrapField = props => {
-    const { component, fieldName, isError } = props;
-    const style = { borderRadius: 1, height: 24, width: '100%', padding: '1px 5px', fontSize: 13 };
-    const errorStyle = {
-        borderColor: 'red',
-        boxShadow: '0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6)',
-        outline: '0 none',
-        ...style,
-    }
-    return <Field component={component} type="text" name={fieldName} className='form-control' style={isError === true ? errorStyle : style}>
-        {props.children}
-    </Field>
-}
-
-
-
-const NewForm = ({ redisKey }) => {
+const PostForm = ({ redisKey,dispatch,dbIdx,dbId,connectionName }) => {
     return <Formik
         initialValues={redisKey}
         validationSchema={validationSchema}
-
+   
         onSubmit={(values, actions) => {
-            console.log(values);
-            alert(values);
+            console.log(actions);
+            dispatch(dbActions.addKey(connectionName,dbIdx, values.keyId,values.keyValue,values.keyType,dbId));
             //   MyImaginaryRestApiCall(user.id, values).then(
             //     updatedUser => {
             //       actions.setSubmitting(false);
@@ -133,44 +38,24 @@ const NewForm = ({ redisKey }) => {
             //     }
             //   );
         }}
-        render={({ errors, status, touched, isSubmitting }) => (
-            <Form>
-                <FlexDiv>
-                    <label>类型</label>
-                    <div>
+        render={({ errors, status, touched, isSubmitting,onReset }) => (
+            <div style={{ padding: 10 }}>
+                <Form>
+                    <FormField component="select" fieldName="keyType" displyName="键类型">
+                        <option value={1}>string</option>
+                        <option value={2}>hashset</option>
+                        <option value={3}>set</option>
+                        <option value={4}>zset</option>
+                        <option value={5}>list</option>
+                    </FormField>
+                    <FormField fieldName="keyId" displyName="键名称" errors={errors} />
+                    <FormField fieldName="keyValue" displyName="键值内容" errors={errors} />
 
-                        <BootstrapField component="select" fieldName="keyType" >
-                            <option value={1}>string</option>
-                            <option value={2}>hashset</option>
-                            <option value={3}>set</option>
-                            <option value={4}>zset</option>
-                            <option value={5}>list</option>
-                        </BootstrapField>
-                        <ErrorMessage name="keyType" component="div" className="error" />
-                    </div>
-                </FlexDiv>
-                <FlexDiv>
-                    <label>名称</label>
-                    <div>
-                        <BootstrapField fieldName="keyId" isError={errors.keyId != null} />
-                        <ErrorMessage name="keyId" style={{color:'red'}}>
-                            {errorMessage => <div className="error">{errorMessage}</div>}
-                        </ErrorMessage>
-                    </div>
-
-                </FlexDiv>
-                <FlexDiv>
-                    <label>值</label>
-                    <div>
-                        <BootstrapField fieldName="keyValue" isError={errors.keyValue != null} />
-                        <ErrorMessage name="keyValue" className="error" component="div" style={{color:'red'}}/>
-                    </div>
-                </FlexDiv>
-
-                {status && status.msg && <div>{status.msg}</div>}
-                <button type="submit" className='btn btn-primary' disabled={isSubmitting}> 提交</button>
-                <button type="submit" className='btn btn-default' style={{marginLeft:10,padding:}}> 重置</button>
-            </Form>
+                    {status && status.msg && <div>{status.msg}</div>}
+                    <button type="submit" className='btn btn-primary' disabled={isSubmitting} style={{marginTop:20, padding: '3px 10px' }}> 提交</button>
+                    <button type="reset" className='btn btn-default'   style={{marginTop:20, marginLeft: 10, padding: '3px 10px' }}> 重置</button>
+                </Form>
+            </div>
         )}
     />
 }
@@ -188,9 +73,10 @@ export const DbMenuTrigger = props => {
                 break;
             case commandConstants.ADD_KEY:
                 const renderForm = () => {
-                    return <NewForm redisKey={{ keyValue: 'newValue', keyId: '1001', keyType: 2 }} />
+                    return <PostForm redisKey={{ keyValue: null, keyId: null, keyType: 1 }} dbIdx={dbIdx} 
+                    dbId={dbId} dispatch={dispatch} connectionName={connectionName}/>
                 }
-                dispatch(dialogAction.openForm('添加Key', renderForm));
+                dispatch(dialogAction.openForm('添加Key', renderForm, { width: 420 }));
                 break;
 
             default:

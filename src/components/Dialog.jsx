@@ -8,20 +8,22 @@ import Popup from 'reactjs-popup'
 import { dialogAction } from '../actions';
 
 
-const contentStyle =  {
-    maxWidth: '45%',
-    minWidth: '20%',
-    width:'auto',
-    height:'auto',
-    maxHeight: '45%',
-    minHeight: '20%',
-    borderRadius: 2,
-    display: 'flex',
-    flexDirection: 'column',
-    textAlign:'left',
-    padding:0,
-   }
- 
+const getContentStyle = size => {
+    return {
+        maxWidth: '45%',
+        minWidth: '20%',
+        width: size?size.width:'auto',
+        height: size?size.height:'auto',
+        maxHeight: '45%',
+        minHeight: '20%',
+        borderRadius: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        textAlign: 'left',
+        padding: 0,
+    }
+}
+
 
 const CloseIconDiv = styled.div`
     color: gray;
@@ -34,7 +36,7 @@ const CloseIconDiv = styled.div`
 
 const TitlebarDiv = styled.div`
     display:flex;
-    padding:12px 10px;
+    padding:8px 10px;
     background:#eeee;
     justify-content:space-between;
     align-items:center;
@@ -108,11 +110,11 @@ class Dialog extends Component {
     }
 
     render() {
-        const { dialogType, title } = this.props;
+        const { dialogType, title, size } = this.props;
 
         return <Popup
             open={dialogType !== dialogConstants.NONE}
-            contentStyle={contentStyle }
+            contentStyle={getContentStyle(size)}
             closeOnDocumentClick={false}
             onClose={this.handleClose}
         >

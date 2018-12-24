@@ -20,7 +20,7 @@ export const dialogReducer = (state = defaultState, action) => {
                 renderContent: action.renderContent,
                 renderForm:null,
                 onConfirm: action.onConfirm,
-          
+                size:action.size,
             }
         case dialogConstants.OPEN_FORM_DIALOG:
             return {
@@ -30,7 +30,7 @@ export const dialogReducer = (state = defaultState, action) => {
                 renderContent: null,
                 onConfirm: null,
                 renderForm:action.renderForm,
-           
+                size:action.size,
             }
         case dialogConstants.CLOSE_DIALOG:
             return {
