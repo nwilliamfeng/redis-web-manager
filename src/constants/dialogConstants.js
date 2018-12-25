@@ -13,6 +13,11 @@ export const dialogConstants={
     OPEN_FORM_DIALOG:'OPEN_FORM_DIALOG',
 
     /**
+     * 显示错误信息
+     */
+    SHOW_ERROR_DETAIL:'SHOW_ERROR_DETAIL',
+
+    /**
      * 关闭窗口
      */
     CLOSE_DIALOG:'CLOSE_DIALOG',

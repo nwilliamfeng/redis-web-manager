@@ -4,6 +4,7 @@ export const dialogAction={
     openConfirm,
     openForm,
     closeDialog,
+    showErrorMessage,
 }
 
 function openConfirm(title,renderContent,onConfirm,size){
@@ -16,4 +17,8 @@ function openForm(title,renderForm,size){
 
 function closeDialog(){
     return {type:dialogConstants.CLOSE_DIALOG};
+}
+
+function showErrorMessage(errorMessage){??
+    return {type:dialogConstants.SHOW_ERROR_DETAIL,errorMessage};
 }

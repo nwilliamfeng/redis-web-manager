@@ -21,7 +21,7 @@ export const KeyMenuTrigger = props => {
                 break;
             case commandConstants.DELETE_KEY:
                 const renderDeleteKeyContent = () => {
-                    return  <div style={{width:200}}>{`确定要删除 ${keyName} 键吗？`}</div>                   
+                    return  <div style={{width:180,height:50}}>{`确定要删除 ${keyName} 键吗？`}</div>                   
                 }
                 dispatch(dialogAction.openConfirm('提醒', renderDeleteKeyContent, () => {
                     dispatch(dbActions.deleteKey(connection, dbIdx, keyName, dbId));

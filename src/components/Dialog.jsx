@@ -12,8 +12,8 @@ const getContentStyle = size => {
     return {
         maxWidth: '45%',
         minWidth: '20%',
-        width: size?size.width:'auto',
-        height: size?size.height:'auto',
+        width: size?size.width?size.width:'auto':'auto',
+        height: size?size.height?size.height:'auto':'auto',
         maxHeight: '45%',
         minHeight: '20%',
         borderRadius: 2,

@@ -18,7 +18,7 @@ class RedisApi {
      * 删除键
      */
     async deleteKey(key,connectionName,dbIdx) {
-        const json = await ApiHelper.get(`/redis/set?name=${connectionName}&dbindex=${dbIdx}&key=${key}`);
+        const json = await ApiHelper.get(`/redis/del?name=${connectionName}&dbindex=${dbIdx}&key=${key}`);
         const {  Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
@@ -29,7 +29,7 @@ class RedisApi {
      * 添加键
      */
     async appendKey(keyId,keyValue,type,connectionName,dbIdx) {
-        const json = await ApiHelper.get(`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Key=${keyId}&Type=${type}&Value=${keyValue}`);
+        const json = await ApiHelper.get(`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${keyId}&Type=${type}&Value=${keyValue}`);
         const {  Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);

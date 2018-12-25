@@ -1,4 +1,5 @@
 import { nodeTypes, dbStates, dbConstants, keyConstants } from '../constants';
+import {dialogAction} from './dialogAction'
 import { redisApi } from '../api'
 
 export const dbActions = {
@@ -41,11 +42,12 @@ function deleteKey(connectionName, dbIdx, key, dbId) {
 }
 
 
-function addKey(connectionName, dbIdx, key, keyValue, type, dbId) {
+function addKey(connectionName, dbIdx, keyId, keyValue, type, dbId) {
     return async dispatch => {
 
-        await redisApi.appendKey(key, keyValue, type, connectionName, dbIdx);
+        await redisApi.appendKey(keyId, keyValue, type, connectionName, dbIdx);
         const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
+        dispatch(dialogAction.closeDialog());
         dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
     }
 }

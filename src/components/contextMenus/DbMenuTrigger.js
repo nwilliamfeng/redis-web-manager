@@ -73,7 +73,7 @@ export const DbMenuTrigger = props => {
                 break;
             case commandConstants.ADD_KEY:
                 const renderForm = () => {
-                    return <PostForm redisKey={{ keyValue: null, keyId: null, keyType: 1 }} dbIdx={dbIdx} 
+                    return <PostForm redisKey={{ keyValue: '', keyId: '', keyType: 1 }} dbIdx={dbIdx} 
                     dbId={dbId} dispatch={dispatch} connectionName={connectionName}/>
                 }
                 dispatch(dialogAction.openForm('添加Key', renderForm, { width: 420 }));

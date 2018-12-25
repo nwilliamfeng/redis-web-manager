@@ -4,9 +4,9 @@ const defaultState = {
     dialogType: dialogConstants.NONE,
     title: null,
     renderContent: null,
-    renderForm:null,
+    renderForm: null,
     onConfirm: null,
-
+    errorMessage: null,
 }
 
 
@@ -18,9 +18,10 @@ export const dialogReducer = (state = defaultState, action) => {
                 dialogType: action.type,
                 title: action.title,
                 renderContent: action.renderContent,
-                renderForm:null,
+                renderForm: null,
                 onConfirm: action.onConfirm,
-                size:action.size,
+                size: action.size,
+                errorMessage:null,
             }
         case dialogConstants.OPEN_FORM_DIALOG:
             return {
@@ -29,8 +30,9 @@ export const dialogReducer = (state = defaultState, action) => {
                 title: action.title,
                 renderContent: null,
                 onConfirm: null,
-                renderForm:action.renderForm,
-                size:action.size,
+                renderForm: action.renderForm,
+                size: action.size,
+                errorMessage:null,
             }
         case dialogConstants.CLOSE_DIALOG:
             return {
@@ -39,7 +41,16 @@ export const dialogReducer = (state = defaultState, action) => {
                 title: null,
                 renderContent: null,
                 onConfirm: null,
-       
+                errorMessage:null,
+            }
+        case dialogConstants.SHOW_ERROR_DETAIL:
+            return {
+                ...state,
+                dialogType: action.type,
+                title: null,
+                renderContent: null,
+                onConfirm: null,
+                errorMessage:action.errorMessage,
             }
 
         default:
