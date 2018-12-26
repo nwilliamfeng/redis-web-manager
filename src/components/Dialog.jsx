@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Popup from 'reactjs-popup'
 import { dialogAction } from '../actions';
-import { Div } from '../controls'
-
 
 const getContentStyle = size => {
     return {
@@ -50,9 +48,6 @@ const ContentDiv = styled.div`
     align-items:center;
 `
 
- 
-
-
 
 class Dialog extends Component {
 
@@ -66,10 +61,10 @@ class Dialog extends Component {
         </React.Fragment>
     }
 
-    renderFormDialogBody = () => {
+    renderFormDialogBody = message => {
         const { renderForm } = this.props;
         return <React.Fragment>
-            {renderForm && renderForm()}
+            {renderForm && renderForm(message)}
         </React.Fragment>
     }
 
@@ -97,7 +92,6 @@ class Dialog extends Component {
 
     render() {
         const { dialogType, title, size, attachMessage } = this.props;
-
         return <Popup open={dialogType !== dialogConstants.NONE} contentStyle={getContentStyle(size)} closeOnDocumentClick={false} onClose={this.handleClose}>
             <React.Fragment>
                 <TitlebarDiv>
@@ -107,11 +101,9 @@ class Dialog extends Component {
                     </CloseIconDiv>
                 </TitlebarDiv>
                 {(dialogType === dialogConstants.OPEN_CONFIRM_DIALOG || dialogType === dialogConstants.SHOW_ERROR) && this.renderConfirmDialogBody()}
-                {dialogType === dialogConstants.OPEN_FORM_DIALOG && this.renderFormDialogBody()}
-                {dialogType === dialogConstants.SHOW_ERROR_ATTACH && <Div color='red'>{attachMessage}</Div>}
+                {dialogType === dialogConstants.OPEN_FORM_DIALOG && this.renderFormDialogBody(attachMessage)}            
             </React.Fragment>
         </Popup>
-
     }
 }
 

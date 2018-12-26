@@ -8,7 +8,6 @@ import * as Yup from 'yup';
 import { FormField } from '../../controls'
 
 
-
 const validationSchema = Yup.object().shape({
     keyType: Yup.string().required('类型不能为空。'),
     keyId: Yup.string().required('键Id不能为空。'),
@@ -17,28 +16,14 @@ const validationSchema = Yup.object().shape({
 
 
 
-const PostForm = ({ redisKey,dispatch,dbIdx,dbId,connectionName }) => {
+const PostForm = ({ redisKey, dispatch, dbIdx, dbId, connectionName,attachMessage }) => {
     return <Formik
         initialValues={redisKey}
         validationSchema={validationSchema}
-   
-        onSubmit={(values, actions) => {
-            console.log(actions);
-            dispatch(dbActions.addKey(connectionName,dbIdx, values.keyId,values.keyValue,values.keyType,dbId));
-            //   MyImaginaryRestApiCall(user.id, values).then(
-            //     updatedUser => {
-            //       actions.setSubmitting(false);
-            //       updateUser(updatedUser);
-            //      // onClose();
-            //     },
-            //     error => {
-            //       actions.setSubmitting(false);
-            //       actions.setErrors(transformMyRestApiErrorsToAnObject(error));
-            //       actions.setStatus({ msg: 'Set some arbitrary status or data' });
-            //     }
-            //   );
+        onSubmit={(values) => {
+            dispatch(dbActions.addKey(connectionName, dbIdx, values.keyId, values.keyValue, values.keyType, dbId));
         }}
-        render={({ errors, status, touched, isSubmitting,onReset }) => (
+        render={({ errors, status, touched, isSubmitting }) => (
             <div style={{ padding: 10 }}>
                 <Form>
                     <FormField component="select" fieldName="keyType" displyName="键类型">
@@ -51,9 +36,9 @@ const PostForm = ({ redisKey,dispatch,dbIdx,dbId,connectionName }) => {
                     <FormField fieldName="keyId" displyName="键名称" errors={errors} />
                     <FormField fieldName="keyValue" displyName="键值内容" errors={errors} />
 
-                    {status && status.msg && <div>{status.msg}</div>}
-                    <button type="submit" className='btn btn-primary' disabled={isSubmitting} style={{marginTop:20, padding: '3px 10px' }}> 提交</button>
-                    <button type="reset" className='btn btn-default'   style={{marginTop:20, marginLeft: 10, padding: '3px 10px' }}> 重置</button>
+                    {attachMessage && <div style={{color:'red'}}>{attachMessage}</div>}
+                    <button type="submit" className='btn btn-primary' disabled={isSubmitting && attachMessage==null} style={{ marginTop: 20, padding: '3px 10px' }}> 提交</button>
+                    <button type="reset" className='btn btn-default' style={{ marginTop: 20, marginLeft: 10, padding: '3px 10px' }}> 重置</button>
                 </Form>
             </div>
         )}
@@ -72,11 +57,12 @@ export const DbMenuTrigger = props => {
                 dispatch(dbActions.getKeyList(connectionName, dbIdx, dbId));
                 break;
             case commandConstants.ADD_KEY:
-                const renderForm = () => {
-                    return <PostForm redisKey={{ keyValue: '', keyId: '', keyType: 1 }} dbIdx={dbIdx} 
-                    dbId={dbId} dispatch={dispatch} connectionName={connectionName}/>
+                const renderAddForm = attachMessage => {
+                    return <PostForm redisKey={{ keyValue: '', keyId: '', keyType: 1 }} dbIdx={dbIdx}
+                        dbId={dbId} dispatch={dispatch} connectionName={connectionName} attachMessage={attachMessage}/>
                 }
-                dispatch(dialogAction.openForm('添加Key', renderForm, { width: 420 }));
+
+                dispatch(dialogAction.openForm('添加Key', renderAddForm, { width: 420 }));
                 break;
 
             default:

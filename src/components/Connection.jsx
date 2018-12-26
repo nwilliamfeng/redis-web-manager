@@ -63,6 +63,9 @@ class Connection extends Component {
         else if (nextProps.item.connectionState === connectionStates.CONNECTING) {
             this.setState({ isExpand: false, });//如果是重连的话重新折叠回初始状态
         }
+        else if (nextProps.item.connectionState === connectionStates.NONE) {
+            this.setState({dbs:[], isExpand: false, });//如果是重连失败的话，则清空
+        }
 
     }
 

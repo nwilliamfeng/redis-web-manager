@@ -33,16 +33,28 @@ function loadConnectionList() {
 function getDbList(connectionId) {
     return async dispatch => {
         dispatch({ type: connectionConstants.UPDATE_STATE, connectionId, connectionState: connectionStates.CONNECTING });
-        const dbList = await redisApi.connect(connectionId);
-        dispatch({ type: dbConstants.LOAD_DB_LIST, dbList, connectionId, connectionState: connectionStates.CONNECTED });
+        try {
+            const dbList = await redisApi.connect(connectionId);
+            dispatch({ type: dbConstants.LOAD_DB_LIST, dbList, connectionId, connectionState: connectionStates.CONNECTED });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+            dispatch({ type: connectionConstants.UPDATE_STATE, connectionId, connectionState: connectionStates.NONE });
+        }
     }
 }
 
 function refreshDbList(connectionId) {
     return async dispatch => {
         dispatch({ type: connectionConstants.UPDATE_STATE, connectionId, connectionState: connectionStates.CONNECTING });
-        const dbList = await redisApi.connect(connectionId);
-        dispatch({ type: dbConstants.REFRESH_DB_LIST, dbList, connectionId, connectionState: connectionStates.CONNECTED });
+        try {
+            const dbList = await redisApi.connect(connectionId);
+            dispatch({ type: dbConstants.REFRESH_DB_LIST, dbList, connectionId, connectionState: connectionStates.CONNECTED });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+            dispatch({ type: dbConstants.LOAD_DB_LIST, dbList:[], connectionId, connectionState: connectionStates.NONE });
+        }
     }
 }
 

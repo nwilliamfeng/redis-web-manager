@@ -32,7 +32,7 @@ function getKeyList(connectionName, dbIdx, dbId) {
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
         }
         catch (error) {
-            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.errorMessage });
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
         }
     }
 }
@@ -46,7 +46,7 @@ function deleteKey(connectionName, dbIdx, key, dbId) {
             dispatch({ type: dialogConstants.CLOSE_DIALOG });
         }
         catch (error) {
-            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.errorMessage });
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
         }
     }
 }
@@ -61,7 +61,7 @@ function addKey(connectionName, dbIdx, keyId, keyValue, type, dbId) {
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
         }
         catch (error) {
-            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: error })
+            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: error.message })
         }
     }
 }

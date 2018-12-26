@@ -15,7 +15,6 @@ export const connectionReducer = (state = defaultState, action) => {
                 connections: action.connections,
             }
         case connectionConstants.UPDATE_STATE:
-
             return {
                 ...state,
                 selectedConnectionId: action.connectionId,
