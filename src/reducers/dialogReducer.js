@@ -5,8 +5,7 @@ const defaultState = {
     title: null,
     renderContent: null,
     renderForm: null,
-    onConfirm: null,
-    errorMessage: null,
+    attachMessage: null,
 }
 
 
@@ -19,9 +18,8 @@ export const dialogReducer = (state = defaultState, action) => {
                 title: action.title,
                 renderContent: action.renderContent,
                 renderForm: null,
-                onConfirm: action.onConfirm,
                 size: action.size,
-                errorMessage:null,
+                attachMessage: null,
             }
         case dialogConstants.OPEN_FORM_DIALOG:
             return {
@@ -29,10 +27,9 @@ export const dialogReducer = (state = defaultState, action) => {
                 dialogType: action.type,
                 title: action.title,
                 renderContent: null,
-                onConfirm: null,
                 renderForm: action.renderForm,
                 size: action.size,
-                errorMessage:null,
+                attachMessage: null,
             }
         case dialogConstants.CLOSE_DIALOG:
             return {
@@ -40,17 +37,20 @@ export const dialogReducer = (state = defaultState, action) => {
                 dialogType: dialogConstants.NONE,
                 title: null,
                 renderContent: null,
-                onConfirm: null,
-                errorMessage:null,
+                attachMessage: null,
             }
-        case dialogConstants.SHOW_ERROR_DETAIL:
+        case dialogConstants.SHOW_ERROR:
             return {
                 ...state,
                 dialogType: action.type,
-                title: null,
-                renderContent: null,
-                onConfirm: null,
-                errorMessage:action.errorMessage,
+                title: '错误提醒',
+                renderContent: ()=>action.errorMessage,
+                attachMessage:null,
+            }
+        case dialogConstants.SHOW_ERROR_ATTACH:
+            return {
+                ...state,
+                attachMessage:action.errorMessage,
             }
 
         default:

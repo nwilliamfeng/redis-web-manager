@@ -1,5 +1,5 @@
-import { nodeTypes, dbStates, dbConstants, keyConstants } from '../constants';
-import {dialogAction} from './dialogAction'
+import { nodeTypes, dbStates, dbConstants, keyConstants, dialogConstants } from '../constants';
+import { dialogAction } from './dialogAction'
 import { redisApi } from '../api'
 
 export const dbActions = {
@@ -27,28 +27,42 @@ function updateDbState(dbId, dbState = dbStates.NONE) {
 function getKeyList(connectionName, dbIdx, dbId) {
     return async dispatch => {
         dispatch({ type: dbConstants.UPDATE_DB_STATE, dbId, dbState: dbStates.KEY_LOADING });
-        const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-        dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+        try {
+            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
+            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.errorMessage });
+        }
     }
 }
 
 function deleteKey(connectionName, dbIdx, key, dbId) {
     return async dispatch => {
-
-        await redisApi.deleteKey(key, connectionName, dbIdx);
-        const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-        dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+        try {
+            await redisApi.deleteKey(key, connectionName, dbIdx);
+            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
+            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+            dispatch({ type: dialogConstants.CLOSE_DIALOG });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.errorMessage });
+        }
     }
 }
 
 
 function addKey(connectionName, dbIdx, keyId, keyValue, type, dbId) {
     return async dispatch => {
-
-        await redisApi.appendKey(keyId, keyValue, type, connectionName, dbIdx);
-        const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-        dispatch(dialogAction.closeDialog());
-        dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+        try {
+            await redisApi.appendKey(keyId, keyValue, type, connectionName, dbIdx);
+            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
+            dispatch(dialogAction.closeDialog());
+            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: error })
+        }
     }
 }
 

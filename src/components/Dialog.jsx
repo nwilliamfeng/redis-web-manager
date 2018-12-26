@@ -6,14 +6,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Popup from 'reactjs-popup'
 import { dialogAction } from '../actions';
+import { Div } from '../controls'
 
 
 const getContentStyle = size => {
     return {
         maxWidth: '45%',
         minWidth: '20%',
-        width: size?size.width?size.width:'auto':'auto',
-        height: size?size.height?size.height:'auto':'auto',
+        width: size ? size.width ? size.width : 'auto' : 'auto',
+        height: size ? size.height ? size.height : 'auto' : 'auto',
         maxHeight: '45%',
         minHeight: '20%',
         borderRadius: 2,
@@ -49,20 +50,8 @@ const ContentDiv = styled.div`
     align-items:center;
 `
 
-const FootbarDiv = styled.div`
-    display:flex;
-    justify-content:flex-end;
-    align-items:center;
-    padding:12px 10px;
-  
-`
+ 
 
-const footButtonStyle = {
-    paddingTop: 2,
-    height: 24,
-    paddingBottom: 4,
-    marginLeft: 8,
-}
 
 
 class Dialog extends Component {
@@ -73,10 +62,7 @@ class Dialog extends Component {
             <ContentDiv>
                 {renderContent && renderContent()}
             </ContentDiv>
-            <FootbarDiv>
-                <button style={footButtonStyle} onClick={this.handleConfirmClick} className="btn btn-primary">{'确定'}</button>
-                <button style={footButtonStyle} onClick={this.handleCloseClick} className="btn btn-default">{'取消'}</button>
-            </FootbarDiv>
+         
         </React.Fragment>
     }
 
@@ -110,25 +96,20 @@ class Dialog extends Component {
     }
 
     render() {
-        const { dialogType, title, size } = this.props;
+        const { dialogType, title, size, attachMessage } = this.props;
 
-        return <Popup
-            open={dialogType !== dialogConstants.NONE}
-            contentStyle={getContentStyle(size)}
-            closeOnDocumentClick={false}
-            onClose={this.handleClose}
-        >
+        return <Popup open={dialogType !== dialogConstants.NONE} contentStyle={getContentStyle(size)} closeOnDocumentClick={false} onClose={this.handleClose}>
             <React.Fragment>
                 <TitlebarDiv>
-                    {title}
+                    {title?title:'提醒'}
                     <CloseIconDiv title='关闭' onClick={this.handleCloseClick}>
                         <FontAwesomeIcon icon={faTimes} />
                     </CloseIconDiv>
                 </TitlebarDiv>
-                {dialogType === dialogConstants.OPEN_CONFIRM_DIALOG && this.renderConfirmDialogBody()}
+                {(dialogType === dialogConstants.OPEN_CONFIRM_DIALOG || dialogType === dialogConstants.SHOW_ERROR) && this.renderConfirmDialogBody()}
                 {dialogType === dialogConstants.OPEN_FORM_DIALOG && this.renderFormDialogBody()}
+                {dialogType === dialogConstants.SHOW_ERROR_ATTACH && <Div color='red'>{attachMessage}</Div>}
             </React.Fragment>
-
         </Popup>
 
     }
@@ -136,7 +117,6 @@ class Dialog extends Component {
 
 
 const mapStateToProps = state => {
-    // const state=state.shell
     return { ...state.dialog };
 }
 
