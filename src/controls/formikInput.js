@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Field, ErrorMessage } from 'formik';
 
 const FlexDiv = styled.div`
     display:flex;
@@ -21,6 +21,7 @@ const ContentDiv = styled.div`
 
 const BootstrapField = props => {
     const { component, fieldName, isError } = props;
+
     const style = { borderRadius: 1, height: 27, width: '100%', padding: '1px 5px', fontSize: 13 };
     const errorStyle = {
         borderColor: 'red',
@@ -29,15 +30,19 @@ const BootstrapField = props => {
         ...style,
     }
     return <Field component={component} type="text" name={fieldName} className='form-control' style={isError === true ? errorStyle : style}>
-        {props.children}
-    </Field>
+            {props.children}
+        </Field>     
 }
 
+/**
+ * 对formik的field进行封装,默认采用bootstrap样式
+ * @param {*} param0 
+ */
 export const FormField = ({ component, displyName, fieldName, errors, ...props }) => {
     return <FlexDiv>
         <Label>{displyName}</Label>
         <ContentDiv>
-            <BootstrapField fieldName={fieldName} component={component} isError={errors && errors[fieldName] != null} >
+            <BootstrapField fieldName={fieldName} component={component}  isError={errors && errors[fieldName] != null} >
                 {props.children}
             </BootstrapField>
             <ErrorMessage name={fieldName} component="div" style={{ color: 'red' }} />

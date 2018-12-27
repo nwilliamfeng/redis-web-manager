@@ -1,6 +1,4 @@
 import React from 'react'
-import { commandConstants, contextMenuIds } from '../../constants'
-import { dbActions } from '../../actions'
 import { ContextMenuTrigger } from "react-contextmenu"
 
 const collect = (props) => {
@@ -21,11 +19,8 @@ const collect = (props) => {
 
 
 export const withContextMenuTrigger =triggerId => props => {
-    return <ContextMenuTrigger id={triggerId}
-       
-        
+    return <ContextMenuTrigger id={triggerId}      
          collect={collect} {...props}>
- 
      </ContextMenuTrigger>
  }
  

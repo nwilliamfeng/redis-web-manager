@@ -63,34 +63,29 @@ class ListViewTabPane extends Component {
                 return connections.map(x => { return this.mapConnectionToItem(x) });
             case nodeTypes.CONNECTION:
                 return dbs.map(x => { return this.mapDBToItem(x) });
-
             case nodeTypes.DB:
-          //  console.log(this.props);
-           
-            return keys.map(x => { return this.mapKeyToItem(x) });
-            case nodeTypes.KEY:
-          
                 return keys.map(x => { return this.mapKeyToItem(x) });
-           
+            case nodeTypes.KEY:
+                return keys.map(x => { return this.mapKeyToItem(x) });
+
             default:
                 return [];
         }
     }
 
     mapConnectionToItem = connection => {
-        //格式必须包括listviewitem的所需数据和快捷菜单的数据
-       
+        //格式必须包括listviewitem的所需数据和快捷菜单的数据 
         return {
-            iconId:connection.connectionState===connectionStates.CONNECTED?iconKeys.CONNECTION_SUCCESS_ICON : iconKeys.CONNECTION_DEFAULT_ICON,
+            iconId: connection.connectionState === connectionStates.CONNECTED ? iconKeys.CONNECTION_SUCCESS_ICON : iconKeys.CONNECTION_DEFAULT_ICON,
             title: connection.name,
             id: connection.name,
             onDoubleClick: this.handleConnectionNodeClick,
             isSmallIcon: true,
-            contextMenuProps:{ 
+            contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
-                connection:connection.name,
-                isConnected:connection.connectionState===connectionStates.CONNECTED,
-                dispatch:this.props.dispatch,
+                connection: connection.name,
+                isConnected: connection.connectionState === connectionStates.CONNECTED,
+                dispatch: this.props.dispatch,
             },
         }
     }
@@ -102,13 +97,13 @@ class ListViewTabPane extends Component {
             id: db.id,
             onDoubleClick: this.handleDbNodeClick,
             isSmallIcon: true,
-            contextMenuProps:{ 
+            contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.DB_CONTEXTMENU_ID,
-                connectionName:db.connectionName,
-                dbId:db.id,
-                dbIdx:db.dbIdx,
-                isKeyLoaded:db.dbState===dbStates.KEY_LOAD_SUCCESS,
-                dispatch:this.props.dispatch,
+                connectionName: db.connectionName,
+                dbId: db.id,
+                dbIdx: db.dbIdx,
+                isKeyLoaded: db.dbState === dbStates.KEY_LOAD_SUCCESS,
+                dispatch: this.props.dispatch,
             },
         }
     }
@@ -120,14 +115,13 @@ class ListViewTabPane extends Component {
             id: key.id,
             onDoubleClick: this.handleKeyNodeClick,
             isSmallIcon: true,
-            contextMenuProps:{ 
+            contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.KEY_CONTEXTMENU_ID,
-                connection:key.connectionName,
-                keyName:key.key,
-               
-                dbIdx:key.dbIdx,
-              
-                dispatch:this.props.dispatch,
+                connection: key.connectionName,
+                keyName: key.key,
+                dbId: key.dbId,
+                dbIdx: key.dbIdx,
+                dispatch: this.props.dispatch,
             },
         }
     }
@@ -140,7 +134,7 @@ class ListViewTabPane extends Component {
     handleDbNodeClick = id => {
         console.log('click');
         const { dispatch, selectedConnectionId } = this.props;
-        dispatch(dbActions.selectDB(selectedConnectionId,id));
+        dispatch(dbActions.selectDB(selectedConnectionId, id));
     }
 
     handleKeyNodeClick = key => {
