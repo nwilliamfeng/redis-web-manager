@@ -52,10 +52,10 @@ function deleteKey(connectionName, dbIdx, key, dbId) {
 }
 
 
-function addKey(connectionName, dbIdx, keyId, keyValue, type, dbId) {
+function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
     return async dispatch => {
         try {
-            await redisApi.appendKey(keyId, keyValue, type, connectionName, dbIdx);
+            await redisApi.appendKey(type, id, key, value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch(dialogAction.closeDialog());
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });

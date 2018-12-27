@@ -28,8 +28,8 @@ class RedisApi {
      /**
      * 添加键
      */
-    async appendKey(keyId,keyValue,type,connectionName,dbIdx) {
-        const json = await ApiHelper.get(`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${keyId}&Type=${type}&Value=${keyValue}`);
+    async appendKey(type,id,key,value,connectionName,dbIdx) {
+        const json = await ApiHelper.get(`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}&Key=${key}`);
         const {  Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
