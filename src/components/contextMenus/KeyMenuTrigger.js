@@ -26,7 +26,7 @@ export const KeyMenuTrigger = props => {
         const { dispatch, connection, dbIdx, keyName, dbId } = props;
         switch (data.action) {
             case commandConstants.OPEN_KEY:
-                alert(`open:${connection},${dbIdx},${keyName}`);
+                //alert(`open:${connection},${dbIdx},${keyName}`);
                 // dispatch(dbActions.getDbList(connection.name));
                 break;
             case commandConstants.DELETE_KEY:

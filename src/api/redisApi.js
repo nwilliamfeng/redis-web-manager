@@ -29,7 +29,8 @@ class RedisApi {
      * 添加键
      */
     async appendKey(type,id,key,value,connectionName,dbIdx) {
-        const json = await ApiHelper.get(`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}&Key=${key}`);
+        const url =`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;     
+        const json = await ApiHelper.get(key==null? url: url+`&Key=${key}`);
         const {  Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);

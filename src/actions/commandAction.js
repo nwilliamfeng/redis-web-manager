@@ -1,4 +1,4 @@
-import {commandConstants,tabPaneIds} from '../constants'
+import {commandConstants} from '../constants'
 
 export const commandAction={
     openTabPane,

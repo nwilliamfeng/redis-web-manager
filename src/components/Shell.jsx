@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import BackgroundImg from '../assets/imgs/background.jpg';
 import { withScroll, withSplit } from '../controls'
 import { ConnectionList } from './ConnectionList'
-import { Toolbar } from './Toolbar'
+import { Toolbars } from './toolbar'
 import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
 import {Dialog} from './Dialog'
@@ -75,7 +75,7 @@ export class Shell extends Component {
                     <Menubar />
                 </MenuBarDiv>
 
-                <Toolbar />
+                <Toolbars/>
                 <VerticalSplit size={240} minSize={240} maxSize={290}>
                     <OutListDiv>
                         <ListContainer>
