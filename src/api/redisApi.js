@@ -11,7 +11,7 @@ class RedisApi {
         const { Data, Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
-        return Data.map(x => { return { id: x.Name, name: x.Name, ip: x.IP, port: x.Port, } });
+        return Data.map(x => { return { id: x.Name, name: x.Name, ip: x.IP, port: x.Port, connectionState:connectionStates.NONE} });
     }
 
     /**

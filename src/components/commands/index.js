@@ -1,3 +1,3 @@
-export * from './addRedisKeyCommand'
-export * from './refreshRedisDbCommand'
-export * from './refreshRedisConnectionCommand'
+export {addKeyCommand} from './keyCommands'
+export {refreshDbCommand} from './dbCommands'
+export {openConnectionCommand,refreshConnectionCommand} from './connectionCommands'

@@ -17,8 +17,7 @@ const ToolbarDiv = styled.div`
 
 const ButtonDiv = styled.div`
     flex:0 1 100%;
-    height:100%;
-   
+    height:100%; 
     margin-left:5px;
     align-items:center;
     justify-content:left;

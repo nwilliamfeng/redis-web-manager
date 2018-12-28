@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { dbStates,connectionStates} from '../../constants'
+import { dbStates, connectionStates } from '../../constants'
 import { imgSrc } from '../imgSrc'
 import { Button } from '../../controls'
 import { connect } from 'react-redux'
-import { addRedisKeyCommand, refreshRedisDbCommand,refreshRedisConnectionCommand } from '../commands'
+import { addKeyCommand, refreshConnectionCommand, refreshDbCommand, openConnectionCommand } from '../commands'
 
 
 const ButtonDiv = styled.div`
@@ -35,20 +35,31 @@ class RedisToolbar extends Component {
     handleAddKeyClick = () => {
         const { dispatch } = this.props;
         const db = this.getSelectedDb();
-        addRedisKeyCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
+        addKeyCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
     }
 
     /**
      * 刷新db或者connection
      */
-    handleRefreshClick=()=>{
-        const {dispatch, selectedDbId, selectedConnectionId } = this.props;
-        if(selectedDbId!=null){
-            const db =this.getSelectedDb();         
-            refreshRedisDbCommand({dispatch,dbIdx:db.dbIdx,connectionName:db.connectionName,dbId:db.id});
+    handleRefreshClick = () => {
+        const { dispatch, selectedDbId, selectedConnectionId } = this.props;
+        if (selectedDbId != null) {
+            const db = this.getSelectedDb();
+            refreshDbCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
         }
-        else{
-            refreshRedisConnectionCommand({dispatch,connectionId:selectedConnectionId});
+        else {
+            refreshConnectionCommand({ dispatch, connectionId: selectedConnectionId });
+        }
+    }
+
+    handleOpenClick = () => {
+        const { dispatch, selectedDbId, selectedConnectionId } = this.props;
+        if (selectedDbId != null) {
+            const db = this.getSelectedDb();
+            refreshDbCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
+        }
+        else {
+            openConnectionCommand({ dispatch, connectionId: selectedConnectionId });
         }
     }
 
@@ -65,6 +76,21 @@ class RedisToolbar extends Component {
         return selectedConnectionId == null ? null : connections.find(x => x.id === selectedConnectionId);
     }
 
+    canOpen = () => {
+        const { selectedConnectionId, selectedDbId } = this.props;
+        if (selectedConnectionId == null) {
+            return false;
+        }
+        if (selectedDbId != null) {
+            return this.getSelectedDb().dbState === dbStates.NONE;
+        }
+        else {
+            const conn = this.getSelectedConnection();
+            return conn == null ? false : conn.connectionState === connectionStates.NONE;
+        }
+
+    }
+
     canAddRedisKey = () => {
         const { selectedDbId } = this.props;
         if (selectedDbId == null) {
@@ -79,20 +105,24 @@ class RedisToolbar extends Component {
         if (selectedDbId == null && selectedConnectionId == null) {
             return false;
         }
-        if(selectedDbId!=null){
-            return this.getSelectedDb().dbState=== dbStates.KEY_LOAD_SUCCESS;
+        if (selectedDbId != null) {
+            return this.getSelectedDb().dbState === dbStates.KEY_LOAD_SUCCESS;
         }
+        return this.getSelectedConnection().connectionState === connectionStates.CONNECTED;
+    }
 
-        return this.getSelectedConnection().connectionState===connectionStates.CONNECTED ;
-        
-        
+    canActivate = () => {
+
     }
 
     render() {
         return <ButtonDiv>
+
             <ToolbarButton title='添加Redis服务器' disabled={true} onClick={this.handleAddConnectionClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.ADD_REDIS_CONNECTION_IMG}></ToolbarButton>
             <ToolbarButton title='添加Redis键' disabled={!this.canAddRedisKey()} onClick={this.handleAddKeyClick} height={'24px'} width={'22px'} backgroundImage={imgSrc.ADD_REDIS_KEY_IMG}></ToolbarButton>
-            <ToolbarButton title='刷新' disabled={!this.canRefresh()} onClick={this.handleRefreshClick} height={'20px'} width={'20px'} backgroundImage={imgSrc.REFRESH_IMG}></ToolbarButton>
+            <ToolbarButton title='激活' disabled={!this.canOpen()} onClick={this.handleOpenClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.CONNECT_IMG}></ToolbarButton>
+
+            <ToolbarButton title='刷新' disabled={!this.canRefresh()} onClick={this.handleRefreshClick} height={'22px'} width={'22px'} backgroundImage={imgSrc.REFRESH_IMG}></ToolbarButton>
             <ToolbarButton title='删除' height={'28px'} width={'28px'} backgroundImage={imgSrc.DELETE_IMG}></ToolbarButton>
         </ButtonDiv>
 

@@ -4,12 +4,12 @@ export const Button = styled.button`
     outline:none;
     border:none;
     background-color:transparent;
-    opacity:0.8;
+    opacity:1;
     &:hover{
-        opacity:1;
+        opacity:0.8;
     }
     &:active{
-        opacity:0.8;
+        opacity:0.6;
     }
     &:disabled{
         opacity:0.3;

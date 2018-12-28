@@ -1,7 +1,7 @@
 import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
 import { withContextMenuTrigger } from './withMenuTrigger'
-import { addRedisKeyCommand, refreshRedisDbCommand } from '../commands'
+import { addKeyCommand, refreshDbCommand } from '../commands'
 
 const Trigger = withContextMenuTrigger(contextMenuIds.DB_CONTEXTMENU_ID);
 
@@ -9,10 +9,10 @@ export const DbMenuTrigger = props => {
     const handleItemClick = (e, data, target) => {
         switch (data.action) {
             case commandConstants.LOAD_KEYS:
-                refreshRedisDbCommand({ ...props });
+                refreshDbCommand({ ...props });
                 break;
             case commandConstants.ADD_KEY:
-                addRedisKeyCommand({ ...props });
+                addKeyCommand({ ...props });
                 break;
             default:
                 break;

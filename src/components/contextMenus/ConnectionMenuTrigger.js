@@ -2,8 +2,8 @@ import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
 import { connectionActions } from '../../actions'
 import { withContextMenuTrigger } from './withMenuTrigger'
-import {refreshRedisConnectionCommand} from '../commands'
-
+import { refreshConnectionCommand,openConnectionCommand } from '../commands'
+  
 
 
 const Trigger = withContextMenuTrigger(contextMenuIds.CONNECTION_CONTEXTMENU_ID);
@@ -14,10 +14,10 @@ export const ConnectionMenuTrigger = props => {
         const { dispatch, connection } = props;
         switch (data.action) {
             case commandConstants.CONNECT_CONNECTION:
-                dispatch(connectionActions.getDbList(connection));
+                openConnectionCommand({dispatch,connection});
                 break;
             case commandConstants.REFRESH_CONNECTION:
-               refreshRedisConnectionCommand({dispatch,connectionId:connection});
+                refreshConnectionCommand({ dispatch, connectionId: connection });
                 break;
             default:
                 break;

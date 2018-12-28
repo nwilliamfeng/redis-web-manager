@@ -48,7 +48,7 @@ const PostForm = ({ redisKey, dispatch, dbIdx, dbId, connectionName, attachMessa
 }
 
 
-export const addRedisKeyCommand=({ dispatch, dbIdx, connectionName, dbId })=>{
+export const addKeyCommand=({ dispatch, dbIdx, connectionName, dbId })=>{
     const defaultKey={value: '', id: '', type: 1 ,key:''} //默认值，否则执行yup时会警告
     const renderAddForm = attachMessage => {
         return <PostForm redisKey={defaultKey} dbIdx={dbIdx}

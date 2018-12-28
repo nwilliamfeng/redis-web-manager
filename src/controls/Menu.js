@@ -9,6 +9,7 @@ const MenubarDiv = styled.div`
 
 const MenuItemDiv = styled.div`
     padding:2px 12px;
+    font-size:13px;
     background:${props => props.isOpen === true ? '#eee' : 'white'};
     border:${props => props.isTopMenu === true && props.isOpen === true ? '1px solid lightgray' : '1px solid transparent'};
     border-bottom:none;
