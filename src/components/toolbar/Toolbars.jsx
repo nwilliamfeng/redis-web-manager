@@ -9,7 +9,7 @@ import {RedisToolbar} from './RedisToolbar'
 const ToolbarDiv = styled.div`
     background:#eee;
     display:flex;
-    padding:4px 10px;
+    padding:4px 10px 4px 0px;
     width:100%;
     align-items:center;
     border-bottom:1px solid lightgray;
@@ -37,7 +37,7 @@ const ToolbarButton = styled(Button)`
     background-image:${props => props.backgroundImage ? `url(${props.backgroundImage})` : 'none'};
     background-repeat:no-repeat;
     margin-right:8px;
-    background-size:100%;
+    background-size:100%; 
  `
 
 
@@ -51,7 +51,7 @@ const ToolbarButton = styled(Button)`
                 <Seperator />
                  <RedisToolbar/>
             </ButtonDiv>
-            <KeySearch searchBoxStyle={{ height: 26, width: 200 }} />
+            <KeySearch searchBoxStyle={{ height: 26, width: 200,borderRadius:0 }} />
         </ToolbarDiv>
     }
 }

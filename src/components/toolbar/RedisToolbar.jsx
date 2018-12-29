@@ -111,19 +111,28 @@ class RedisToolbar extends Component {
         return this.getSelectedConnection().connectionState === connectionStates.CONNECTED;
     }
 
-    canActivate = () => {
-
+    canDelete=()=>{
+        const { selectedKeyId, selectedConnectionId } = this.props;
+        return selectedKeyId != null || selectedConnectionId != null;
     }
+
+    handleDeleteClick=()=>{
+        const { selectedKeyId, selectedConnectionId } = this.props;
+        if(selectedKeyId!==null) {
+           
+        }
+    }
+
 
     render() {
         return <ButtonDiv>
 
             <ToolbarButton title='添加Redis服务器' disabled={true} onClick={this.handleAddConnectionClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.ADD_REDIS_CONNECTION_IMG}></ToolbarButton>
-            <ToolbarButton title='添加Redis键' disabled={!this.canAddRedisKey()} onClick={this.handleAddKeyClick} height={'24px'} width={'22px'} backgroundImage={imgSrc.ADD_REDIS_KEY_IMG}></ToolbarButton>
+            <ToolbarButton title='添加Redis键' disabled={!this.canAddRedisKey()} onClick={this.handleAddKeyClick} height={'24px'} width={'20px'} backgroundImage={imgSrc.ADD_REDIS_KEY_IMG}></ToolbarButton>
             <ToolbarButton title='激活' disabled={!this.canOpen()} onClick={this.handleOpenClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.CONNECT_IMG}></ToolbarButton>
 
             <ToolbarButton title='刷新' disabled={!this.canRefresh()} onClick={this.handleRefreshClick} height={'22px'} width={'22px'} backgroundImage={imgSrc.REFRESH_IMG}></ToolbarButton>
-            <ToolbarButton title='删除' height={'28px'} width={'28px'} backgroundImage={imgSrc.DELETE_IMG}></ToolbarButton>
+            <ToolbarButton title='删除' disabled={!this.canDelete()} onClick={this.handleDeleteClick} height={'28px'} width={'28px'} backgroundImage={imgSrc.DELETE_IMG}></ToolbarButton>
         </ButtonDiv>
 
     }

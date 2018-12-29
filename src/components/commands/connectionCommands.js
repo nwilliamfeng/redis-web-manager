@@ -11,3 +11,5 @@ export const refreshConnectionCommand=({ dispatch, connectionId } )=>{
 export const openConnectionCommand=({ dispatch, connectionId } )=>{
     dispatch(connectionActions.getDbList(connectionId));
 }
+
+//export const addConnectionCommand=
