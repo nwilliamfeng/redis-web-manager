@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { IconList } from './IconList'
+import {isEqual} from 'lodash'
 import { ContextMenuTriggerRegists } from './ContextMenuTriggerRegists'
 import { ConnectionMenuTrigger, ConnectionContextMenu } from '../components/contextMenus'
 
@@ -126,7 +127,7 @@ const Trigger = (props) => {
 
 
 const ListViewItem = props => {
-    const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false, contextMenuTriggerId } = props
+    const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false } = props
     const handleClick = e => {
         if (onClick != null) {
            onClick(id);
@@ -140,7 +141,6 @@ const ListViewItem = props => {
     }
     const handleDoubleClick = e => {
         e.stopPropagation();
-        console.log('do double click');
         if (onDoubleClick != null) {
             onDoubleClick(id);
         }
@@ -170,29 +170,7 @@ const ListViewItem = props => {
         </Trigger>
     </React.Fragment>
 
-    // return <React.Fragment>
-    //     <ContextMenuTrigger id={contexMenuTriggerId}>
-    //         {isSmallIcon === false &&
-    //             <LargeItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
-    //                 <LargeContainer>
-    //                     <CheckBoxDiv className='checkBox' isVisible={isSelected} >
-    //                         <LargeCheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
-    //                     </CheckBoxDiv>
-    //                     <LargeIcon iconId={iconId} />
-    //                 </LargeContainer>
-    //                 <LargeWordDiv>{title}</LargeWordDiv>
-    //             </LargeItemDiv>}
-    //         {isSmallIcon === true &&
-    //             <SmallItemDiv onClick={handleClick} onDoubleClick={handleDoubleClick} isSelected={isSelected} title={title}>
-    //                 <CheckBoxDiv className='checkBox' isVisible={isSelected === true} >
-    //                     <CheckBox type='checkbox' isChecked={isSelected} handleCheck={handleCheck} />
-    //                 </CheckBoxDiv>
-    //                 <SmallIcon iconId={iconId} />
-    //                 <SmallWordDiv>{title}</SmallWordDiv>
-    //             </SmallItemDiv>
-    //         }
-    //     </ContextMenuTrigger>
-    // </React.Fragment>
+    
 }
 
 export class ListView extends Component {
@@ -203,24 +181,41 @@ export class ListView extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({ selectedItemIds: [] });
+        if(!isEqual( this.props,nextProps)){ //检查dbs的状态是否变化，比如刷新键
+            this.setState({ selectedItemIds: [] });
+            this.notifyItemsSelect([]);
+        }
+
+    }
+
+    notifyItemsSelect=ids=>{
+        const {onSelectItemsChange} =this.props;
+        if(onSelectItemsChange!=null){
+            onSelectItemsChange(ids);
+        }
     }
 
     handleItemClick = (id, isSelected) => {
         if (isSelected == null) {
             this.setState({ selectedItemIds: [id] });
+            this.notifyItemsSelect([id]);
             return;
         }
         const { selectedItemIds } = this.state;
         const idx = selectedItemIds.findIndex(x => x === id);
         if (idx >= 0) {
             if (isSelected === false) {
-                this.setState({ selectedItemIds: [...selectedItemIds.slice(0, idx), ...selectedItemIds.slice(idx + 1)] });
+                const sids= [...selectedItemIds.slice(0, idx), ...selectedItemIds.slice(idx + 1)];
+                this.setState({ selectedItemIds:sids });
+                this.notifyItemsSelect(sids);
             }
         }
         else if (isSelected === true) {
-            this.setState({ selectedItemIds: [...selectedItemIds, id] })
+            const sids= [...selectedItemIds, id];
+            this.setState({ selectedItemIds: sids });      
+            this.notifyItemsSelect(sids);
         }
+        
     }
 
     render() {

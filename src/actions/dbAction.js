@@ -13,7 +13,7 @@ export const dbActions = {
 
     getKeyList,
 
-    deleteKey,
+    
 
     addKey,
 }
@@ -37,19 +37,6 @@ function getKeyList(connectionName, dbIdx, dbId) {
     }
 }
 
-function deleteKey(connectionName, dbIdx, key, dbId) {
-    return async dispatch => {
-        try {
-            await redisApi.deleteKey(key, connectionName, dbIdx);
-            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
-            dispatch({ type: dialogConstants.CLOSE_DIALOG });
-        }
-        catch (error) {
-            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
-        }
-    }
-}
 
 
 function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
@@ -71,3 +58,6 @@ function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
 function selectDB(connectionId, dbId) {
     return { type: nodeTypes.DB, connectionId, dbId };
 }
+
+
+//function selectDBs(c/\)

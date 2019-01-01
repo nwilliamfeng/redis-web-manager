@@ -1,5 +1,4 @@
 import {menuIds} from './menuIds'
-import {spliter} from './spliter'
 import {commandAction} from '../../actions'
 import {tabPaneIds} from '../../constants'
 
@@ -7,7 +6,8 @@ const openSetting={
     isTopMenu:false,
     title:'设置',
     id: menuIds.SETTING_MENU,
-    command:dispatch=>{
+    command:props=>{
+        const {dispatch} =props;
         dispatch(commandAction.openTabPane(tabPaneIds.SETTING_PANE));
     },
 }
@@ -16,7 +16,7 @@ const openSetting={
  
 export const toolMenu={
     isTopMenu:true,
-    title:'工具',
+    title:'工具(T)',
     id: menuIds.TOOL_MENU,
     subItems:[openSetting],
 }

@@ -46,8 +46,8 @@ const ToolbarButton = styled(Button)`
     render() {
         return <ToolbarDiv>
             <ButtonDiv>
-                <ToolbarButton title='返回' height={'18px'} width={'18px'} backgroundImage={imgSrc.PREVIOUS_IMG}></ToolbarButton>
-                <ToolbarButton title='返回上级' height={'18px'} width={'18px'} backgroundImage={imgSrc.UP_IMG}></ToolbarButton>
+                <ToolbarButton title='返回' height={'16px'} width={'16px'} backgroundImage={imgSrc.PREVIOUS_IMG}></ToolbarButton>
+                <ToolbarButton title='返回上级' height={'16px'} width={'16px'} backgroundImage={imgSrc.UP_IMG}></ToolbarButton>
                 <Seperator />
                  <RedisToolbar/>
             </ButtonDiv>

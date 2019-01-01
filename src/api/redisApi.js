@@ -14,6 +14,26 @@ class RedisApi {
         return Data.map(x => { return { id: x.Name, name: x.Name, ip: x.IP, port: x.Port, connectionState:connectionStates.NONE} });
     }
 
+
+    /**
+     * 删除连接
+     * @param {*} connectionName 
+     */
+    async deleteConnection(connectionName) {
+        const json = await ApiHelper.get(`/config/rem?name=${connectionName}`);
+        const { Message, Code } = json;
+        if (Code === 2)
+            throw new Error(Message);
+    }
+
+    async getStringKeyValue(connectionName,dbIdx,key){
+        const json = await ApiHelper.get(`/redis/get?name=${connectionName}&dbindex=${dbIdx}&key=${key}`);
+        const { Message, Code ,Data} = json;
+        if (Code === 2)
+            throw new Error(Message);
+        return Data;
+    }
+
     /**
      * 删除键
      */

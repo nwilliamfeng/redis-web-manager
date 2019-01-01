@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { nodeTypes, contextMenuIds, connectionStates, dbStates } from '../../constants'
-import { connectionActions, keyActions, dbActions } from '../../actions'
+import { connectionActions, multiNodeAction, dbActions } from '../../actions'
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
@@ -56,7 +56,7 @@ class ListViewTabPane extends Component {
     }
 
     getListViewItems = () => {
-        const { selectedNodeType, connections, dbs, keys, selectedConnectionId, selectedKey, selectedDbId, } = this.props;
+        const { selectedNodeType, connections, dbs, keys } = this.props;
 
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
@@ -132,7 +132,6 @@ class ListViewTabPane extends Component {
     }
 
     handleDbNodeClick = id => {
-        console.log('click');
         const { dispatch, selectedConnectionId } = this.props;
         dispatch(dbActions.selectDB(selectedConnectionId, id));
     }
@@ -141,12 +140,19 @@ class ListViewTabPane extends Component {
         alert(key);
     }
 
+    handleSelectItemsChange = selectedItems => {
+       const { dispatch,selectedNodeType } = this.props;
+        if(selectedNodeType===nodeTypes.selectedItems || selectedNodeType===nodeTypes.DB){
+            dispatch(multiNodeAction.multiSelect(selectedItems));     
+        }
+      
+    }
+
     render() {
         console.log('render listviewpane');
         const items = this.getListViewItems();
-
         return <Div>
-            <ListView items={items} />
+            <ListView items={items} onSelectItemsChange={this.handleSelectItemsChange}/>
         </Div>
     }
 }

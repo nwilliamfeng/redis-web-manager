@@ -16,14 +16,13 @@ class Menubar extends Component {
         console.log('render menubar');
         const menuItems = [fileMenu, viewMenu,toolMenu];
         const {dispatch} =this.props;
-        return <Menu items={menuItems} dispatch={dispatch} />
+        return <Menu items={menuItems} dispatch={dispatch} {...this.props} />
       
     }
 }
 
 const mapStateToProps = state => {
-    const {connection} =state;
-    return {connection};
+   return {...state.connection,...state.state,...state.key,...state.db}
 }
 
 const menubar = connect(mapStateToProps)(Menubar)

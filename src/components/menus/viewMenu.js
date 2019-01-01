@@ -7,8 +7,8 @@ const openListView={
     isTopMenu:false,
     title:'列表视图',
     id: menuIds.OPEN_LISTVIEW_MENU,
-    command:dispatch=>{
-        console.log('do open list view');
+    command:props=>{
+        const {dispatch} =props;
         dispatch(commandAction.openTabPane(tabPaneIds.LIST_VIEW_PANE));
     },
 }
@@ -17,7 +17,7 @@ const openListView={
  
 export const viewMenu={
     isTopMenu:true,
-    title:'查看',
+    title:'查看(V)',
     id: menuIds.VIEW_MENU,
     subItems:[openListView],
 }

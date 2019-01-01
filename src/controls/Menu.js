@@ -4,22 +4,27 @@ import Popup from "reactjs-popup"
 
 const MenubarDiv = styled.div`
     display:flex;
-
 `
 
-const MenuItemDiv = styled.div`
+const MenuItemButton = styled.button`
+    outline:none;
+    width:100%;
     padding:2px 10px;
     font-size:13px;
+    text-align:${props => props.isTopMenu === true ? 'center' : 'left'};
     background:${props => props.isOpen === true ? '#eee' : 'white'};
     border:${props => props.isTopMenu === true && props.isOpen === true ? '1px solid lightgray' : '1px solid transparent'};
     border-bottom:none;
-    max-width:${props => props.isTopMenu === true ? '120px' : 'none'};
+    max-width:${props => props.isTopMenu === true ? '70px' : 'none'};
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
     cursor:default;
     &:hover{
         background:#eee;
+    }
+    &:disabled{
+        opacity:0.3;
     }
     -webkit-user-select: none; /* Chrome/Safari */        
     -moz-user-select: none; /* Firefox */
@@ -60,11 +65,19 @@ const popupContentStyle = () => {
 class MenuItem extends Component {
 
     handleClick = () => {
-        const { command, popup,dispatch } = this.props;
+        const { command, popup,...others } = this.props;
         if (command != null) {
-            command(dispatch);
-            popup.closePopup();
+            command(others);
+            popup.closePopup();  
         }
+    }
+
+    getDisable=()=>{
+        const { disableHandle,...others } = this.props;
+        if(disableHandle==null){
+            return false;
+        }
+        return disableHandle(others);
     }
 
     isSpliter = () => {
@@ -73,11 +86,10 @@ class MenuItem extends Component {
     }
 
     render() {
-
-        const { title, subItems, isTopMenu,dispatch } = this.props;
+        const { title, subItems, isTopMenu,dispatch , ...others} = this.props;
         return <React.Fragment>
             {subItems && <Popup
-                trigger={open => <MenuItemDiv isOpen={open} isTopMenu={isTopMenu}>{title}</MenuItemDiv>}
+                trigger={open => <MenuItemButton isOpen={open} isTopMenu={isTopMenu}>{title}</MenuItemButton>}
                 position={'bottom left'}
                 closeOnDocumentClick
                 mouseLeaveDelay={300}
@@ -87,11 +99,11 @@ class MenuItem extends Component {
                 contentStyle={popupContentStyle(0, 0)}
                 arrow={false} >
                 <React.Fragment>
-                    {subItems && subItems.map(x => <MenuItem {...x} key={x.id} popup={this.popup} dispatch={dispatch}/>)}
+                    {subItems && subItems.map(x => <MenuItem {...x} key={x.id} popup={this.popup} dispatch={dispatch} {...others}/>)}
                 </React.Fragment>
 
             </Popup>}
-            {!subItems && !this.isSpliter() && <MenuItemDiv onClick={this.handleClick} isTopMenu={isTopMenu}>{title}</MenuItemDiv>}
+            {!subItems && !this.isSpliter() && <MenuItemButton disabled={this.getDisable()}  onClick={this.handleClick} isTopMenu={isTopMenu}>{title}</MenuItemButton>}
             {!subItems && this.isSpliter() && <Spliter />}
         </React.Fragment>
 
@@ -100,11 +112,13 @@ class MenuItem extends Component {
 
 
 export class Menu extends Component {
+
+    
     render() {
         console.log('render menu');
-        const { items,dispatch } = this.props;
+        const { items,...others } = this.props;
         return <MenubarDiv>
-            {items && items.map(x => <MenuItem key={x.id} {...x}  dispatch={dispatch}/>)}
+            {items && items.map(x => <MenuItem key={x.id} {...x}  {...others}/>)}
         </MenubarDiv>
     }
 }

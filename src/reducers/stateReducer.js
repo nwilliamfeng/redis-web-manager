@@ -1,10 +1,11 @@
-import { nodeTypes, commandConstants, tabPaneIds } from '../constants';
+import { nodeTypes, commandConstants, tabPaneIds, multiNodeConstants } from '../constants';
 import { findIndex } from 'lodash';
 
 const defaultState = {
     selectedNodeType: nodeTypes.ROOT,
     tabPanes: [tabPaneIds.LIST_VIEW_PANE, tabPaneIds.SETTING_PANE],
     activeTabPane: tabPaneIds.LIST_VIEW_PANE,
+    multiSelectItems: [],
 }
 
 export const stateReducer = (state = defaultState, action) => {
@@ -13,39 +14,48 @@ export const stateReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedNodeType: action.type,
+
             }
 
         case nodeTypes.DB:
             return {
                 ...state,
                 selectedNodeType: action.type,
+
             }
 
         case nodeTypes.KEY:
             return {
                 ...state,
                 selectedNodeType: action.type,
+
+            }
+
+        case multiNodeConstants.MULTI_SELECT:
+            return {
+                ...state,
+                multiSelectItems: action.nodes,
             }
 
         case commandConstants.OPEN_TAB:
-            return doOpenTabPane(state,action.tabPaneId);
+            return doOpenTabPane(state, action.tabPaneId);
 
         case commandConstants.CLOSE_TAB:
-            return doCloseTabPane(state,action.tabPaneId);
+            return doCloseTabPane(state, action.tabPaneId);
 
         case commandConstants.SELECT_TAB:
-            return doSelectTabPane(state,action.tabPaneId);
+            return doSelectTabPane(state, action.tabPaneId);
 
         default:
             return state;
     }
 }
 
-function doSelectTabPane(state,tabPaneId){
-    return {...state,activeTabPane:tabPaneId};
+function doSelectTabPane(state, tabPaneId) {
+    return { ...state, activeTabPane: tabPaneId };
 }
 
-function doOpenTabPane(state,tabPaneId) {
+function doOpenTabPane(state, tabPaneId) {
     let { tabPanes, activeTabPane } = state;
 
     if (tabPanes.some(x => x === tabPaneId) === false) {
@@ -59,7 +69,7 @@ function doOpenTabPane(state,tabPaneId) {
     }
 }
 
-function doCloseTabPane(state,tabPaneId) {
+function doCloseTabPane(state, tabPaneId) {
     let { tabPanes, activeTabPane } = state;
     const idx = findIndex(tabPanes, x => x === tabPaneId);
     if (idx < 0) {

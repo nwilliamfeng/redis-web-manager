@@ -13,6 +13,8 @@ export const connectionActions = {
     getDbList,
 
     refreshDbList,
+
+    deleteConnection,
 }
 
 
@@ -44,6 +46,21 @@ function getDbList(connectionId) {
     }
 }
 
+
+function deleteConnection(connectionId){
+    return async dispatch => {
+        try {
+            await redisApi.deleteConnection(escape(connectionId));
+            const connections = await redisApi.getConfigs();
+            dispatch({ type: connectionConstants.LOAD_CONNECTION_LIST, connections });
+            dispatch({ type: dialogConstants.CLOSE_DIALOG });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+        }
+    }
+}
+
 function refreshDbList(connectionId) {
     return async dispatch => {
         dispatch({ type: connectionConstants.UPDATE_STATE, connectionId, connectionState: connectionStates.CONNECTING });
@@ -63,5 +80,5 @@ function updateConnectionState(connectionId, connectionState = connectionStates.
 }
 
 function selectConnection(connectionId) {
-    return { type: nodeTypes.CONNECTION, connectionId };
+    return { type: nodeTypes.CONNECTION, connectionId};
 }

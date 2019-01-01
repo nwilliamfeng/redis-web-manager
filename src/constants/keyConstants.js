@@ -6,6 +6,6 @@ export const keyConstants={
 
     SELECT_KEY:'SELECT_KEY',
 
-   
+    LOAD_KEY_VALUE:'LOAD_KEY_VALUE',
 
 }

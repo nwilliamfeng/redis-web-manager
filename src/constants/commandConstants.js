@@ -25,7 +25,10 @@ export const commandConstants={
      */
     CONNECT_CONNECTION:'CONNECT_CONNECTION',
 
-     
+    /**
+     * 删除连接
+     */
+    DELETE_CONNECTION:'DELETE_CONNECTION',
 
     /**
      * 加载键

@@ -18,4 +18,6 @@ export const imgSrc={
     REFRESH_IMG:require('../assets/imgs/refresh.png'),
 
     CONNECT_IMG:require('../assets/imgs/connect.png'),
+
+    MODIFY_IMG:require('../assets/imgs/edit.png'),
 }
