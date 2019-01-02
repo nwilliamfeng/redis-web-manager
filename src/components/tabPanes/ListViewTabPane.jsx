@@ -66,7 +66,7 @@ class ListViewTabPane extends Component {
             case nodeTypes.DB:
                 return keys.map(x => { return this.mapKeyToItem(x) });
             case nodeTypes.KEY:
-                return keys.map(x => { return this.mapKeyToItem(x) });
+                return [];
 
             default:
                 return [];

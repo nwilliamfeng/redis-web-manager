@@ -1,3 +1,4 @@
+import { nodeTypes } from "../../constants";
 
 class CommandHelper {
     getSelectedDb = props => {
@@ -9,18 +10,24 @@ class CommandHelper {
     }
 
     getSelectedKey = props => {
-        const { selectedKeyId, keys } = props;
-        if (selectedKeyId == null) {
+
+        const { selectedKeyId, keys, multiSelectItems, selectedNodeType } = props;
+        if (selectedKeyId == null && multiSelectItems.length !== 1) {
             return null;
         }
+        //如果有多选的项优先处理
+        if (multiSelectItems.length === 1 && selectedNodeType === nodeTypes.DB) {
+            return keys.find(x => x.id === multiSelectItems[0]);
+        }
+
         return keys.find(x => x.id === selectedKeyId);
     }
 
-    getKeyTypeName=keyValue=>{
+    getKeyTypeName = keyValue => {
         switch (keyValue) {
             case 1:
                 return 'string';
-            case 2:         
+            case 2:
                 return 'hash';
             case 3:
                 return 'set';

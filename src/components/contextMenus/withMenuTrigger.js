@@ -6,22 +6,8 @@ const collect = (props) => {
 }
 
 
-// export const withContextMenuTrigger = ({ id, getAttributes, getHandleItemClick }) => props => {
-//    return <ContextMenuTrigger id={id}
-//         attributes={getAttributes(props)}
-   
-//         onItemClick={getHandleItemClick(props)}
-//         collect={collect} {...props}>
-
-//     </ContextMenuTrigger>
-// }
-
-
-
 export const withContextMenuTrigger =triggerId => props => {
-    return <ContextMenuTrigger id={triggerId}      
-         collect={collect} {...props}>
-     </ContextMenuTrigger>
+    return <ContextMenuTrigger id={triggerId} collect={collect} {...props}/>
  }
  
  

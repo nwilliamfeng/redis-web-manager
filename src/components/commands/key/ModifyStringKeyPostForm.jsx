@@ -27,8 +27,8 @@ export const ModifyStringKeyPostForm = ({ redisKey, dispatch, dbIdx, dbId, conne
         initialValues={redisKey}
         validationSchema={validationSchema}
         onSubmit={values => {
-            
-             dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId,commandHelper.getKeyTypeValue( values.type), values.id,  values.value));
+            const oldKey =redisKey.id;
+             dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId,commandHelper.getKeyTypeValue( values.type), values.id,  values.value,oldKey));
            
         }}
         render={({ values, errors, isSubmitting }) => (<div style={{ padding: 10 }}>

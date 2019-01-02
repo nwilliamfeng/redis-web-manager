@@ -12,15 +12,16 @@ export const DbMenuTrigger = props => {
                 refreshDbCommand({ ...props });
                 break;
             case commandConstants.ADD_KEY:
-                addKeyCommand({ ...props });
+                addKeyCommand({ ...props }).execute();
                 break;
             default:
                 break;
         }
     }
     const isRefreshEnable = () => {
-        const { isKeyLoaded } = props;
-        return isKeyLoaded;
+        // const { isKeyLoaded } = props;
+        // return isKeyLoaded;
+        return addKeyCommand({ ...props }).canExecute() ;
     }
 
     return <Trigger {...props} isRefreshEnable={isRefreshEnable()} onItemClick={handleItemClick} />

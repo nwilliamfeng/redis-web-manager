@@ -48,10 +48,10 @@ function deleteKeys(connectionName, dbIdx, keys, dbId) {
 
  
 
-function modifyStringKey(connectionName, dbIdx, dbId, type,  key,value) {
+function modifyStringKey(connectionName, dbIdx, dbId, type,  key,value,oldKey) {
     return async dispatch => {
         try {
-            await redisApi.deleteKey(key, connectionName, dbIdx);
+            await redisApi.deleteKey(oldKey, connectionName, dbIdx);
             await redisApi.appendKey(type, key,null,  value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch(dialogAction.closeDialog());

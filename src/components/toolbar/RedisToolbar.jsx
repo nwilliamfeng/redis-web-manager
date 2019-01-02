@@ -5,7 +5,7 @@ import { imgSrc } from '../imgSrc'
 import { Button } from '../../controls'
 import { connect } from 'react-redux'
 import { addKeyCommand,deleteKeyCommand, refreshConnectionCommand, refreshDbCommand,modifyKeyCommand,
-     openConnectionCommand, multiDeleteKeyCommand ,deleteConnectionCommand} from '../commands'
+     openConnectionCommand, multiDeleteKeyCommand ,deleteConnectionCommand,compositModifyCommand} from '../commands'
 
 
 const ButtonDiv = styled.div`
@@ -113,11 +113,11 @@ class RedisToolbar extends Component {
     }
 
     canModify=()=>{
-        return modifyKeyCommand(this.props).canExecute();
+       return compositModifyCommand(this.props).canExecute();
     }
 
     handleModifyClick=()=>{
-        modifyKeyCommand(this.props).execute();
+        compositModifyCommand(this.props).execute();
     }
 
     canDelete=()=>{

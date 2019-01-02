@@ -3,12 +3,12 @@ import { NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, } from '../controls/par
 import { DbMenuTrigger } from './contextMenus'
 import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
-import { nodeTypes,dbStates } from '../constants'
+import { nodeTypes, dbStates } from '../constants'
 import { withSimpleExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { Key } from './Key'
 import { DBIcon } from './icons'
-import {isEqual} from 'lodash'
+import { isEqual } from 'lodash'
 
 const Content = props => {
     const { name, isLoading, keys } = props;
@@ -32,46 +32,46 @@ class DB extends Component {
     constructor(props) {
         console.log('create db ' + props.dbIdx);
         super(props);
-        this.state = {  keys: [] };
+        this.state = { keys: [] };
     }
 
     handleClick = () => {
-        const { dispatch, connectionName, id,dbIdx, selectedDbId, selectedNodeType } = this.props;
+        const { dispatch, connectionName, id, dbIdx, selectedDbId, selectedNodeType } = this.props;
         if (!(id === selectedDbId) || selectedNodeType !== nodeTypes.DB) {
-            dispatch(dbActions.selectDB(connectionName, id,dbIdx));
+            dispatch(dbActions.selectDB(connectionName, id, dbIdx));
         }
     }
 
     handleKeyItemClick = keyId => {
-        const { dispatch, connectionName,dbIdx, id, selectedKeyId, selectedNodeType } = this.props;
+        const { dispatch, connectionName, dbIdx, id, selectedKeyId, selectedNodeType } = this.props;
         if (!(keyId === selectedKeyId) || selectedNodeType !== nodeTypes.KEY) {
-            dispatch(keyActions.selectKey(connectionName, id,dbIdx, keyId));
+            dispatch(keyActions.selectKey(connectionName, id, dbIdx, keyId));
         }
     }
 
 
     handleDoubleClick = () => {
-        const { dbIdx, connectionName,id ,dbState} = this.props;
-        if (dbState ===  dbStates.NONE) {            
+        const { dbIdx, connectionName, id, dbState } = this.props;
+        if (dbState === dbStates.NONE) {
             const { dispatch } = this.props;
-            dispatch(dbActions.getKeyList(connectionName, dbIdx,id));
+            dispatch(dbActions.getKeyList(connectionName, dbIdx, id));
         }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps==null){
-            return ;
+        if (nextProps == null) {
+            return;
         }
         if (nextProps.dbState === dbStates.KEY_LOAD_SUCCESS) {
             const { keys, selectedDbId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
             if (keys != null && selectedDbId === this.props.id) {
-                this.setState({keys });
+                this.setState({ keys });
             }
         }
         else if (nextProps.dbState === dbStates.NONE) {
-            this.setState({keys:[]});
+            this.setState({ keys: [] });
         }
-        
+
     }
 
     isSelected = () => {
@@ -98,7 +98,7 @@ class DB extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { id, isVisible } = this.props;
-      
+
 
         if (nextProps == null) {
             return false;
@@ -112,14 +112,14 @@ class DB extends Component {
             return true;
         }
 
-        if(this.props.selectedDbId===this.props.id){
-            if(!isEqual( this.props.keys,nextProps.keys)){ //检查keys的状态是否变化，比如刷新键
+        if (this.props.selectedDbId === this.props.id) {
+            if (!isEqual(this.props.keys, nextProps.keys)) { //检查keys的状态是否变化，比如刷新键
                 return true;
             }
         }
 
         const currConnectionName = this.props.connectionName;
-     
+
         const { selectedNodeType, selectedConnectionId, selectedDbId, selectedKeyId } = nextProps;
 
         switch (selectedNodeType) {
@@ -152,28 +152,27 @@ class DB extends Component {
 
 
     render() {
-        const { id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType,dbState, selectedKeyId } = this.props;
-        const { keys  } = this.state;
-
-        console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}` );
+        const { dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
+        const { keys } = this.state;
+        const { id, ...others } = this.props
+        console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
 
         return <React.Fragment>
-            {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
-
+            {isVisible && <DbMenuTrigger {...others} dbId={id} isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS} >
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
                     onDoubleClick={this.handleDoubleClick}
                     isSelected={this.isSelected()}
                     handleClick={this.handleClick}
-                    isLoading={dbState===dbStates.KEY_LOADING}
-                    isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS}
+                    isLoading={dbState === dbStates.KEY_LOADING}
+                    isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS}
                     style={offSetStyle}
                     paddingLeft={30}>
                     {keys && keys.length > 0 &&
                         keys.map(x => <Key
                             keyName={x.key}
                             id={x.id}
-                            isSelected={ x.id === selectedKeyId && selectedNodeType === nodeTypes.KEY}
+                            isSelected={x.id === selectedKeyId && selectedNodeType === nodeTypes.KEY}
                             keyType={x.type}
                             key={x.key}
                             handleClick={this.handleKeyItemClick}
@@ -189,10 +188,11 @@ class DB extends Component {
 }
 
 function mapStateToProps(state) {
-    const { selectedNodeType } = state.state;
-    const { selectedDbId } = state.db;
-    const { selectedConnectionId } = state.connection;
-    return { selectedNodeType, selectedDbId, selectedConnectionId, ...state.key };
+    // const { selectedNodeType } = state.state;
+    // const { selectedDbId } = state.db;
+    // const { selectedConnectionId } = state.connection;
+    // return { selectedNodeType, selectedDbId, selectedConnectionId, ...state.key };
+    return { ...state.state, ...state.key, ...state.db, ...state.connection }
 }
 
 

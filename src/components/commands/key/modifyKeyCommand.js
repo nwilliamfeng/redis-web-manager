@@ -3,6 +3,7 @@ import { dialogAction, keyActions } from '../../../actions'
 import { commandHelper } from '../commandHelper'
 import {redisApi} from '../../../api'
 import { ModifyStringKeyPostForm } from './ModifyStringKeyPostForm'
+import { nodeTypes } from '../../../constants';
 
  
 /**
@@ -12,12 +13,12 @@ import { ModifyStringKeyPostForm } from './ModifyStringKeyPostForm'
 export const modifyKeyCommand = props => {
     return {
         canExecute: () => {
-            const { selectedKeyId } = props;
-            return selectedKeyId != null;
+            const { selectedKeyId,multiSelectItems,selectedNodeType } = props;
+            return (selectedNodeType===nodeTypes.DB && multiSelectItems.length===1) || selectedKeyId != null  ;
         },
 
         execute: async() => {
-           
+     
             const sk =commandHelper.getSelectedKey(props);
             const {dbIdx,dbId,connectionName,key,type}=sk;
             const { dispatch } = props;
