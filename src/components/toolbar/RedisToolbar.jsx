@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { dbStates, connectionStates, nodeTypes } from '../../constants'
+import { dbStates, connectionStates } from '../../constants'
 import { imgSrc } from '../imgSrc'
 import { Button } from '../../controls'
 import { connect } from 'react-redux'
-import { addKeyCommand,deleteKeyCommand, refreshConnectionCommand, refreshDbCommand,modifyKeyCommand,
-     openConnectionCommand, multiDeleteKeyCommand ,deleteConnectionCommand,compositModifyCommand} from '../commands'
+import { compositAddKeyCommand, refreshConnectionCommand, refreshDbCommand,
+     openConnectionCommand ,compositDeleteCommand,compositModifyCommand} from '../commands'
 
 
 const ButtonDiv = styled.div`
@@ -32,8 +32,6 @@ class RedisToolbar extends Component {
     handleAddConnectionClick = () => {
         console.log(this.props);
     }
-
-    
 
     /**
      * 刷新db或者connection
@@ -94,11 +92,11 @@ class RedisToolbar extends Component {
     }
 
     canAddRedisKey = () => {
-        return addKeyCommand(this.props).canExecute();
+        return compositAddKeyCommand(this.props).canExecute();
     }
 
     handleAddKeyClick = () => {
-        addKeyCommand(this.props).execute();
+        compositAddKeyCommand(this.props).execute();
     }
 
     canRefresh = () => {
@@ -121,28 +119,11 @@ class RedisToolbar extends Component {
     }
 
     canDelete=()=>{
-        const {multiSelectItems, selectedKeyId, selectedConnectionId } = this.props;
-        return multiSelectItems.length>0 || selectedKeyId != null || selectedConnectionId != null;
+        return compositDeleteCommand(this.props).canExecute();
     }
 
     handleDeleteClick=()=>{
-        const { selectedKeyId,selectedDbId, selectedConnectionId,dispatch,selectedNodeType,multiSelectItems,keys } = this.props;
-        if(multiSelectItems.length>0){//优先处理多选
-            if(selectedNodeType===nodeTypes.DB){
-                const dbIdx=this.getSelectedDb().dbIdx;
-                const keyNames =multiSelectItems.map(x=>keys.find(a=>a.id===x).key);
-                multiDeleteKeyCommand({dispatch,connection:selectedConnectionId, dbIdx,  keyNames,dbId: selectedDbId});
-            }
-           
-            return;
-        }
-        if(selectedKeyId!==null) {
-            const key=this.getSelectedKey();
-            deleteKeyCommand({dispatch,connection:selectedConnectionId,dbId:selectedDbId,dbIdx:key.dbIdx,keyName:key.key});
-        }
-        else{
-            deleteConnectionCommand({dispatch,connectionId:selectedConnectionId});
-        }
+        compositDeleteCommand(this.props).execute();     
     }
 
 

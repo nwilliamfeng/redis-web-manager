@@ -5,6 +5,8 @@ export const menuIds={
      */
     FILE_MENU:'FILE_MENU',
 
+    EDIT_MENU:'EDIT_MENU',
+
     /**
      * 新建连接
      */
@@ -14,6 +16,10 @@ export const menuIds={
      * 新建Key
      */
     NEW_KEY:'NEW_KEY',
+
+    DELETE_KEY:'DELETE_KEY',
+
+    MODIFY_KEY:'MODIFY_KEY',
 
     /**
      * 刷新

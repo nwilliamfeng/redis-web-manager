@@ -57,7 +57,7 @@ const popupContentStyle = () => {
         border: "1px solid lightgray",
         minWidth: 150,
         backgroundColor: 'white',
-
+        zIndex:100,
     }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
-import {keyActions, dbActions, dialogAction } from '../../actions'
-import { ConfirmButton, ResetButton, SubmitButton } from '../controlParts'
+import {keyActions, dialogAction } from '../../../actions'
+import { ConfirmButton } from '../../controlParts'
 
 
 const DeleteKeyConfirm = props => {

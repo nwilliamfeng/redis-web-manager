@@ -152,13 +152,13 @@ class DB extends Component {
 
 
     render() {
-        const { dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
+        const {  id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
         const { keys } = this.state;
-        const { id, ...others } = this.props
+      
         console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
 
         return <React.Fragment>
-            {isVisible && <DbMenuTrigger {...others} dbId={id} isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS} >
+             {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
                     onDoubleClick={this.handleDoubleClick}
@@ -188,11 +188,11 @@ class DB extends Component {
 }
 
 function mapStateToProps(state) {
-    // const { selectedNodeType } = state.state;
-    // const { selectedDbId } = state.db;
-    // const { selectedConnectionId } = state.connection;
-    // return { selectedNodeType, selectedDbId, selectedConnectionId, ...state.key };
-    return { ...state.state, ...state.key, ...state.db, ...state.connection }
+    const { selectedNodeType } = state.state;
+    const { selectedDbId } = state.db;
+    const { selectedConnectionId } = state.connection;
+    return { selectedNodeType, selectedDbId, selectedConnectionId, ...state.key };
+   
 }
 
 

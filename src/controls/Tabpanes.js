@@ -22,7 +22,7 @@ const TabPaneDiv = styled.div`
     border-top:none;
     border-bottom:${props => props.isSelected === true ? '1px solid transparent' : '1px solid #d3cfcf'}; 
     margin-left:${props => props.isSelected === true ? '-2px' : '0px'};
-    z-index:${props => props.isSelected === true ? '100' : '0'};
+    z-index:${props => props.isSelected === true ? '10' : '0'};
     padding:4px 10px;
     width:130px;
     max-width:130px;

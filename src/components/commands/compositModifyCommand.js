@@ -1,5 +1,6 @@
-import { modifyKeyCommand } from './key'
+import { modifyStringKeyCommand } from './key'
 import { nodeTypes } from '../../constants'
+import  {commandHelper} from './commandHelper'
 
 /**
  * 修改键命令
@@ -8,7 +9,7 @@ import { nodeTypes } from '../../constants'
 export const compositModifyCommand = props => {
     return {
         canExecute: () => {
-            const { selectedKeyId, selectedConnectionId, multiSelectItems } = props;
+            const { selectedKeyId, multiSelectItems } = props;
             if(multiSelectItems.length>1){
                 return false;
             }
@@ -16,18 +17,21 @@ export const compositModifyCommand = props => {
         },
 
         execute: async () => {
-            const { selectedKeyId, selectedConnectionId, multiSelectItems, selectedNodeType } = props;
+            const {dispatch, selectedKeyId, selectedConnectionId, multiSelectItems, selectedNodeType } = props;
+            const sk =commandHelper.getSelectedKey(props);
+            const {dbIdx,dbId,connectionName,key,type}=sk;
+            const entity={dispatch,key,keyType:type,dbIdx,dbId,connectionName};
             if (multiSelectItems.length > 0) {
                 if (selectedNodeType === nodeTypes.CONNECTION) {
                    // alert('do connection');
                 }
                 else if (selectedNodeType === nodeTypes.DB) {
-                    modifyKeyCommand(props).execute();
+                    modifyStringKeyCommand(entity);
                 }
             }
             else {
                 if (selectedKeyId != null) {
-                    modifyKeyCommand(props).execute();
+                    modifyStringKeyCommand(entity);
                 }
                 else if (selectedConnectionId != null) {
                    // alert('do connection');

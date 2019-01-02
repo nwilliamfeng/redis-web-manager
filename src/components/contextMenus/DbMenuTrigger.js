@@ -19,9 +19,9 @@ export const DbMenuTrigger = props => {
         }
     }
     const isRefreshEnable = () => {
-        // const { isKeyLoaded } = props;
-        // return isKeyLoaded;
-        return addKeyCommand({ ...props }).canExecute() ;
+        const { isKeyLoaded } = props;
+        return isKeyLoaded;
+       
     }
 
     return <Trigger {...props} isRefreshEnable={isRefreshEnable()} onItemClick={handleItemClick} />
