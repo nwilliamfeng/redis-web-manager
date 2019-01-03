@@ -23,6 +23,11 @@ class CommandHelper {
         return keys.find(x => x.id === selectedKeyId);
     }
 
+    getSelectedConnection = props => {
+        const { selectedConnectionId, connections } =  props;
+        return selectedConnectionId == null ? null : connections.find(x => x.id === selectedConnectionId);
+    }
+
     getKeyTypeName = keyValue => {
         switch (keyValue) {
             case 1:

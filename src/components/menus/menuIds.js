@@ -21,10 +21,14 @@ export const menuIds={
 
     MODIFY_KEY:'MODIFY_KEY',
 
+    REFRESH_ALL_CONNECTION_MENU:'REFRESH_ALL_CONNECTION_MENU',
+
     /**
      * 刷新
      */
     REFRESH_MENU:'REFRESH_MENU',
+
+    LOAD_MENU:'LOAD_MENU',
 
     /**
      * 打开视图列表

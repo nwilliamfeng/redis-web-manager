@@ -25,7 +25,7 @@ export const Key = ({id, keyName, keyType, isSelected, handleClick,dispatch,dbId
         handleClick(id);
     }
     return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
-        <KeyMenuTrigger dispatch={dispatch} dbIdx={dbIdx} connection={connectionName} keyName={keyName} dbId={dbId} >
+        <KeyMenuTrigger dispatch={dispatch} dbIdx={dbIdx} connection={connectionName} keyName={keyName} dbId={dbId} keyType={keyType} >
             <HoverDiv>
                 <SelectContent isSelected={isSelected} handleClick={handleClick} keyName={keyName}    />
             </HoverDiv>

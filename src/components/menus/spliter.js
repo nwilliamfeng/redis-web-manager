@@ -1,5 +1,7 @@
-import {mathUtil} from '../../utils'
+import { mathUtil } from '../../utils'
 
-export const spliter={
-    id:mathUtil.guid(),
+export const spliter = () => {
+   return {
+        id: mathUtil.guid(),
+        }
 }

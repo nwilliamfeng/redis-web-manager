@@ -18,5 +18,4 @@ const DeleteConnectionConfirm = props => {
 
 export const deleteConnectionCommand=({ dispatch, connectionId } )=>{
     dispatch(dialogAction.openConfirm('提醒', () => <DeleteConnectionConfirm {...{ dispatch, connectionId }} />));
-    
 }

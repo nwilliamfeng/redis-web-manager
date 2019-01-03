@@ -1,5 +1,4 @@
 import {menuIds} from './menuIds'
-import {spliter} from './spliter'
 import {tabPaneIds} from '../../constants'
 import {commandAction} from '../../actions'
 

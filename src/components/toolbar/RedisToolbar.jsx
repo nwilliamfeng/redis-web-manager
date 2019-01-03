@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { dbStates, connectionStates } from '../../constants'
 import { imgSrc } from '../imgSrc'
 import { Button } from '../../controls'
 import { connect } from 'react-redux'
-import { compositAddKeyCommand, refreshConnectionCommand, refreshDbCommand,
-     openConnectionCommand ,compositDeleteCommand,compositModifyCommand} from '../commands'
+import {
+    compositAddKeyCommand, compositRefreshCommand, compositOpenCommand,
+    compositDeleteCommand, compositModifyCommand
+} from '../commands'
 
 
 const ButtonDiv = styled.div`
@@ -33,30 +34,12 @@ class RedisToolbar extends Component {
         console.log(this.props);
     }
 
+    canRefresh = () => compositRefreshCommand(this.props).canExecute();
+
     /**
      * 刷新db或者connection
      */
-    handleRefreshClick = () => {
-        const { dispatch, selectedDbId, selectedConnectionId } = this.props;
-        if (selectedDbId != null) {
-            const db = this.getSelectedDb();
-            refreshDbCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
-        }
-        else {
-            refreshConnectionCommand({ dispatch, connectionId: selectedConnectionId });
-        }
-    }
-
-    handleOpenClick = () => {
-        const { dispatch, selectedDbId, selectedConnectionId } = this.props;
-        if (selectedDbId != null) {
-            const db = this.getSelectedDb();
-            refreshDbCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
-        }
-        else {
-            openConnectionCommand({ dispatch, connectionId: selectedConnectionId });
-        }
-    }
+    handleRefreshClick = () => compositRefreshCommand(this.props).execute();
 
     getSelectedDb = () => {
         const { selectedDbId, dbs } = this.props;
@@ -66,9 +49,9 @@ class RedisToolbar extends Component {
         return dbs.find(x => x.id === selectedDbId);
     }
 
-    getSelectedKey=()=>{
+    getSelectedKey = () => {
         const { keys, selectedKeyId } = this.props;
-        return keys.find(x=>x.id===selectedKeyId);
+        return keys.find(x => x.id === selectedKeyId);
     }
 
     getSelectedConnection = () => {
@@ -76,60 +59,24 @@ class RedisToolbar extends Component {
         return selectedConnectionId == null ? null : connections.find(x => x.id === selectedConnectionId);
     }
 
-    canOpen = () => {
-        const { selectedConnectionId, selectedDbId } = this.props;
-        if (selectedConnectionId == null) {
-            return false;
-        }
-        if (selectedDbId != null) {
-            return this.getSelectedDb().dbState === dbStates.NONE;
-        }
-        else {
-            const conn = this.getSelectedConnection();
-            return conn == null ? false : conn.connectionState === connectionStates.NONE;
-        }
+    canOpen = () => compositOpenCommand(this.props).canExecute();
 
-    }
+    handleOpenClick = () => compositOpenCommand(this.props).execute();
 
-    canAddRedisKey = () => {
-        return compositAddKeyCommand(this.props).canExecute();
-    }
+    canAddRedisKey = () => compositAddKeyCommand(this.props).canExecute();
 
-    handleAddKeyClick = () => {
-        compositAddKeyCommand(this.props).execute();
-    }
+    handleAddKeyClick = () => compositAddKeyCommand(this.props).execute();
 
-    canRefresh = () => {
-        const { selectedDbId, selectedConnectionId } = this.props;
-        if (selectedDbId == null && selectedConnectionId == null) {
-            return false;
-        }
-        if (selectedDbId != null) {
-            return this.getSelectedDb().dbState === dbStates.KEY_LOAD_SUCCESS;
-        }
-        return this.getSelectedConnection().connectionState === connectionStates.CONNECTED;
-    }
+    canModify = () => compositModifyCommand(this.props).canExecute();
 
-    canModify=()=>{
-       return compositModifyCommand(this.props).canExecute();
-    }
+    handleModifyClick = () => compositModifyCommand(this.props).execute();
 
-    handleModifyClick=()=>{
-        compositModifyCommand(this.props).execute();
-    }
+    canDelete = () => compositDeleteCommand(this.props).canExecute();
 
-    canDelete=()=>{
-        return compositDeleteCommand(this.props).canExecute();
-    }
-
-    handleDeleteClick=()=>{
-        compositDeleteCommand(this.props).execute();     
-    }
-
+    handleDeleteClick = () => compositDeleteCommand(this.props).execute();
 
     render() {
         return <ButtonDiv>
-
             <ToolbarButton title='添加Redis服务器' disabled={true} onClick={this.handleAddConnectionClick} height={'20px'} width={'20px'} backgroundImage={imgSrc.ADD_REDIS_CONNECTION_IMG}></ToolbarButton>
             <ToolbarButton title='添加Redis键' disabled={!this.canAddRedisKey()} onClick={this.handleAddKeyClick} height={'24px'} width={'20px'} backgroundImage={imgSrc.ADD_REDIS_KEY_IMG}></ToolbarButton>
             <ToolbarButton title='加载' disabled={!this.canOpen()} onClick={this.handleOpenClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.CONNECT_IMG}></ToolbarButton>
@@ -138,7 +85,6 @@ class RedisToolbar extends Component {
             <ToolbarButton title='编辑' disabled={!this.canModify()} onClick={this.handleModifyClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.MODIFY_IMG}></ToolbarButton>
             <ToolbarButton title='删除' disabled={!this.canDelete()} onClick={this.handleDeleteClick} height={'28px'} width={'28px'} backgroundImage={imgSrc.DELETE_IMG}></ToolbarButton>
         </ButtonDiv>
-
     }
 }
 

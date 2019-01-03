@@ -1,4 +1,4 @@
-import { dbActions } from '../../actions'
+import { dbActions } from '../../../actions'
 
 /**
  * 刷新Db命令

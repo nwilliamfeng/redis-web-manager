@@ -12,7 +12,7 @@ export const DbMenuTrigger = props => {
                 refreshDbCommand({ ...props });
                 break;
             case commandConstants.ADD_KEY:
-                addKeyCommand({ ...props }).execute();
+                addKeyCommand({ ...props });
                 break;
             default:
                 break;

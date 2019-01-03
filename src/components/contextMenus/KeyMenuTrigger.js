@@ -1,7 +1,7 @@
 import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
 import { withContextMenuTrigger } from './withMenuTrigger'
-import {deleteKeyCommand} from '../commands'
+import { deleteKeyCommand, modifyKeyCommand } from '../commands'
 
 
 
@@ -15,9 +15,10 @@ export const KeyMenuTrigger = props => {
             case commandConstants.OPEN_KEY:
                 //alert(`open:${connection},${dbIdx},${keyName}`);
                 // dispatch(dbActions.getDbList(connection.name));
+                modifyKeyCommand({ ...props })
                 break;
             case commandConstants.DELETE_KEY:
-               deleteKeyCommand({ dispatch, connection, dbIdx, keyName, dbId });
+                deleteKeyCommand({ dispatch, connection, dbIdx, keyName, dbId });
                 break;
 
             default:

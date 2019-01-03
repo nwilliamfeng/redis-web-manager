@@ -1,3 +1,3 @@
 export * from './addKeyCommand';
-export * from './modifyStringKeyCommand';
+export * from './modifyKeyCommand';
 export {deleteKeyCommand,multiDeleteKeyCommand} from './deleteKeyCommands'

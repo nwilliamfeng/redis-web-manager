@@ -34,7 +34,7 @@ export const editMenu={
     isTopMenu:true,
     title:'编辑(E)',
     id: menuIds.EDIT_MENU,
-    subItems:[modifyMenuItem,spliter,deleteMenuItem,],
+    subItems:[modifyMenuItem,spliter(),deleteMenuItem,],
 }
 
   

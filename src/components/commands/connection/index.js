@@ -1,2 +1,3 @@
 export  * from "./deleteConnectionCommand";
-export {openConnectionCommand ,refreshConnectionCommand} from './openConnectionCommands'
+export {openConnectionCommand} from './openConnectionCommands'
+export {refreshConnectionCommand,refreshConnectionsCommand} from './refreshConnectionCommands'

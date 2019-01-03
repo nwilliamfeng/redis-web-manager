@@ -1,4 +1,4 @@
-import { modifyStringKeyCommand } from './key'
+import { modifyKeyCommand } from './key'
 import { nodeTypes } from '../../constants'
 import  {commandHelper} from './commandHelper'
 
@@ -26,12 +26,12 @@ export const compositModifyCommand = props => {
                    // alert('do connection');
                 }
                 else if (selectedNodeType === nodeTypes.DB) {
-                    modifyStringKeyCommand(entity);
+                    modifyKeyCommand(entity);
                 }
             }
             else {
                 if (selectedKeyId != null) {
-                    modifyStringKeyCommand(entity);
+                    modifyKeyCommand(entity);
                 }
                 else if (selectedConnectionId != null) {
                    // alert('do connection');

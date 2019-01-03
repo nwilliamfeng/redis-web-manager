@@ -3,7 +3,7 @@ import { findIndex } from 'lodash';
 
 const defaultState = {
     selectedNodeType: nodeTypes.ROOT,
-    tabPanes: [tabPaneIds.LIST_VIEW_PANE, tabPaneIds.SETTING_PANE],
+    tabPanes: [tabPaneIds.LIST_VIEW_PANE],
     activeTabPane: tabPaneIds.LIST_VIEW_PANE,
     multiSelectItems: [],
 }
@@ -14,21 +14,21 @@ export const stateReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedNodeType: action.type,
-
+                multiSelectItems:[],
             }
 
         case nodeTypes.DB:
             return {
                 ...state,
                 selectedNodeType: action.type,
-
+                multiSelectItems:[],
             }
 
         case nodeTypes.KEY:
             return {
                 ...state,
                 selectedNodeType: action.type,
-
+                multiSelectItems:[],
             }
 
         case multiNodeConstants.MULTI_SELECT:

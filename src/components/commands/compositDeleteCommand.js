@@ -26,7 +26,7 @@ export const compositDeleteCommand = props => {
                 return;
             }
             if (selectedKeyId !== null) {
-                const key = this.getSelectedKey();
+                const key = commandHelper.getSelectedKey(props);
                 deleteKeyCommand({ dispatch, connection: selectedConnectionId, dbId: selectedDbId, dbIdx: key.dbIdx, keyName: key.key });
             }
             else {
