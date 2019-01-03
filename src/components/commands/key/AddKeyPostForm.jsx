@@ -1,11 +1,10 @@
 import React from 'react'
-import { dbActions, dialogAction } from '../../../actions'
+import { dbActions } from '../../../actions'
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { FormField } from '../../../controls'
 import { ResetButton, SubmitButton } from '../../controlParts'
 
-import { commandHelper } from '../commandHelper'
 
 /**
  * 验证模板

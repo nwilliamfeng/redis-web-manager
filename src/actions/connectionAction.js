@@ -15,6 +15,8 @@ export const connectionActions = {
     refreshDbList,
 
     deleteConnection,
+
+    addConnection,
 }
 
 
@@ -81,4 +83,18 @@ function updateConnectionState(connectionId, connectionState = connectionStates.
 
 function selectConnection(connectionId) {
     return { type: nodeTypes.CONNECTION, connectionId};
+}
+
+function addConnection(name,ip,port,password){
+    return async dispatch => {
+        try {
+            await redisApi.appendConnection(name,ip,port,password);
+            const connections = await redisApi.getConfigs();
+            dispatch({ type: connectionConstants.LOAD_CONNECTION_LIST, connections });
+            dispatch({ type: dialogConstants.CLOSE_DIALOG });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+        }
+    }
 }

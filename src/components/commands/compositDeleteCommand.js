@@ -20,14 +20,14 @@ export const compositDeleteCommand = props => {
                 if (selectedNodeType === nodeTypes.DB) {
                     const dbIdx = commandHelper.getSelectedDb(props).dbIdx;
                     const keyNames = multiSelectItems.map(x => keys.find(a => a.id === x).key);
-                    multiDeleteKeyCommand({ dispatch, connection: selectedConnectionId, dbIdx, keyNames, dbId: selectedDbId });
+                    multiDeleteKeyCommand({ dispatch, connectionName: selectedConnectionId, dbIdx, keyNames, dbId: selectedDbId });
                 }
 
                 return;
             }
             if (selectedKeyId !== null) {
                 const key = commandHelper.getSelectedKey(props);
-                deleteKeyCommand({ dispatch, connection: selectedConnectionId, dbId: selectedDbId, dbIdx: key.dbIdx, keyName: key.key });
+                deleteKeyCommand({ dispatch, connectionName: selectedConnectionId, dbId: selectedDbId, dbIdx: key.dbIdx, keyName: key.key });
             }
             else {
                 deleteConnectionCommand({ dispatch, connectionId: selectedConnectionId });

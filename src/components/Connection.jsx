@@ -28,7 +28,6 @@ const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {
 class Connection extends Component {
 
     constructor(props) {
-        console.log('create connection');
         super(props);
         this.state = { dbs: [], isExpand: false };
     }

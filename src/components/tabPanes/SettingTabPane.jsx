@@ -1,12 +1,5 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { nodeTypes } from '../../constants'
-import { connectionActions, keyActions, dbActions } from '../../actions'
-import { ListView, IconList } from '../../controls'
-import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
-import PropTypes from 'prop-types';
-
 import {ContextMenuTrigger,ContextMenu,MenuItem,connectMenu} from 'react-contextmenu';
  
 

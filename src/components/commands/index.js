@@ -1,7 +1,7 @@
 export {deleteKeyCommand,multiDeleteKeyCommand} from './key/deleteKeyCommands'
 export {addKeyCommand,modifyKeyCommand} from './key'
 export {refreshDbCommand} from './db/refreshDbCommand'
-export {openConnectionCommand,refreshConnectionCommand,refreshConnectionsCommand,deleteConnectionCommand} from './connection'
+export {addConnectionCommand, openConnectionCommand,refreshConnectionCommand,refreshConnectionsCommand,deleteConnectionCommand} from './connection'
 export * from './compositDeleteCommand'
 export * from './compositModifyCommand'
 export * from './compositAddKeyCommand'

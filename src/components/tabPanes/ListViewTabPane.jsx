@@ -117,8 +117,9 @@ class ListViewTabPane extends Component {
             isSmallIcon: true,
             contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.KEY_CONTEXTMENU_ID,
-                connection: key.connectionName,
+                connectionName: key.connectionName,
                 keyName: key.key,
+                keyType:key.type,
                 dbId: key.dbId,
                 dbIdx: key.dbIdx,
                 dispatch: this.props.dispatch,

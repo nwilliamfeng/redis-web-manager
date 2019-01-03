@@ -1,6 +1,6 @@
 import {menuIds} from './menuIds'
 import {spliter} from './spliter'
-import {commandHelper,addKeyCommand,compositRefreshCommand,refreshConnectionsCommand,compositOpenCommand} from '../commands'
+import {commandHelper,addConnectionCommand,addKeyCommand,compositRefreshCommand,refreshConnectionsCommand,compositOpenCommand} from '../commands'
 import {dbStates} from '../../constants'
 
 
@@ -35,8 +35,8 @@ const newConnection ={
     title:'新建连接',
     id: menuIds.NEW_CONNECTION,
     
-    command:()=>{
-        console.log('do new connection');
+    command:props=>{
+       addConnectionCommand({dispatch:props.dispatch});
     },
 }
 

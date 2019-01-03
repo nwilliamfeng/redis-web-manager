@@ -1,4 +1,4 @@
-import { dbConstants, nodeTypes, dbStates, keyConstants } from '../constants';
+import { dbConstants, nodeTypes, dbStates, keyConstants, connectionConstants } from '../constants';
 
 
 const defaultState = {
@@ -12,6 +12,13 @@ let dbCache = []
 
 export const dbReducer = (state = defaultState, action) => {
     switch (action.type) {
+        case connectionConstants.LOAD_CONNECTION_LIST:
+            dbCache=[];
+            return{
+                ...state,
+                selectedDbId: null,
+                dbs:[],
+            }
         case dbConstants.LOAD_DB_LIST:
         case dbConstants.REFRESH_DB_LIST:
             const others = dbCache.filter(x => x.connectionName !== action.connectionId);

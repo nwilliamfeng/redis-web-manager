@@ -5,7 +5,7 @@ import { Button } from '../../controls'
 import { connect } from 'react-redux'
 import {
     compositAddKeyCommand, compositRefreshCommand, compositOpenCommand,
-    compositDeleteCommand, compositModifyCommand
+    compositDeleteCommand, compositModifyCommand,addConnectionCommand
 } from '../commands'
 
 
@@ -30,9 +30,7 @@ const ToolbarButton = styled(Button)`
 
 class RedisToolbar extends Component {
 
-    handleAddConnectionClick = () => {
-        console.log(this.props);
-    }
+    handleAddConnectionClick = () => addConnectionCommand({dispatch:this.props.dispatch}); 
 
     canRefresh = () => compositRefreshCommand(this.props).canExecute();
 
@@ -77,7 +75,7 @@ class RedisToolbar extends Component {
 
     render() {
         return <ButtonDiv>
-            <ToolbarButton title='添加Redis服务器' disabled={true} onClick={this.handleAddConnectionClick} height={'20px'} width={'20px'} backgroundImage={imgSrc.ADD_REDIS_CONNECTION_IMG}></ToolbarButton>
+            <ToolbarButton title='添加Redis服务器'  onClick={this.handleAddConnectionClick} height={'20px'} width={'20px'} backgroundImage={imgSrc.ADD_REDIS_CONNECTION_IMG}></ToolbarButton>
             <ToolbarButton title='添加Redis键' disabled={!this.canAddRedisKey()} onClick={this.handleAddKeyClick} height={'24px'} width={'20px'} backgroundImage={imgSrc.ADD_REDIS_KEY_IMG}></ToolbarButton>
             <ToolbarButton title='加载' disabled={!this.canOpen()} onClick={this.handleOpenClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.CONNECT_IMG}></ToolbarButton>
 
