@@ -1,5 +1,6 @@
 import { connectionConstants, nodeTypes, connectionStates, dbConstants, dialogConstants } from '../constants';
 import { redisApi } from '../api'
+import { deleteKeyCommand } from '../components/commands';
 
 
 export const connectionActions = {
@@ -17,6 +18,8 @@ export const connectionActions = {
     deleteConnection,
 
     addConnection,
+
+    modifyConnection,
 }
 
 
@@ -86,9 +89,16 @@ function selectConnection(connectionId) {
 }
 
 function addConnection(name,ip,port,password){
+   return  updateConnection(name,ip,port,password);
+}
+
+function updateConnection(name,ip,port,password,oldName){
     return async dispatch => {
         try {
-            await redisApi.appendConnection(name,ip,port,password);
+            if(oldName!=null && name!==oldName){
+                await redisApi.deleteConnection(oldName);
+            }
+            await redisApi.setConnection(name,ip,port,password);
             const connections = await redisApi.getConfigs();
             dispatch({ type: connectionConstants.LOAD_CONNECTION_LIST, connections });
             dispatch({ type: dialogConstants.CLOSE_DIALOG });
@@ -97,4 +107,8 @@ function addConnection(name,ip,port,password){
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
         }
     }
+}
+
+function modifyConnection(name,ip,port,password,oldName){
+   return updateConnection(name,ip, port,password,oldName);
 }

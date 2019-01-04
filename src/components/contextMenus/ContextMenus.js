@@ -9,8 +9,10 @@ const ConnectionMenu = (props) => {
     return <ContextMenu id={id}>
         {trigger && trigger.isRefreshEnable === false &&
             <MenuItem onClick={handleItemClick} data={{ action: commandConstants.CONNECT_CONNECTION }}>{'连接'}</MenuItem>}
+        {trigger  && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.EDIT_CONNECTION }}>{'编辑'}</MenuItem>}
         {trigger && trigger.isRefreshEnable === true
             && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.REFRESH_CONNECTION }}>{'刷新'}</MenuItem>}
+        {trigger && <MenuItem divider={true} />}
         <MenuItem onClick={handleItemClick} data={{ action: commandConstants.DELETE_CONNECTION }}>{'删除'}</MenuItem>
     </ContextMenu>
 }

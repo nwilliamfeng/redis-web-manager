@@ -11,6 +11,9 @@ export const compositDeleteCommand = props => {
     return {
         canExecute: () => {
             const { multiSelectItems, selectedKeyId, selectedConnectionId,selectedNodeType } = props;
+            if (multiSelectItems.length > 0 && selectedNodeType === nodeTypes.CONNECTION) {
+                return false;
+            }
             return multiSelectItems.length > 0 || selectedKeyId != null || (selectedConnectionId != null && selectedNodeType===nodeTypes.CONNECTION);
         },
 

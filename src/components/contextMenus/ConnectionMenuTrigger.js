@@ -1,8 +1,8 @@
 import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
- 
+
 import { withContextMenuTrigger } from './withMenuTrigger'
-import { refreshConnectionCommand, openConnectionCommand,deleteConnectionCommand } from '../commands'
+import { refreshConnectionCommand,modifyConnectionCommand, openConnectionCommand, deleteConnectionCommand } from '../commands'
 
 
 
@@ -14,10 +14,13 @@ export const ConnectionMenuTrigger = props => {
         const { dispatch, connection } = props;
         switch (data.action) {
             case commandConstants.CONNECT_CONNECTION:
-                openConnectionCommand({ dispatch, connection });
+                openConnectionCommand({ dispatch, connectionId:connection });
                 break;
             case commandConstants.REFRESH_CONNECTION:
                 refreshConnectionCommand({ dispatch, connectionId: connection });
+                break;
+            case commandConstants.EDIT_CONNECTION:
+                modifyConnectionCommand({ dispatch,...props.data,oldName:connection});
                 break;
             case commandConstants.DELETE_CONNECTION:
                 deleteConnectionCommand({ dispatch, connectionId: connection });

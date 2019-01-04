@@ -6,7 +6,7 @@ import { ConfirmButton } from '../../controlParts'
 const DeleteKeyConfirm = props => {
     const { dispatch, connectionName, dbIdx, keyName, dbId } = props;
     return <React.Fragment>
-        <div style={{ width: 180, height: 70 }}>{`确定要删除 ${keyName} 键吗？`}</div>
+        <div style={{  height: 70 }}><span>{'确定要删除 '}<span style={{fontWeight:'bold'}}>{keyName}</span>{' 这个键吗?'}</span></div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ConfirmButton onConfirm={() => dispatch(keyActions.deleteKey(connectionName, dbIdx, keyName, dbId))} />
         </div>
@@ -26,7 +26,7 @@ export const deleteKeyCommand = ({ dispatch, connectionName, dbIdx, keyName, dbI
 const MultiDeleteKeyConfirm = props => {
     const { dispatch, connectionName, dbIdx, keyNames, dbId } = props;
     return <React.Fragment>
-        <div style={{ width: 180, height: 70 }}>{`确定要删除这 ${keyNames.length} 项吗？`}</div>
+        <div style={{ width: 180, height: 70 }}>{`确定要删除这 ${keyNames.length} 个键吗？`}</div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <ConfirmButton onConfirm={() => dispatch(keyActions.deleteKeys(connectionName, dbIdx, keyNames, dbId))} />
         </div>

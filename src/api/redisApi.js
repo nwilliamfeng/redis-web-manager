@@ -14,7 +14,7 @@ class RedisApi {
         return Data.map(x => { return { id: x.Name, name: x.Name, ip: x.IP, port: x.Port, connectionState:connectionStates.NONE} });
     }
 
-    async appendConnection(name,ip,port,password) {
+    async setConnection(name,ip,port,password) {
         const json = await ApiHelper.get(`/config/set?Name=${name}&IP=${ip}&Port=${port}&Password=${password}`);
         const {  Message, Code } = json;
         if (Code === 2)

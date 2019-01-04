@@ -115,7 +115,7 @@ class Connection extends Component {
         const isConnected = this.isConnected();
         const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionId === item.name;
         return <React.Fragment>
-            {item && <ConnectionMenuTrigger connection={item.name} dispatch={dispatch} isConnected={isConnected} >
+            {item && <ConnectionMenuTrigger connection={item.name} dispatch={dispatch} isConnected={isConnected} data={item} >
                 <Li title={item.name} onDoubleClick={this.handleDoubleClick}>
                     <ExpandContent
                         handleClick={this.handleClick}

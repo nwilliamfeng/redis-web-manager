@@ -7,7 +7,6 @@ import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
 
-
 const Div = styled.div`
     width:100%;
     height:100%;
@@ -74,6 +73,7 @@ class ListViewTabPane extends Component {
     }
 
     mapConnectionToItem = connection => {
+        console.log(connection);
         //格式必须包括listviewitem的所需数据和快捷菜单的数据 
         return {
             iconId: connection.connectionState === connectionStates.CONNECTED ? iconKeys.CONNECTION_SUCCESS_ICON : iconKeys.CONNECTION_DEFAULT_ICON,
@@ -84,6 +84,7 @@ class ListViewTabPane extends Component {
             contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
                 connection: connection.name,
+                data:connection,
                 isConnected: connection.connectionState === connectionStates.CONNECTED,
                 dispatch: this.props.dispatch,
             },
@@ -143,10 +144,9 @@ class ListViewTabPane extends Component {
 
     handleSelectItemsChange = selectedItems => {
        const { dispatch,selectedNodeType } = this.props;
-        if(selectedNodeType===nodeTypes.selectedItems || selectedNodeType===nodeTypes.DB){
+        if(selectedNodeType===nodeTypes.CONNECTION || selectedNodeType===nodeTypes.DB){
             dispatch(multiNodeAction.multiSelect(selectedItems));     
         }
-      
     }
 
     render() {
@@ -159,7 +159,6 @@ class ListViewTabPane extends Component {
 }
 
 const mapStateToProps = state => {
-
     return { ...state.state, ...state.connection, ...state.db, ...state.key };
 }
 
