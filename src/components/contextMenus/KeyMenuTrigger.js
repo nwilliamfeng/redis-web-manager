@@ -2,13 +2,14 @@ import React from 'react'
 import { commandConstants, contextMenuIds } from '../../constants'
 import { withContextMenuTrigger } from './withMenuTrigger'
 import { deleteKeyCommand, modifyKeyCommand } from '../commands'
+import {connect} from 'react-redux'
 
 
 
 const Trigger = withContextMenuTrigger(contextMenuIds.KEY_CONTEXTMENU_ID);
 
 
-export const KeyMenuTrigger = props => {
+  const KeyMenuTrigger = props => {
     const handleItemClick = (e, data, target) => {
         const { dispatch,  dbIdx, keyName, dbId,keyType,connectionName } = props;
         switch (data.action) {
@@ -24,7 +25,19 @@ export const KeyMenuTrigger = props => {
                 break;
         }
     }
+    const deleteDisable = () => {
+        const { deleteDisable } = props;
+        
+        return deleteDisable;
+    }
 
-
-    return <Trigger {...props} onItemClick={handleItemClick} />
+    return <Trigger {...props} onItemClick={handleItemClick} deleteDisable={deleteDisable}/>
 } 
+
+const mapStateToProps=state=>{
+    return {...state.state}
+}
+
+const trigger=connect(mapStateToProps)(KeyMenuTrigger);
+
+export {trigger as KeyMenuTrigger}

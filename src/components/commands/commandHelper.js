@@ -9,6 +9,10 @@ class CommandHelper {
         return dbs.find(x => x.id === selectedDbId);
     }
 
+    getKey(props,keyId){
+        return props.keys.find(x => x.id === keyId);
+    }
+
     getSelectedKey = props => {
 
         const { selectedKeyId, keys, multiSelectItems, selectedNodeType } = props;

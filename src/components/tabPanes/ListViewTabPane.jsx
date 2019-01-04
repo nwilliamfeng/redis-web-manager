@@ -6,13 +6,49 @@ import { connectionActions, multiNodeAction, dbActions } from '../../actions'
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
+import {modifyKeyCommand, commandHelper} from '../commands'
+import { imgSrc } from '../imgSrc'
 
 const Div = styled.div`
     width:100%;
     height:100%;
     padding:1px;
     padding-bottom:2px;
+    display:flex;
+    flex-direction:column;
 `
+const Footer = styled.div`
+    justify-content:flex-end;
+    align-items:center;
+    display:flex;
+    color:gray;
+    padding:3px;
+    font-size:12px;
+    padding-bottom:0px;
+`
+
+const ToggleDiv = styled.div`
+    display:flex;
+    justify-items:center;
+    align-items:center;
+    width:22px;
+    height:22px;
+    background:${props => props.isSelected === true ? '#87CEFA' : 'transparent'};
+    border:${props => props.isSelected === true ? '1px solid #00BFFF' : '1px solid transparent'};
+    &:hover{
+        background:#87CEFA;
+        border:1px solid #00BFFF;
+    }
+    background-repeat:no-repeat;
+    background-size:100%; 
+    
+`
+const ToggleImg = styled.img`
+    width:22px;
+    height:22px;
+`
+
+
 const iconKeys = {
     CONNECTION_DEFAULT_ICON: 'CONNECTION_DEFAULT_ICON',
     CONNECTION_SUCCESS_ICON: 'CONNECTION_SUCCESS_ICON',
@@ -29,6 +65,7 @@ class ListViewTabPane extends Component {
         super(props);
         this.registItemIcon();
         this.registItemContextMenuTrigger();
+        this.state = { isSmallIcon: true };
     }
 
     registItemIcon = () => {
@@ -73,18 +110,18 @@ class ListViewTabPane extends Component {
     }
 
     mapConnectionToItem = connection => {
-        console.log(connection);
+        const {isSmallIcon}=this.state;
         //格式必须包括listviewitem的所需数据和快捷菜单的数据 
         return {
             iconId: connection.connectionState === connectionStates.CONNECTED ? iconKeys.CONNECTION_SUCCESS_ICON : iconKeys.CONNECTION_DEFAULT_ICON,
             title: connection.name,
             id: connection.name,
             onDoubleClick: this.handleConnectionNodeClick,
-            isSmallIcon: true,
+            isSmallIcon,
             contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.CONNECTION_CONTEXTMENU_ID,
                 connection: connection.name,
-                data:connection,
+                data: connection,
                 isConnected: connection.connectionState === connectionStates.CONNECTED,
                 dispatch: this.props.dispatch,
             },
@@ -92,12 +129,13 @@ class ListViewTabPane extends Component {
     }
 
     mapDBToItem = db => {
+        const {isSmallIcon}=this.state;
         return {
             iconId: iconKeys.DB_ICON,
             title: `db${db.dbIdx}`,
             id: db.id,
             onDoubleClick: this.handleDbNodeClick,
-            isSmallIcon: true,
+            isSmallIcon,
             contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.DB_CONTEXTMENU_ID,
                 connectionName: db.connectionName,
@@ -110,17 +148,20 @@ class ListViewTabPane extends Component {
     }
 
     mapKeyToItem = key => {
+      
+        const {isSmallIcon}=this.state;
+     
         return {
             iconId: iconKeys.KEY_ICON,
             title: key.key,
             id: key.id,
             onDoubleClick: this.handleKeyNodeClick,
-            isSmallIcon: true,
+            isSmallIcon,
             contextMenuProps: {
                 contextMenuTriggerId: contextMenuIds.KEY_CONTEXTMENU_ID,
                 connectionName: key.connectionName,
                 keyName: key.key,
-                keyType:key.type,
+                keyType: key.type,
                 dbId: key.dbId,
                 dbIdx: key.dbIdx,
                 dispatch: this.props.dispatch,
@@ -139,21 +180,42 @@ class ListViewTabPane extends Component {
     }
 
     handleKeyNodeClick = key => {
-        alert(key);
+        const { dispatch } = this.props;
+        const rk =commandHelper.getKey(this.props,key);     
+        modifyKeyCommand({dispatch,...rk,keyType:rk.type}) 
     }
 
     handleSelectItemsChange = selectedItems => {
-       const { dispatch,selectedNodeType } = this.props;
-        if(selectedNodeType===nodeTypes.CONNECTION || selectedNodeType===nodeTypes.DB){
-            dispatch(multiNodeAction.multiSelect(selectedItems));     
+        const { dispatch, selectedNodeType } = this.props;
+        if (selectedNodeType === nodeTypes.CONNECTION || selectedNodeType === nodeTypes.DB) {
+            dispatch(multiNodeAction.multiSelect(selectedItems));
         }
+    }
+
+    handleSmallIconToggleClick = () => {
+        this.setState({ isSmallIcon: true });
+    }
+
+    handleLargeIconToggleClick = () => {
+        this.setState({ isSmallIcon: false });
     }
 
     render() {
         console.log('render listviewpane');
         const items = this.getListViewItems();
+        const { isSmallIcon } = this.state;
         return <Div>
-            <ListView items={items} onSelectItemsChange={this.handleSelectItemsChange}/>
+            <ListView items={items} onSelectItemsChange={this.handleSelectItemsChange} style={{ height: '100%' }} />
+            <Footer>
+                {`共 ${items.length} 项`}
+                <ToggleDiv title='列表显示' style={{ marginLeft: 10 }} isSelected={isSmallIcon === true} onClick={this.handleSmallIconToggleClick}>
+                    <ToggleImg src={imgSrc.LIST_IMG} />
+                </ToggleDiv>
+                <ToggleDiv title='图标显示' isSelected={isSmallIcon === false} onClick={this.handleLargeIconToggleClick}>
+                    <ToggleImg src={imgSrc.ICON_IMG} />
+                </ToggleDiv>
+            </Footer>
+
         </Div>
     }
 }

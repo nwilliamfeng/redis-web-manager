@@ -52,7 +52,7 @@ function modifyStringKey(connectionName, dbIdx, dbId, type,  key,value,oldKey) {
     return async dispatch => {
         try {
             await redisApi.deleteKey(oldKey, connectionName, dbIdx);
-            await redisApi.appendKey(type, key,null,  value, connectionName, dbIdx);
+            await redisApi.edit(type, key,null,  value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch(dialogAction.closeDialog());
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });

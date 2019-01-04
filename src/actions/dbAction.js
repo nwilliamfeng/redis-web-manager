@@ -42,7 +42,7 @@ function getKeyList(connectionName, dbIdx, dbId) {
 function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
     return async dispatch => {
         try {
-            await redisApi.appendKey(type, id, key, value, connectionName, dbIdx);
+            await redisApi.edit(type, id, key, value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch(dialogAction.closeDialog());
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });

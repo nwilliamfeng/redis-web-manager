@@ -181,7 +181,7 @@ export class ListView extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(!isEqual( this.props,nextProps)){ //检查dbs的状态是否变化，比如刷新键
+        if(!isEqual( this.props,nextProps)){ 
             this.setState({ selectedItemIds: [] });
             this.notifyItemsSelect([]);
         }

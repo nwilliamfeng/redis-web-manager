@@ -1,5 +1,5 @@
 import { ApiHelper } from './apiHelper'
-import {connectionStates,dbStates} from '../constants'
+import { connectionStates, dbStates } from '../constants'
 
 class RedisApi {
 
@@ -11,12 +11,12 @@ class RedisApi {
         const { Data, Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
-        return Data.map(x => { return { id: x.Name, name: x.Name, ip: x.IP, port: x.Port, connectionState:connectionStates.NONE} });
+        return Data.map(x => { return { id: x.Name, name: x.Name, ip: x.IP, port: x.Port, connectionState: connectionStates.NONE } });
     }
 
-    async setConnection(name,ip,port,password) {
+    async setConnection(name, ip, port, password) {
         const json = await ApiHelper.get(`/config/set?Name=${name}&IP=${ip}&Port=${port}&Password=${password}`);
-        const {  Message, Code } = json;
+        const { Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
     }
@@ -32,9 +32,9 @@ class RedisApi {
             throw new Error(Message);
     }
 
-    async getStringKeyValue(connectionName,dbIdx,key){
+    async getStringKeyValue(connectionName, dbIdx, key) {
         const json = await ApiHelper.get(`/redis/get?name=${connectionName}&dbindex=${dbIdx}&key=${key}`);
-        const { Message, Code ,Data} = json;
+        const { Message, Code, Data } = json;
         if (Code === 2)
             throw new Error(Message);
         return Data;
@@ -43,24 +43,34 @@ class RedisApi {
     /**
      * 删除键
      */
-    async deleteKey(key,connectionName,dbIdx) {
+    async deleteKey(key, connectionName, dbIdx) {
         const json = await ApiHelper.get(`/redis/del?name=${connectionName}&dbindex=${dbIdx}&key=${key}`);
-        const {  Message, Code } = json;
+        const { Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
-        return Code===1;
+        return Code === 1;
     }
 
-     /**
-     * 添加键
-     */
-    async appendKey(type,id,key,value,connectionName,dbIdx) {
-        const url =`/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;     
-        const json = await ApiHelper.get(key==null? url: url+`&Key=${key}`);
-        const {  Message, Code } = json;
+    /**
+    * 编辑键
+    */
+    async edit(type, id, key, value, connectionName, dbIdx) {
+        const url = `/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;
+        const json = await ApiHelper.get(key == null ? url : url + `&Key=${key}`);
+        const { Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
-        return Code===1;
+        return Code === 1;
+    }
+
+
+    async getSetValue(connectionName, dbIdx, keyType, id, key = '*', offset = 0) {
+        const json = await ApiHelper.get(`/redis/getItems?name=${connectionName}&dbindex=${dbIdx}&type=${keyType}&key=${key}&id=${id}&offset=${offset}`);
+        const { Data, Message, Code } = json;
+        if (Code === 2)
+            throw new Error(Message);
+      
+        return [...Data];
     }
 
     
@@ -74,11 +84,8 @@ class RedisApi {
         const json = await ApiHelper.get(`/redis/connect?name=${name}`);
         const { Data, Message, Code } = json;
         if (Code === 2)
-            throw new Error(Message);
-        if (name === 'conn2') {
-            return Data.slice(0, 3).map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name ,dbState:dbStates.NONE} });
-        }
-        return Data.map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name,dbState:dbStates.NONE, } });
+            throw new Error(Message);   
+        return Data.map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name, dbState: dbStates.NONE, } });
     }
 
     async getKeyTypes(name, dbindex = 0, dbId, key = '*', offset = 0) {
@@ -95,7 +102,7 @@ class RedisApi {
                 dbIdx: dbindex,
                 dbId,
                 connectionName: name,
-              
+
             }
         });
     }

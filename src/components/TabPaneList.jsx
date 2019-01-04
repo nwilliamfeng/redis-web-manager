@@ -11,10 +11,11 @@ import {ListViewTabPane,SettingTabPane} from './tabPanes'
 const Container = styled.div`
   display: flex;
   width:100%;
+  height:100%;
   flex-direction:column;
 `
 
-const TabPanel = withScroll(props => <div {...props} />)
+const TabPanel = withScroll(props => <div {...props} style={{height:'100%'}}/>)
 
 
 class TabPaneList extends Component {

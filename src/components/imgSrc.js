@@ -20,4 +20,8 @@ export const imgSrc={
     CONNECT_IMG:require('../assets/imgs/connect.png'),
 
     MODIFY_IMG:require('../assets/imgs/edit.png'),
+
+    LIST_IMG:require('../assets/imgs/list.png'),
+
+    ICON_IMG:require('../assets/imgs/img.png'),
 }
