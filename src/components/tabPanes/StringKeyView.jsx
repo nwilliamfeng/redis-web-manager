@@ -34,7 +34,7 @@ export class StringKeyView extends Component {
     }
 
     handleKeyValueChange = newKeyValue => {
-    ???? //   this.setState({ newKeyValue })
+    ????setstate导致重复渲染，这里shouldrender处理！ //   this.setState({ newKeyValue })
     }
 
     getSaveHandle = () => {
