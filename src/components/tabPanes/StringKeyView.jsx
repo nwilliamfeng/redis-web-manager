@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import {Input} from '../Input'
-import {TextArea} from '../TextArea'
+import { Input } from '../Input'
+import { TextArea } from '../TextArea'
 
 const getStyle = (height = 27, width = '100%') => {
 
@@ -40,21 +40,27 @@ const LabelDiv = styled.div`
 //     return <input readOnly={readOnly} style={style} className='form-control' value={value} />
 // }
 
- 
+
 export class StringKeyView extends Component {
 
-    onKeyChange=value=>{
-        console.log('key change '+value);
+    handleKeyChange = value => {
+        const { onKeyChange } = this.props;
+        if (onKeyChange != null) {
+            onKeyChange(value);
+        }
     }
 
-    onValueChange=value=>{
-        console.log('value change '+value);
+    handleValueChange = value => {
+        const { onValueChange } = this.props;
+        if (onValueChange != null) {
+            onValueChange(value);
+        }
     }
 
     render() {
 
         const { redisKey } = this.props;
-       
+
         const { connectionName, dbIdx, key, type, value, dbId } = redisKey;
         return <Div>
             <FieldDiv>
@@ -63,7 +69,7 @@ export class StringKeyView extends Component {
             </FieldDiv>
             <FieldDiv>
                 <LabelDiv>{'键名称'}</LabelDiv>
-                <Input style={getStyle(27, 220)} value={key} onKeyPress={this.onKeyChange}/>
+                <Input style={getStyle(27, 220)} value={key} onKeyUp={this.handleKeyChange} />
             </FieldDiv>
             <FieldDiv style={{ flex: '0 1 100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -71,7 +77,7 @@ export class StringKeyView extends Component {
                     <div style={{ flex: '0 1 100%' }} />
                 </div>
 
-                <TextArea style={getStyle('100%', '100%')} value={value} onKeyPress={this.onValueChange}/>
+                <TextArea style={getStyle('100%', '100%')} value={value} onKeyUp={this.handleValueChange} />
             </FieldDiv>
         </Div>
     }

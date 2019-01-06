@@ -6,8 +6,8 @@ export const keyConstants={
 
     SELECT_KEY:'SELECT_KEY',
 
-    LOAD_KEY_VALUE:'LOAD_KEY_VALUE',
-
+    SET_KEY_SAVE_HANDLE:'SET_KEY_SAVE_HANDLE',
    
+    SET_KEY_DIRTY:'SET_KEY_DIRTY',
 
 }

@@ -9,10 +9,10 @@ export class TextArea extends Component {
     }
     
     keyHandle = e => {
-        const {onKeyPress}=this.props;
+        const {onKeyUp}=this.props;
         e.stopPropagation();
-        if(onKeyPress!=null){
-            onKeyPress(this.input.value);
+        if(onKeyUp!=null){
+            onKeyUp(this.input.value);
         }
         
     }
@@ -36,7 +36,8 @@ export class TextArea extends Component {
         value={this.state.value}  
         readOnly={readOnly}
         onChange={this.handleChange} 
-        onKeyPress={this.keyHandle} 
+        
+        onKeyUp={this.keyHandle} 
         style={style} 
         placeholder={placeholder} />
     }

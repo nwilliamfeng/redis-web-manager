@@ -15,15 +15,22 @@ export const compositSaveCommand = props => {
         },
 
         execute: async () => {
+            console.log(props);
             const redisKey =commandHelper.getSelectedKey(props);
-            const {dispatch} =props;
-            switch(redisKey.type){
-                case keyType.STRING:
-                    saveStringKeyCommand({...redisKey,dispatch});
-                break;
-                default:
-                break;
+            const {dispatch,saveKeyHandle} =props;
+            if(saveKeyHandle!=null){
+                saveKeyHandle();
             }
+            else{
+                console.log('the saveKeyHandle is null!!');
+            }
+            // switch(redisKey.type){
+            //     case keyType.STRING:
+            //        // saveStringKeyCommand({...redisKey,dispatch});
+            //     break;
+            //     default:
+            //     break;
+            // }
         },
     }
 }

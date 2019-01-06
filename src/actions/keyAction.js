@@ -10,6 +10,8 @@ export const keyActions = {
     deleteKeys,
     modifyStringKey,
     modifyKey,
+    setSaveHandle,
+    setKeyDirty,
 }
 
 
@@ -27,6 +29,10 @@ function deleteKey(connectionName, dbIdx, key, dbId) {
     }
 }
 
+
+function setSaveHandle(saveHandle){
+    return {type:keyConstants.SET_KEY_SAVE_HANDLE,saveHandle}; 
+}
  
 
 function deleteKeys(connectionName, dbIdx, keys, dbId) {
@@ -78,13 +84,12 @@ function modifyKey(connectionName, dbIdx, dbId, type,  key,value) {
     }
 }
 
-
-// function selectKey(connectionId,dbId,dbIdx,keyId){
-//     return {type:keyConstants.SELECT_KEY,connectionId,dbId,dbIdx,keyId};
-// }
+function setKeyDirty(){
+    return {type:keyConstants.SET_KEY_DIRTY}
+}
+ 
 
 function selectKey(redisKey){
-    console.log(redisKey);
     return async dispatch => {
         try {
             let keyBody ;

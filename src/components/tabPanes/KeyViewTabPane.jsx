@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { commandHelper } from '../commands'
 import { nodeTypes, keyType } from '../../constants'
-import {StringKeyView } from './StringKeyView'
+import { StringKeyView } from './StringKeyView'
+import { keyActions } from '../../actions';
 
 
 // const StringKeyFrom = ({ redisKey,  dispatch ,errorMessage}) => {
@@ -16,35 +17,109 @@ import {StringKeyView } from './StringKeyView'
 // }
 
 // const form = attachMessage => {
-    //     return <ModifyStringKeyPostForm redisKey={redisKey} dbIdx={dbIdx} dbId={dbId}
-    //         dispatch={dispatch} connectionName={connectionName} attachMessage={attachMessage} />
-    // }
+//     return <ModifyStringKeyPostForm redisKey={redisKey} dbIdx={dbIdx} dbId={dbId}
+//         dispatch={dispatch} connectionName={connectionName} attachMessage={attachMessage} />
+// }
 
 
 class KeyViewTabPane extends Component {
     constructor(props) {
         super(props);
+        this.state = { newKeyId: null, newKeyValue: null }
+    }
+
+    componentDidMount() {
+        const { dispatch, selectedKeyId } = this.props;
+        if (selectedKeyId != null) {
+            dispatch(keyActions.setSaveHandle(this.getSaveHandle));
+        }
 
     }
 
-    // renderStringForm =( redisKey,errorMessage) => {
-    //     return <StringKeyFrom dispatch={this.props.dispatch} redisKey={redisKey} errorMessage={errorMessage}/> 
-    // }
+    getSaveHandle = () => {
+        const { newKeyId, newKeyValue } = this.state;
+        const { dispatch ,selectedKeyBody} = this.props;
+        const redisKey = commandHelper.getSelectedKey(this.props);
+        const { key, type,connectionName,dbId,dbIdx } = redisKey;
+        switch (type) {
+            case keyType.STRING:
+            if(newKeyValue!=null || newKeyId!=null){
+                if(newKeyId!=null){
+                    const pValue=newKeyValue?newKeyValue:selectedKeyBody;
+                    dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), newKeyId, pValue, key));
+                }
+                else{
+                    dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, newKeyValue));
+                }
+            }
+           
+                
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
+
+    handleKeyIdChange = newKeyId => {
+        this.setState({ newKeyId })
+    }
+
+    handleKeyValueChange = newKeyValue => {
+        this.setState({ newKeyValue })
+    }
+
+    clearState=()=>{
+        this.setState({newKeyId:null,newKeyValue:null});
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+
+
+
+        if (nextProps == null) {
+            return;
+        }
+        const { selectedKeyId, selectedNodeType } = nextProps;
+        if (selectedNodeType !== nodeTypes.KEY) {
+            this.clearState();
+            return;
+        }
+        if (this.props.selectedKeyId === selectedKeyId) {
+            this.clearState();
+            return;
+        }
+        const nxtKey=commandHelper.getSelectedKey(nextProps);
+        const currKey=commandHelper.getKey(this.props, this.props.selectedKeyId);
+        if(nxtKey==null||currKey==null){
+            this.clearState();
+            return;
+        }
+        if (nxtKey.type === currKey.type) {
+            this.clearState();
+            return;
+        }
+        const { dispatch } = this.props;
+        dispatch(keyActions.setSaveHandle(this.getSaveHandle));
+
+    }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        if(nextProps==null){
+        if (nextProps == null) {
             return false;
         }
-        const {selectedNodeType,selectedKeyId}=nextProps;
-        if(selectedNodeType!==nodeTypes.KEY){
+        const { selectedNodeType, selectedKeyId } = nextProps;
+        if (selectedNodeType !== nodeTypes.KEY) {
             return false;
-        } 
-         return this.props.selectedKeyId!==selectedKeyId;
+        }
+        return this.props.selectedKeyId !== selectedKeyId;
     }
 
     render() {
-       
-        const { selectedNodeType,selectedKeyBody } = this.props;
+        console.log('render kvtabpane');
+        const { selectedNodeType, selectedKeyBody } = this.props;
         if (selectedNodeType !== nodeTypes.KEY) {
             return <React.Fragment />
         }
@@ -54,7 +129,7 @@ class KeyViewTabPane extends Component {
         }
         switch (redisKey.type) {
             case keyType.STRING:
-                return <StringKeyView redisKey={{...redisKey,value:selectedKeyBody}}/>
+                return <StringKeyView redisKey={{ ...redisKey, value: selectedKeyBody }} onKeyChange={this.handleKeyIdChange} onValueChange={this.handleKeyValueChange} />
             default:
                 return <React.Fragment />
         }
