@@ -6,10 +6,10 @@ export const Button = styled.button`
     background-color:transparent;
     opacity:1;
     &:hover{
-        opacity:0.8;
+        opacity:0.9;
     }
     &:active{
-        opacity:0.6;
+        background-color:lightgray;
     }
     &:disabled{
         opacity:0.3;

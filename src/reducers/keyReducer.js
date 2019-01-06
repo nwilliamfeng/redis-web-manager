@@ -61,16 +61,24 @@ export const keyReducer = (state = defaultState, action) => {
                 saveKeyHandle: null,
             }
         case nodeTypes.KEY:
-
+            const needClearSaveHandle=!checkIfSameKeyType(action.keyId,state);
             return {
                 ...state,
                 selectedKeyId: action.keyId,
                 keys: [...keyCache.filter(x => x.connectionName === action.connectionId && x.dbId === action.dbId)],
                 selectedKeyBody: action.keyBody,
-             
+                saveKeyHandle:needClearSaveHandle===true?null:state.saveKeyHandle,
             }
 
         default:
             return state;
     }
+}
+
+function checkIfSameKeyType(selectedKeyId,state){
+    const oldKeyId=state.selectedKeyId;
+    if(oldKeyId==null){
+        return false;
+    }
+    return state.keys.find(x=>x.id===oldKeyId).type=== keyCache.find(x=>x.id===selectedKeyId).type;
 }
