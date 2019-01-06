@@ -42,7 +42,7 @@ export const AddKeyPostForm = ({ redisKey, dispatch, dbIdx, dbId, connectionName
                 </FormField>
                 <FormField fieldName="id" displyName="Id" errors={errors} />
                 {(Number.parseInt(values.type) === 2 || Number.parseInt(values.type) === 4) && <FormField fieldName="key" displyName={Number.parseInt(values.type) === 2 ? 'Key' : 'Score'} errors={errors} />}
-                <FormField fieldName="value" displyName="Value" errors={errors} />
+                <FormField component="textarea" fieldName="value" displyName="Value" errors={errors} height={150}/>
                 {attachMessage && <div style={{ color: 'red' }}>{attachMessage}</div>}
                 <SubmitButton disabled={isSubmitting && attachMessage == null} />
                 <ResetButton disabled={isSubmitting && attachMessage == null} />

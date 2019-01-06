@@ -26,9 +26,10 @@ export const stateReducer = (state = defaultState, action) => {
 
         case nodeTypes.KEY:
             return {
-                ...state,
+                ...doOpenTabPane(state,tabPaneIds.KEY_SETTING_VIEW_PANE),
                 selectedNodeType: action.type,
                 multiSelectItems: [],
+               
             }
 
         case multiNodeConstants.MULTI_SELECT:

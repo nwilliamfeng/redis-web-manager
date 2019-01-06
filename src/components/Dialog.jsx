@@ -13,7 +13,7 @@ const getContentStyle = size => {
         minWidth: '20%',
         width: size ? size.width ? size.width : 'auto' : 'auto',
         height: size ? size.height ? size.height : 'auto' : 'auto',
-        maxHeight: '45%',
+        maxHeight: '80%',
         minHeight: 50,
         borderRadius: 2,
         display: 'flex',
@@ -91,7 +91,7 @@ class Dialog extends Component {
     render() {
         const { dialogType, title, size, attachMessage } = this.props;
         return <Popup open={dialogType !== dialogConstants.NONE} contentStyle={getContentStyle(size)} closeOnDocumentClick={false} onClose={this.handleClose}>
-            <React.Fragment>
+            <div>
                 <TitlebarDiv>
                     {title ? title : '提醒'}
                     <CloseIconDiv title='关闭' onClick={this.handleCloseClick}>
@@ -100,7 +100,7 @@ class Dialog extends Component {
                 </TitlebarDiv>
                 {(dialogType === dialogConstants.OPEN_CONFIRM_DIALOG || dialogType === dialogConstants.SHOW_ERROR) && this.renderConfirmDialogBody()}
                 {dialogType === dialogConstants.OPEN_FORM_DIALOG && this.renderFormDialogBody(attachMessage)}
-            </React.Fragment>
+            </div>
         </Popup>
     }
 }

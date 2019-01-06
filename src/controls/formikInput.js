@@ -20,16 +20,16 @@ const ContentDiv = styled.div`
 `
 
 const BootstrapField = props => {
-    const { component, fieldName, isError,disabled } = props;
+    const { component, fieldName,height, isError,disabled } = props;
 
-    const style = { borderRadius: 1, height: 27, width: '100%', padding: '1px 5px', fontSize: 13 };
+    const style = { borderRadius: 1, height:height?height: 27, width: '100%', padding: '1px 5px', fontSize: 13 };
     const errorStyle = {
         borderColor: 'red',
         boxShadow: '0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6)',
         outline: '0 none',
         ...style,
     }
-    return <Field component={component} disabled={disabled} type="text" name={fieldName} className='form-control' style={isError === true ? errorStyle : style}>
+    return <Field component={component} disabled={disabled}  type="text" name={fieldName} className='form-control' style={isError === true ? errorStyle : style}>
             {props.children}
         </Field>     
 }
@@ -38,11 +38,11 @@ const BootstrapField = props => {
  * 对formik的field进行封装,默认采用bootstrap样式
  * @param {*} param0 
  */
-export const FormField = ({ component, displyName,disabled, fieldName, errors, ...props }) => {
+export const FormField = ({ component, displyName,disabled, fieldName,height, errors, ...props }) => {
     return <FlexDiv>
         <Label>{displyName}</Label>
         <ContentDiv>
-            <BootstrapField fieldName={fieldName} disabled={disabled} component={component}  isError={errors && errors[fieldName] != null} >
+            <BootstrapField fieldName={fieldName} disabled={disabled} component={component} height={height} isError={errors && errors[fieldName] != null} >
                 {props.children}
             </BootstrapField>
             <ErrorMessage name={fieldName} component="div" style={{ color: 'red' }} />

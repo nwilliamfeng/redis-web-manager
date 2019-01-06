@@ -13,6 +13,6 @@ export const addKeyCommand = ({ dispatch, dbIdx, connectionName, dbId }) => {
     const form = attachMessage => {
         return <AddKeyPostForm redisKey={defaultKey} dbIdx={dbIdx} dbId={dbId} dispatch={dispatch} connectionName={connectionName} attachMessage={attachMessage} />
     }
-    dispatch(dialogAction.openForm('添加Key', form, { width: 420 }));
+    dispatch(dialogAction.openForm('添加Key', form, { width: 520 }));
 }
 

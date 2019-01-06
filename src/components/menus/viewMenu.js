@@ -12,13 +12,21 @@ const openListView={
     },
 }
  
-
+const openSettingKeyView={
+    isTopMenu:false,
+    title:'键视图',
+    id: menuIds.OPEN_KEY_SETTING_VIEW_MENU,
+    command:props=>{
+        const {dispatch} =props;
+        dispatch(commandAction.openTabPane(tabPaneIds.KEY_SETTING_VIEW_PANE));
+    },
+}
  
 export const viewMenu={
     isTopMenu:true,
     title:'查看(V)',
     id: menuIds.VIEW_MENU,
-    subItems:[openListView],
+    subItems:[openListView,openSettingKeyView],
 }
 
   

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import {commandAction} from '../actions'
-import { FolderIcon,SettingIcon} from './icons'
-import {  tabPaneIds } from '../constants'
-import { TabPanes,withScroll,IconList } from '../controls'
-import {ListViewTabPane,SettingTabPane} from './tabPanes'
+import { commandAction } from '../actions'
+import { FolderIcon, SettingIcon, KeyIcon } from './icons'
+import { tabPaneIds } from '../constants'
+import { TabPanes, withScroll, IconList } from '../controls'
+import { ListViewTabPane, SettingTabPane ,KeyViewTabPane} from './tabPanes'
+ 
 
 
 const Container = styled.div`
@@ -15,37 +16,38 @@ const Container = styled.div`
   flex-direction:column;
 `
 
-const TabPanel = withScroll(props => <div {...props} style={{height:'100%'}}/>)
+const TabPanel = withScroll(props => <div {...props} style={{ height: '100%' }} />)
 
 
 class TabPaneList extends Component {
 
-  constructor(props){
-     super(props);
-     this.registPaneIcons();
+  constructor(props) {
+    super(props);
+    this.registPaneIcons();
   }
 
   registPaneIcons = () => {
     const add = ({ key, icon }) => {
-        if (IconList.find(x => x.key === key) == null) {
-            IconList.push({ key, icon });
-        }
+      if (IconList.find(x => x.key === key) == null) {
+        IconList.push({ key, icon });
+      }
     }
     add({ key: tabPaneIds.LIST_VIEW_PANE, icon: FolderIcon });
     add({ key: tabPaneIds.SETTING_PANE, icon: SettingIcon });
-}
+    add({ key: tabPaneIds.KEY_SETTING_VIEW_PANE, icon: KeyIcon });
+  }
 
 
   handleSelectTab = tabId => {
     // this.setState({ selectedPage: tab });
-    const {dispatch} =this.props;
+    const { dispatch } = this.props;
     dispatch(commandAction.selectTabPane(tabId));
 
   }
 
   handleCloseTab = tabId => {
-     const {dispatch} =this.props;
-     dispatch(commandAction.closeTabPane(tabId));
+    const { dispatch } = this.props;
+    dispatch(commandAction.closeTabPane(tabId));
   }
 
   getTabPanes = () => {
@@ -53,7 +55,7 @@ class TabPaneList extends Component {
     if (tabPanes == null) {
       return [];
     }
-    return tabPanes.map(x => { return { tabId: x, title: this.getTabPaneTitle(x),iconId:x } })
+    return tabPanes.map(x => { return { tabId: x, title: this.getTabPaneTitle(x), iconId: x } })
   }
 
   getTabPaneTitle = tabPane => {
@@ -62,6 +64,8 @@ class TabPaneList extends Component {
         return '列表视图';
       case tabPaneIds.SETTING_PANE:
         return '设置';
+      case tabPaneIds.KEY_SETTING_VIEW_PANE:
+        return '键';
       default:
         return '未知';
     }
@@ -69,22 +73,23 @@ class TabPaneList extends Component {
 
 
 
-  isTabPaneVisible=name=>{
-    const { tabPanes ,activeTabPane} = this.props;
-    if(tabPanes==null){
+  isTabPaneVisible = name => {
+    const { tabPanes, activeTabPane } = this.props;
+    if (tabPanes == null) {
       return false;
     }
-    return tabPanes.some(x=>x===name) && activeTabPane===name;
+    return tabPanes.some(x => x === name) && activeTabPane === name;
   }
 
   render() {
     console.log('render tabpanelist');
     const { activeTabPane } = this.props;
     return <Container>
-      <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab}/>
-      <TabPanel>     
-          {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane/> }     
-          {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane/> }    
+      <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab} />
+      <TabPanel>
+        {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane />}
+        {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane />}
+        {this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE) && <KeyViewTabPane />}
       </TabPanel>
 
     </Container>

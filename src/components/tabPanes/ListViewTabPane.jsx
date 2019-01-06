@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { nodeTypes, contextMenuIds, connectionStates, dbStates } from '../../constants'
-import { connectionActions, multiNodeAction, dbActions } from '../../actions'
+import { connectionActions, multiNodeAction, dbActions, keyActions } from '../../actions'
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
-import {modifyKeyCommand, commandHelper} from '../commands'
+import { commandHelper} from '../commands'
 import { imgSrc } from '../imgSrc'
 
 const Div = styled.div`
@@ -58,7 +58,6 @@ const iconKeys = {
 }
 
 // { iconId: 'CONNECTION_SUCCESS_ICON', title: 'ab56346345634563456345643563462', id: 'abcd' }
-
 class ListViewTabPane extends Component {
 
     constructor(props) {
@@ -165,6 +164,7 @@ class ListViewTabPane extends Component {
                 dbId: key.dbId,
                 dbIdx: key.dbIdx,
                 dispatch: this.props.dispatch,
+                redisKey:key,
             },
         }
     }
@@ -182,7 +182,7 @@ class ListViewTabPane extends Component {
     handleKeyNodeClick = key => {
         const { dispatch } = this.props;
         const rk =commandHelper.getKey(this.props,key);     
-        modifyKeyCommand({dispatch,...rk,keyType:rk.type}) 
+      dispatch(keyActions.selectKey(rk));
     }
 
     handleSelectItemsChange = selectedItems => {
@@ -192,13 +192,9 @@ class ListViewTabPane extends Component {
         }
     }
 
-    handleSmallIconToggleClick = () => {
-        this.setState({ isSmallIcon: true });
-    }
+    handleSmallIconToggleClick = () =>  this.setState({ isSmallIcon: true })
 
-    handleLargeIconToggleClick = () => {
-        this.setState({ isSmallIcon: false });
-    }
+    handleLargeIconToggleClick = () =>  this.setState({ isSmallIcon: false })
 
     render() {
         console.log('render listviewpane');
@@ -215,7 +211,6 @@ class ListViewTabPane extends Component {
                     <ToggleImg src={imgSrc.ICON_IMG} />
                 </ToggleDiv>
             </Footer>
-
         </Div>
     }
 }

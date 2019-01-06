@@ -9,7 +9,7 @@ const reducer= combineReducers({
   state:stateReducer,
   dialog:dialogReducer
 
-  // command:commandReducer,
+  
 })
  
 

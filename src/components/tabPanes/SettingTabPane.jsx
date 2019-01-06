@@ -43,7 +43,7 @@ const DynamicMenu = (props) => {
 
 const ConnectedMenu = connectMenu(MENU_TYPE)(DynamicMenu);
 
-export default class SettingTabPane extends Component {
+ class SettingTabPane extends Component {
     constructor(props) {
         super(props);
 

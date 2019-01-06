@@ -21,11 +21,12 @@ const Div = styled.div`margin-left:-20px;`
 const SelectContent =styled( withSelectByClick(props => <Content {...props} />))`padding-left:50px;`
 
 export const Key = ({id, keyName, keyType, isSelected, handleClick,dispatch,dbIdx,connectionName ,dbId}) => {
+    const redisKey={id,key:keyName,type:keyType,dbIdx,dbId,connectionName}
     const click = () => {
         handleClick(id);
     }
     return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
-        <KeyMenuTrigger dispatch={dispatch} dbIdx={dbIdx} connectionName={connectionName} keyName={keyName} dbId={dbId} keyType={keyType} >
+        <KeyMenuTrigger dispatch={dispatch} redisKey={redisKey} dbIdx={dbIdx} connectionName={connectionName} keyName={keyName} dbId={dbId} keyType={keyType} >
             <HoverDiv>
                 <SelectContent isSelected={isSelected} handleClick={handleClick} keyName={keyName}    />
             </HoverDiv>

@@ -43,9 +43,10 @@ class DB extends Component {
     }
 
     handleKeyItemClick = keyId => {
-        const { dispatch, connectionName, dbIdx, id, selectedKeyId, selectedNodeType } = this.props;
+        const { dispatch,  selectedKeyId, selectedNodeType } = this.props;
         if (!(keyId === selectedKeyId) || selectedNodeType !== nodeTypes.KEY) {
-            dispatch(keyActions.selectKey(connectionName, id, dbIdx, keyId));
+            const redisKey=this.state.keys.find(x=>x.id===keyId); 
+             dispatch(keyActions.selectKey(redisKey));
         }
     }
 

@@ -65,9 +65,9 @@ const IconDiv=styled.div`
     margin-top:2px;
 `
 
-const Icon = ({ iconId }) => {
+const Icon = ({ iconId,isSelected }) => {
     const Img = IconList.find(x => x.key === iconId).icon;
-    return <IconDiv><Img /></IconDiv>
+    return <IconDiv><Img fill={isSelected===true?'#1296db':'gray'}/></IconDiv>
 }
 
 
@@ -83,7 +83,7 @@ const TabPane = ({ tabId, iconId, title, onSelect, onClose, isSelected }) => {
     return <TabPaneDiv onClick={selectClick} isSelected={isSelected}>
         <InnerTabPaneDiv isSelected={isSelected}>
             <TitleContainer>
-                <Icon iconId={iconId}/>
+                <Icon iconId={iconId} isSelected={isSelected}/>
                 <TitleDiv title={title}>{title}</TitleDiv>
             </TitleContainer>
             <CloseIconDiv onClick={closeClick} title='关闭'>

@@ -24,4 +24,6 @@ export const imgSrc={
     LIST_IMG:require('../assets/imgs/list.png'),
 
     ICON_IMG:require('../assets/imgs/img.png'),
+    SAVE_IMG:require('../assets/imgs/save.png'),
+    CONNECTION_CONFIG_IMG:require('../assets/imgs/connectionConfig.png'),
 }

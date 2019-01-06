@@ -1,4 +1,3 @@
 export * from './addKeyCommand';
-export * from './modifyKeyCommand';
- 
+export * from './saveStringKeyCommand';
 export {deleteKeyCommand,multiDeleteKeyCommand} from './deleteKeyCommands'

@@ -15,14 +15,21 @@ class CommandHelper {
 
     getSelectedKey = props => {
 
-        const { selectedKeyId, keys, multiSelectItems, selectedNodeType } = props;
-        if (selectedKeyId == null && multiSelectItems.length !== 1) {
-            return null;
-        }
-        //如果有多选的项优先处理
-        if (multiSelectItems.length === 1 && selectedNodeType === nodeTypes.DB) {
-            return keys.find(x => x.id === multiSelectItems[0]);
-        }
+        // const { selectedKeyId, keys, multiSelectItems, selectedNodeType } = props;
+        // if (selectedKeyId == null && multiSelectItems.length !== 1) {
+        //     return null;
+        // }
+        // //如果有多选的项优先处理
+        // if (multiSelectItems.length === 1 && selectedNodeType === nodeTypes.DB) {
+        //     return keys.find(x => x.id === multiSelectItems[0]);
+        // }
+
+        // return keys.find(x => x.id === selectedKeyId);
+
+          const { selectedKeyId, keys , selectedNodeType } = props;
+         if(selectedNodeType!==nodeTypes.KEY){
+             return null;
+         }
 
         return keys.find(x => x.id === selectedKeyId);
     }

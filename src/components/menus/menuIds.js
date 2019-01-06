@@ -36,6 +36,11 @@ export const menuIds={
     OPEN_LISTVIEW_MENU:'OPEN_LISTVIEW_MENU',
 
     /**
+     * 打开设置键视图
+     */
+    OPEN_KEY_SETTING_VIEW_MENU:'OPEN_KEY_SETTING_VIEW_MENU',
+
+    /**
      * 查看
      */
     VIEW_MENU:'VIEW_MENU',

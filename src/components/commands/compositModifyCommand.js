@@ -1,4 +1,4 @@
-import { modifyKeyCommand } from './key'
+ 
 import { modifyConnectionCommand } from './connection'
 import { nodeTypes } from '../../constants'
 import { commandHelper } from './commandHelper'
@@ -10,41 +10,29 @@ import { commandHelper } from './commandHelper'
 export const compositModifyCommand = props => {
     return {
         canExecute: () => {
-            const { selectedKeyId, multiSelectItems, selectedConnectionId, selectedNodeType } = props;
+            const {  multiSelectItems, selectedConnectionId, selectedNodeType } = props;
             if (multiSelectItems.length > 1) {
                 return false;
             }
-            if (selectedNodeType !== nodeTypes.DB && selectedNodeType !== nodeTypes.KEY && selectedNodeType !== nodeTypes.CONNECTION) {
+            if ( selectedNodeType !== nodeTypes.CONNECTION) {
                 return false;
             }
-            if(multiSelectItems.length===0 && selectedNodeType===nodeTypes.DB){
-                return false;
-            }
-
+           
             if (multiSelectItems.length > 0 && selectedNodeType === nodeTypes.CONNECTION) {
                 return false;
             }
 
-            return multiSelectItems.length === 1 || selectedKeyId != null || selectedConnectionId != null;
+            return multiSelectItems.length === 1  || selectedConnectionId != null;
         },
 
         execute: async () => {
-            const { dispatch, selectedKeyId, multiSelectItems, selectedNodeType } = props;
+            const { dispatch,  selectedNodeType } = props;
             if (selectedNodeType === nodeTypes.CONNECTION) {
                 const connection=commandHelper.getSelectedConnection(props);
                 const {ip,name,password,port}=connection;
-                modifyConnectionCommand({dispatch,...{ip,name,password,port},oldName:name});
-                return;
+                modifyConnectionCommand({dispatch,...{ip,name,password,port},oldName:name});          
             }
-            const sk = commandHelper.getSelectedKey(props);
-            const { dbIdx, dbId, connectionName, key, type } = sk;
-            const entity = { dispatch, key, keyType: type, dbIdx, dbId, connectionName };
-            if (multiSelectItems.length === 1) {
-                modifyKeyCommand(entity);
-            }
-            else if (selectedKeyId != null) {
-                modifyKeyCommand(entity);
-            }
+          
 
 
         },

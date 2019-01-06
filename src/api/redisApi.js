@@ -64,13 +64,13 @@ class RedisApi {
     }
 
 
-    async getSetValue(connectionName, dbIdx, keyType, id, key = '*', offset = 0) {
+    async getKeyItems(connectionName, dbIdx, keyType, id, key = '*', offset = 0) {
         const json = await ApiHelper.get(`/redis/getItems?name=${connectionName}&dbindex=${dbIdx}&type=${keyType}&key=${key}&id=${id}&offset=${offset}`);
         const { Data, Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
       
-        return [...Data];
+        return Data;
     }
 
     
