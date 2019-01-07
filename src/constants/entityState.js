@@ -5,4 +5,6 @@ export const entityState={
     MODIFIED:'MODIFIED',
 
     NEW:'NEW',
+
+    DELETED:'DELETED',
 }

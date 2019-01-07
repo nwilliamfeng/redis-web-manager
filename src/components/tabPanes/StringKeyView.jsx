@@ -42,14 +42,14 @@ export class StringKeyView extends Component {
     getSaveHandle = () => {
         const { newKeyId, newKeyValue } = this.state;
         const { dispatch, redisKey } = this.props;
-        const { key, type, connectionName, dbId, dbIdx, value } = redisKey;
+        const { key, type, connectionName, dbId, dbIdx, content } = redisKey;
         if (newKeyValue != null || newKeyId != null) {
-            if (newKeyId != null) {
-                const pValue = newKeyValue ? newKeyValue : value;
+            const pValue = newKeyValue ? newKeyValue : content;
+            if (newKeyId != null) {              
                 dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), newKeyId, pValue, key));
             }
             else {
-                dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, newKeyValue));
+                dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, pValue));
             }
         }
     }

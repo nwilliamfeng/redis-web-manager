@@ -37,6 +37,7 @@ const LargeWordDiv = styled.div`
     overflow:hidden;  
     word-wrap:break-word;
     text-align:left;
+    font-size:13px;
 `
 
 const LargeItemDiv = styled(ItemBase)`
@@ -101,6 +102,7 @@ const SmallIcon = ({ iconId }) => {
 const SmallWordDiv = styled.div`
     max-width:240px;   
     overflow:hidden;  
+    font-size:13px;
     text-align:left;
     white-space:nowrap;
     text-overflow:ellipsis;

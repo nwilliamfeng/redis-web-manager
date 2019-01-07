@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { Input } from '../Input'
 import { TextArea } from '../TextArea'
 import { isEqual } from 'lodash'
-import {entityState} from '../../constants'
-import {keyActions} from '../../actions'
-import {commandHelper} from '../commands'
+import { entityState } from '../../constants'
+import { keyActions } from '../../actions'
+import { commandHelper } from '../commands'
 import { Div, FieldDiv, LabelDiv, getStyle, Td, Tr, Table, Button } from './part'
 
 
@@ -37,18 +37,20 @@ export class HashKeyView extends Component {
     //     return true;
     // }
 
-    isDirty=()=>{
-        const {keys} =this.state;
-        return keys.some(x=>x.state!==entityState.NONE);
+    isDirty = () => {
+        const { keys } = this.state;
+        return keys.some(x => x.state !== entityState.NONE);
     }
 
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(this.isDirty()!==nextProps.isKeyDirty){
-            this.state.keys.forEach(x=>x.state=entityState.NONE);
+        if (this.isDirty() !== nextProps.isKeyDirty) {
+            const keys =this.state.keys.filter(x=>x.state!==entityState.DELETED);
+            keys.forEach(x => x.state = entityState.NONE);
+            this.setState({keys});
 
         }
-        if ( !isEqual(this.props.redisKey, nextProps.redisKey)) {
+        if (!isEqual(this.props.redisKey, nextProps.redisKey)) {
             this.clearState();
             this.initizeKeys(nextProps);
         }
@@ -63,56 +65,71 @@ export class HashKeyView extends Component {
     }
 
     handleValueChange = value => {
-        const { selectedKey,keys } = this.state;
-        if (selectedKey!=null){
-            const hashKey =keys.find(x=>x.key===selectedKey);
-            
-            hashKey.value =value;
-            if(hashKey.state!==entityState.MODIFIED){
+        const { selectedKey, keys } = this.state;
+        if (selectedKey != null) {
+            const hashKey = keys.find(x => x.key === selectedKey);
+            hashKey.value = value;
+            if (hashKey.state !== entityState.MODIFIED) {
                 this.notifyDirty();
-                hashKey.state=entityState.MODIFIED;
+                hashKey.state = entityState.MODIFIED;
                 this.forceUpdate();
             }
-          
         }
     }
 
-    notifyDirty=()=>{
-        const {dispatch} =this.props;
+    notifyDirty = () => {
+        const { dispatch } = this.props;
         dispatch(keyActions.setKeyDirty());
+    }
+
+    convertEntityState = state => {
+        switch (state) {
+            case entityState.MODIFIED:
+                return '已修改';
+            case entityState.NONE:
+                return '';
+            case entityState.DELETED:
+                return '已删除';
+            case entityState.NEW:
+                return '新建';
+            default:
+                return '';
+        }
     }
 
     renderKeyRow = (hashKey, idx, onClick) => {
         const handleClick = () => {
             onClick(key);
         }
-        const num = idx + 1;
         const { selectedKey } = this.state;
         const { key, value, state } = hashKey;
         return <Tr onClick={handleClick} key={key} isSelected={selectedKey === key}>
-            <Td width={'60px'}>{state!==entityState.NONE ? <span><span style={{fontWeight:'bold',fontSize:14}}>{'*'}</span>{num}</span>   : num}</Td>
+            <Td width={'60px'}>{idx + 1}</Td>
             <Td width={'150px'}>{key}</Td>
-            <Td width={'70%'}>{value}</Td>
+            <Td width={'60%'}>{value}</Td>
+            <Td width={'50px'}>{this.convertEntityState(state)}</Td>
         </Tr>
     }
 
-    
+
 
     handleRowClick = key => {
         this.setState({ selectedKey: key });
     }
 
     renderTable = () => {
-        const {keys} =this.state;
+        const { keys } = this.state;
+        console.log(keys);
         return <Table>
             <thead>
                 <tr>
                     <th>序号</th>
                     <th>Key</th>
                     <th>Value</th>
+                    <th>状态</th>
                 </tr>
             </thead>
-            <tbody>{keys.map((x, idx) => this.renderKeyRow(x, idx, this.handleRowClick))}</tbody>
+            <tbody>{keys.filter(x=>x.state!==entityState.DELETED).map((x, idx) => this.renderKeyRow(x, idx, this.handleRowClick))}</tbody>
         </Table>
     }
 
@@ -134,14 +151,12 @@ export class HashKeyView extends Component {
     }
 
     getSaveHandle = () => {
-        const hashKeys = this.state.keys.filter(x=>x.state!==entityState.NONE);
+        const hashKeys = this.state.keys.filter(x => x.state !== entityState.NONE);
         const { dispatch, redisKey } = this.props;
         const { key, type, connectionName, dbId, dbIdx } = redisKey;
-        hashKeys.forEach(x=>{
-            dispatch(keyActions.modifyKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, x.key, x.value));
-        });
-                
-        
+        dispatch(keyActions.modifyKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, hashKeys));
+ 
+
     }
 
     componentDidMount() {
@@ -151,15 +166,32 @@ export class HashKeyView extends Component {
         setSaveHandle(this.getSaveHandle);
     }
 
+    handleDeleteRow = () => {
+        const { selectedKey, keys } = this.state;
+        const delKey = keys.find(x => x.key === selectedKey);
+        delKey.state=entityState.DELETED;
+        this.setState({selectedKey:null});
+        this.notifyDirty();
+        this.forceUpdate();
+    }
 
+    handleAddRow = () => {
+        const { keys } = this.state;
+        const newKey={key:`newKey${keys.filter(x=>x.state===entityState.NEW).length+1}`,value:'',state:entityState.NEW};
+        this.notifyDirty();
+      ???? 为啥添加没更新？
+        this.setState({keys:[...keys,newKey], selectedKey:newKey.key});
+       
+      //  this.forceUpdate();
+    }
 
     getSelectedKeyValue = () => {
         const { selectedKey, keys } = this.state;
         if (selectedKey == null) {
             return '';
         }
-        const hashKey=keys.find(x => x.key === selectedKey);
-        return hashKey?hashKey.value:'';
+        const hashKey = keys.find(x => x.key === selectedKey);
+        return hashKey ? hashKey.value : '';
     }
 
     render() {
@@ -184,8 +216,8 @@ export class HashKeyView extends Component {
             <HDiv>
                 {this.renderTable(content)}
                 <div>
-                    <Button>{'添加行'}</Button>
-                    <Button style={{ marginTop: 10 }}>{'删除行'}</Button>
+                    <Button onClick={this.handleAddRow} >{'添加行'}</Button>
+                    <Button onClick={this.handleDeleteRow} style={{ marginTop: 10 }} disabled={selectedKey == null}>{'删除行'}</Button>
                 </div>
             </HDiv>
 
@@ -200,7 +232,7 @@ export class HashKeyView extends Component {
                     <div style={{ flex: '0 1 100%' }} />
                 </div>
 
-                <TextArea style={getStyle('100%', '100%')} readOnly={selectedKey==null} value={this.getSelectedKeyValue()} onKeyUp={this.handleValueChange} />
+                <TextArea style={getStyle('100%', '100%')} readOnly={selectedKey == null} value={this.getSelectedKeyValue()} onKeyUp={this.handleValueChange} />
             </FieldDiv>
         </Div>
     }

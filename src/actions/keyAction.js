@@ -1,4 +1,4 @@
-import { keyConstants, dialogConstants, keyType, keyHelper } from '../constants';
+import { keyConstants, dialogConstants, keyType, keyHelper, entityState } from '../constants';
 import { redisApi } from '../api'
 
 
@@ -58,7 +58,7 @@ function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) 
             await redisApi.edit(type, key, null, value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
-          
+
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })
@@ -66,13 +66,27 @@ function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) 
     }
 }
 
-function modifyKey(connectionName, dbIdx, dbId, type, id, key, value) {
+
+function modifyKey(connectionName, dbIdx, dbId, type, id, keys = []) {
     return async dispatch => {
         try {
-            await redisApi.edit(type, id, key, value, connectionName, dbIdx);
+            keys.forEach(async x => {
+                switch (x.state) {
+                    case entityState.MODIFIED:
+                    case entityState.NEW:
+                        await redisApi.edit(type, id, x.key, x.value, connectionName, dbIdx);
+                        break;
+                    case entityState.DELETED:
+                        await redisApi.deleteKeyItem( x.key, type,id, connectionName, dbIdx);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
-        
+
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })
