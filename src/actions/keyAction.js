@@ -1,10 +1,8 @@
-import { keyConstants,dialogConstants, keyType, keyHelper } from '../constants';
-import { dialogAction } from './dialogAction'
+import { keyConstants, dialogConstants, keyType, keyHelper } from '../constants';
 import { redisApi } from '../api'
 
 
 export const keyActions = {
-    
     selectKey,
     deleteKey,
     deleteKeys,
@@ -30,18 +28,18 @@ function deleteKey(connectionName, dbIdx, key, dbId) {
 }
 
 
-function setSaveHandle(saveHandle){
-    return {type:keyConstants.SET_KEY_SAVE_HANDLE,saveHandle}; 
+function setSaveHandle(saveHandle) {
+    return { type: keyConstants.SET_KEY_SAVE_HANDLE, saveHandle };
 }
- 
+
 
 function deleteKeys(connectionName, dbIdx, keys, dbId) {
     return async dispatch => {
         try {
-            keys.forEach(key=>{
-                 redisApi.deleteKey(key, connectionName, dbIdx);
+            keys.forEach(key => {
+                redisApi.deleteKey(key, connectionName, dbIdx);
             });
-           
+
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
             dispatch({ type: dialogConstants.CLOSE_DIALOG });
@@ -52,16 +50,15 @@ function deleteKeys(connectionName, dbIdx, keys, dbId) {
     }
 }
 
- 
 
-function modifyStringKey(connectionName, dbIdx, dbId, type,  key,value,oldKey) {
+function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) {
     return async dispatch => {
         try {
             await redisApi.deleteKey(oldKey, connectionName, dbIdx);
-            await redisApi.edit(type, key,null,  value, connectionName, dbIdx);
+            await redisApi.edit(type, key, null, value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-            dispatch(dialogAction.closeDialog());
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+          
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })
@@ -69,14 +66,13 @@ function modifyStringKey(connectionName, dbIdx, dbId, type,  key,value,oldKey) {
     }
 }
 
-function modifyKey(connectionName, dbIdx, dbId, type,  key,value) {
+function modifyKey(connectionName, dbIdx, dbId, type, id, key, value) {
     return async dispatch => {
         try {
+            await redisApi.edit(type, id, key, value, connectionName, dbIdx);
+            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
+            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
         
-            await redisApi.edit(type, key,null,  value, connectionName, dbIdx);
-            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-            dispatch(dialogAction.closeDialog());
-            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })
@@ -84,24 +80,23 @@ function modifyKey(connectionName, dbIdx, dbId, type,  key,value) {
     }
 }
 
-function setKeyDirty(){
-    return {type:keyConstants.SET_KEY_DIRTY}
+function setKeyDirty() {
+    return { type: keyConstants.SET_KEY_DIRTY_STATE }
 }
- 
 
-function selectKey(redisKey){
+function selectKey(redisKey) {
     return async dispatch => {
         try {
-            let keyBody ;
-            const {type,connectionName,dbIdx,dbId,id,key} =redisKey;
-            if(type===keyType.STRING){
-                keyBody=  await  redisApi.getStringKeyValue(connectionName,dbIdx,key);
+            let keyContent;
+            const { type, connectionName, dbIdx, dbId, id, key } = redisKey;
+            if (type === keyType.STRING) {
+                keyContent = await redisApi.getStringKeyValue(connectionName, dbIdx, key);
             }
-            else{
-               keyBody =await redisApi.getKeyItems(connectionName,dbIdx, keyHelper.getKeyTypeValue(type),key);
+            else {
+                keyContent = await redisApi.getKeyItems(connectionName, dbIdx, keyHelper.getKeyTypeValue(type), key);
             }
-           
-             dispatch({ type:keyConstants.SELECT_KEY,  connectionId:connectionName,dbId,dbIdx,keyId:id,keyBody });
+
+            dispatch({ type: keyConstants.SELECT_KEY, connectionId: connectionName, dbId, dbIdx, keyId: id, keyContent });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });

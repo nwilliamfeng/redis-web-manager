@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
 import { Input } from '../Input'
+import { isEqual } from 'lodash'
 import { TextArea } from '../TextArea'
 import { Div, FieldDiv, LabelDiv, getStyle } from './part'
 import { commandHelper } from '../commands'
-
 import { keyActions } from '../../actions';
 
 export class StringKeyView extends Component {
@@ -12,37 +11,38 @@ export class StringKeyView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { newKeyId: null, newKeyValue: null }
+        this.state = { newKeyId: null, newKeyValue: null,isDirty:false, }
     }
 
-    // handleKeyChange = value => {
-    //     const { onKeyChange } = this.props;
-    //     if (onKeyChange != null) {
-    //         onKeyChange(value);
-    //     }
-    // }
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        if (nextProps == null) {
+            return false;
+        }
+        return !isEqual(this.props.redisKey, nextProps.redisKey);
+    }
 
-    // handleValueChange = value => {
-    //     const { onValueChange } = this.props;
-    //     if (onValueChange != null) {
-    //         onValueChange(value);
-    //     }
-    // }
+    checkDirty=()=>{
+        const {isDirty} =this.state;
+        if(isDirty!==true){
+            const {dispatch} =this.props;
+            dispatch(keyActions.setKeyDirty());
+        }
+    }
 
     handleKeyIdChange = newKeyId => {
-     //   this.setState({ newKeyId })
+        this.checkDirty();
+        this.setState({ newKeyId,isDirty:true })
     }
 
     handleKeyValueChange = newKeyValue => {
-    ????setstate导致重复渲染，这里shouldrender处理！ //   this.setState({ newKeyValue })
+        this.checkDirty();
+        this.setState({ newKeyValue,isDirty:true })
     }
 
     getSaveHandle = () => {
         const { newKeyId, newKeyValue } = this.state;
         const { dispatch, redisKey } = this.props;
-       
-        const { key, type, connectionName, dbId, dbIdx,value } = redisKey;
-
+        const { key, type, connectionName, dbId, dbIdx, value } = redisKey;
         if (newKeyValue != null || newKeyId != null) {
             if (newKeyId != null) {
                 const pValue = newKeyValue ? newKeyValue : value;
@@ -52,19 +52,33 @@ export class StringKeyView extends Component {
                 dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, newKeyValue));
             }
         }
+    }
 
+    clearState=()=>{
+        this.setState({newKeyId:null,newKeyValue:null,isDirty:false});
     }
 
     componentDidMount() {
         const { setSaveHandle } = this.props;
-        setSaveHandle(() =>this.getSaveHandle);
+        this.clearState();
+        setSaveHandle(this.getSaveHandle);
+    }
+
+    componentWillReceiveProps(nextProps,nextContext){
+       
+        if(this.state.isDirty!==nextProps.isKeyDirty){
+            this.setState({isDirty:false});
+        }
+        if(!isEqual( this.props.redisKey,nextProps.redisKey)){
+            this.clearState();
+        }
     }
 
     render() {
 
         const { redisKey } = this.props;
 
-        const { connectionName, dbIdx, key, type, value, dbId } = redisKey;
+        const { key, type, content } = redisKey;
         return <Div style={{ marginLeft: -20 }}>
             <div style={{ display: 'flex' }}>
                 <FieldDiv>
@@ -73,7 +87,7 @@ export class StringKeyView extends Component {
                 </FieldDiv>
                 <FieldDiv>
                     <LabelDiv>{'键名称'}</LabelDiv>
-                    <Input style={getStyle(27, 220)} value={key} onKeyUp={this.handleKeyIdChange} />
+                    <Input style={getStyle(27, 220)} value={key?key:''} onKeyUp={this.handleKeyIdChange} />
                 </FieldDiv>
             </div>
 
@@ -83,7 +97,7 @@ export class StringKeyView extends Component {
                     <div style={{ flex: '0 1 100%' }} />
                 </div>
 
-                <TextArea style={getStyle('100%', '100%')} value={value} onKeyUp={this.handleKeyValueChange} />
+                <TextArea style={getStyle('100%', '100%')} value={content?content:''} onKeyUp={this.handleKeyValueChange} />
             </FieldDiv>
         </Div>
     }

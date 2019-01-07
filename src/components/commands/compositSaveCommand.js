@@ -1,5 +1,5 @@
  
-import { saveStringKeyCommand } from './key'
+
 import { nodeTypes,keyType } from '../../constants'
 import { commandHelper } from './commandHelper'
 
@@ -10,27 +10,18 @@ import { commandHelper } from './commandHelper'
 export const compositSaveCommand = props => {
     return {
         canExecute: () => {
-            const {selectedNodeType} = props;
-            return selectedNodeType===nodeTypes.KEY;
+            const {selectedNodeType,isKeyDirty} = props;
+            return selectedNodeType===nodeTypes.KEY && isKeyDirty===true;
         },
 
         execute: async () => {
-            console.log(props);
-            const redisKey =commandHelper.getSelectedKey(props);
-            const {dispatch,saveKeyHandle} =props;
+            const {saveKeyHandle} =props;
             if(saveKeyHandle!=null){
                 saveKeyHandle();
             }
             else{
                 console.log('the saveKeyHandle is null!!');
-            }
-            // switch(redisKey.type){
-            //     case keyType.STRING:
-            //        // saveStringKeyCommand({...redisKey,dispatch});
-            //     break;
-            //     default:
-            //     break;
-            // }
+            }         
         },
     }
 }

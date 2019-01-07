@@ -24,107 +24,29 @@ import { HashKeyView } from './HashKeyView'
 
 
 class KeyViewTabPane extends Component {
-    constructor(props) {
-        super(props);
-        // this.state = { newKeyId: null, newKeyValue: null }
-    }
-
-    // componentDidMount() {
-    //     const { dispatch, selectedKeyId } = this.props;
-    //     if (selectedKeyId != null) {
-    //         dispatch(keyActions.setSaveHandle(this.getSaveHandle));
-    //     }
-
-    // }
-
+   
     setSaveHandle = saveHandle => {
         const { dispatch } = this.props;
         dispatch(keyActions.setSaveHandle(saveHandle));
     }
 
-    // getSaveHandle = () => {
-    //     const { newKeyId, newKeyValue } = this.state;
-    //     const { dispatch, selectedKeyBody } = this.props;
-    //     const redisKey = commandHelper.getSelectedKey(this.props);
-    //     const { key, type, connectionName, dbId, dbIdx } = redisKey;
-    //     switch (type) {
-    //         case keyType.STRING:
-    //             if (newKeyValue != null || newKeyId != null) {
-    //                 if (newKeyId != null) {
-    //                     const pValue = newKeyValue ? newKeyValue : selectedKeyBody;
-    //                     dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), newKeyId, pValue, key));
-    //                 }
-    //                 else {
-    //                     dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, newKeyValue));
-    //                 }
-    //             }
-
-    //             break;
-    //         default:
-    //             break;
-    //     }
-
-    // }
-
-
-
-    handleKeyIdChange = newKeyId => {
-        this.setState({ newKeyId })
-    }
-
-    handleKeyValueChange = newKeyValue => {
-        this.setState({ newKeyValue })
-    }
-
-    // clearState = () => {
-    //     this.setState({ newKeyId: null, newKeyValue: null });
-    // }
-
-    // componentWillReceiveProps(nextProps, nextContext) {
-
-
-
-    //     if (nextProps == null) {
-    //         return;
-    //     }
-    //     const { selectedKeyId, selectedNodeType } = nextProps;
-    //     if (selectedNodeType !== nodeTypes.KEY) {
-    //         this.clearState();
-
-    //     }
-    //     if (this.props.selectedKeyId === selectedKeyId) {
-    //         this.clearState();
-
-    //     }
-    //     const nxtKey = commandHelper.getSelectedKey(nextProps);
-    //     const currKey = commandHelper.getKey(this.props, this.props.selectedKeyId);
-    //     if (nxtKey == null || currKey == null) {
-    //         this.clearState();
-
-    //     }
-    //     if (nxtKey.type === currKey.type) {
-    //         this.clearState();
-    //         return;
-    //     }
-    //   //  const { dispatch } = this.props;
-    //  //   dispatch(keyActions.setSaveHandle(this.getSaveHandle));
-
-    // }
-
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         if (nextProps == null) {
             return false;
         }
-        const { selectedNodeType, selectedKeyId } = nextProps;
+        const { selectedNodeType, selectedKeyId,isKeyDirty } = nextProps;
         if (selectedNodeType !== nodeTypes.KEY) {
             return false;
+        }
+        if(this.props.isKeyDirty!==isKeyDirty ){
+            return true;
         }
         return this.props.selectedKeyId !== selectedKeyId;
     }
 
     render() {
         console.log('render kvtabpane');
-        const { dispatch, selectedNodeType, selectedKeyBody } = this.props;
+        const { dispatch, selectedNodeType, selectedkeyContent,isKeyDirty } = this.props;
         if (selectedNodeType !== nodeTypes.KEY) {
             return <React.Fragment />
         }
@@ -134,10 +56,10 @@ class KeyViewTabPane extends Component {
         }
         switch (redisKey.type) {
             case keyType.STRING:
-                return <StringKeyView dispatch={dispatch} setSaveHandle={this.setSaveHandle} redisKey={{ ...redisKey, value: selectedKeyBody }} onKeyChange={this.handleKeyIdChange} onValueChange={this.handleKeyValueChange} />
+                return <StringKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} setSaveHandle={this.setSaveHandle} redisKey={{ ...redisKey, content: selectedkeyContent }}  />
 
             case keyType.HASH:
-                return <HashKeyView redisKey={{ ...redisKey, hashBody: selectedKeyBody }} onKeyChange={this.handleKeyIdChange} onValueChange={this.handleKeyValueChange} />
+                return <HashKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} redisKey={{ ...redisKey, content: selectedkeyContent }} setSaveHandle={this.setSaveHandle}  />
 
             default:
                 return <React.Fragment />

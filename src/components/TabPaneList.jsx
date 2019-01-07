@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { commandAction } from '../actions'
+import {commandHelper} from './commands'
 import { FolderIcon, SettingIcon, KeyIcon } from './icons'
 import { tabPaneIds } from '../constants'
 import { TabPanes, withScroll, IconList } from '../controls'
@@ -59,13 +60,16 @@ class TabPaneList extends Component {
   }
 
   getTabPaneTitle = tabPane => {
+    const redisKey= commandHelper.getSelectedKey(this.props);
+    const {isKeyDirty} =this.props;
+    const keyTitle=redisKey? isKeyDirty===true?'*'+redisKey.key:redisKey.key:'键';
     switch (tabPane) {
       case tabPaneIds.LIST_VIEW_PANE:
         return '列表视图';
       case tabPaneIds.SETTING_PANE:
         return '设置';
       case tabPaneIds.KEY_SETTING_VIEW_PANE:
-        return '键';
+        return keyTitle;
       default:
         return '未知';
     }
@@ -82,7 +86,6 @@ class TabPaneList extends Component {
   }
 
   render() {
-    console.log('render tabpanelist');
     const { activeTabPane } = this.props;
     return <Container>
       <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab} />
@@ -98,8 +101,9 @@ class TabPaneList extends Component {
 }
 
 const mapStateToProps = state => {
-  const { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDbId, selectedKey } = state.state;
-  return { tabPanes, activeTabPane, selectedNodeType, selectedConnection, selectedDbId, selectedKey };
+  const { tabPanes, activeTabPane ,selectedNodeType } = state.state;
+   
+  return { tabPanes, activeTabPane,selectedNodeType,...state.key };
 }
 
 const list = connect(mapStateToProps)(TabPaneList)
