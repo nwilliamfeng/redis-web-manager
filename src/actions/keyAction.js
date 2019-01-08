@@ -71,13 +71,17 @@ function modifyKey(connectionName, dbIdx, dbId, type, id, keys = []) {
     return async dispatch => {
         try {
             keys.forEach(async x => {
-                switch (x.state) {
+                const { key, displayKey, value, state } = x;
+                switch (state) {
                     case entityState.MODIFIED:
                     case entityState.NEW:
-                        await redisApi.edit(type, id, x.key, x.value, connectionName, dbIdx);
+                        if (displayKey !== key) { //如果不同说明key已经被更改，需要删除旧的key
+                            await redisApi.deleteKeyItem(key, type, id, connectionName, dbIdx);
+                        }
+                        await redisApi.edit(type, id, displayKey, value, connectionName, dbIdx);
                         break;
                     case entityState.DELETED:
-                        await redisApi.deleteKeyItem( x.key, type,id, connectionName, dbIdx);
+                        await redisApi.deleteKeyItem(key, type, id, connectionName, dbIdx);
                         break;
                     default:
                         break;

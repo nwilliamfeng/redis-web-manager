@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 export const getStyle = (height = 27, width = '100%') => {
 
-    return { borderRadius: 1, height, width, padding: '1px 5px', fontSize: 13 };
+    return { borderRadius: 1, height, width, padding: '1px 5px', fontSize: 13,minHeight:height };
 }
 export const errorStyle = {
     borderColor: 'red',
