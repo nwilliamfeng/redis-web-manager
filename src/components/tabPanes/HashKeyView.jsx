@@ -11,6 +11,8 @@ import { Div, FieldDiv, LabelDiv, getStyle, Td, Tr, Table, Button } from './part
 const HDiv = styled.div`
     width:100%;
     display:flex;
+    height:200px;
+    padding-bottom:10px;
 `
 
 export class HashKeyView extends Component {
@@ -79,9 +81,7 @@ export class HashKeyView extends Component {
         if (selectedKey != null) {
             const hashKey = keys.find(x => x.key === selectedKey);
             hashKey.value = value;
-
             this.setKeyItemDirty(hashKey);
-
         }
     }
 
@@ -121,8 +121,8 @@ export class HashKeyView extends Component {
 
     renderTable = () => {
         const { keys } = this.state;
-        return <div className='scollContainer' style={{ maxHeight: '50%', overflowX: 'hidden', overflowY: 'auto', width: '100%', minHeight: '50%' }}>
-            <Table>
+         return <div className='scollContainer' style={{ height: '100%', overflowX: 'hidden', overflowY: 'auto', width: '100%', minHeight: '50%' }}>
+             <Table>
                 <thead>
                     <tr>
                         <th>序号</th>
@@ -131,11 +131,9 @@ export class HashKeyView extends Component {
                         <th>状态</th>
                     </tr>
                 </thead>
-
                 <tbody>{keys.filter(x => x.state !== entityState.DELETED).map((x, idx) => this.renderKeyRow(x, idx, this.handleRowClick))}</tbody>
-
             </Table>
-        </div>
+       </div>
     }
 
     initizeKeys = props => {
@@ -208,7 +206,6 @@ export class HashKeyView extends Component {
         const { redisKey } = this.props;
         const { key, type, content } = redisKey;
         const { selectedKey } = this.state;
-
         return <Div>
             <div style={{ display: 'flex', marginLeft: -20, minHeight: 40 }}>
                 <FieldDiv>
@@ -228,13 +225,13 @@ export class HashKeyView extends Component {
                 </div>
             </HDiv>
 
-            <div style={{ maxHeight: 'calc(50% - 40px)', minHeight: 'calc(50% - 40px)', background:'red' }}>
-                <FieldDiv style={{ marginTop: 15, marginBottom: 15, marginLeft: -20 }}>
+             <div style={{ height: 'calc(100% - 300px)'}}>
+                <FieldDiv style={{  marginBottom: 15, marginLeft: -20 }}>
                     <LabelDiv >{'Key'}</LabelDiv>
                     <Input onKeyUp={this.handleKeyChange} readOnly={selectedKey == null} style={getStyle(27, 250)} value={selectedKey ? this.getSelectedDisplayKey() : ''} />
                 </FieldDiv>
-
-                <FieldDiv style={{  marginLeft: -20,background:'green', height: 'calc(100% - 40px)'}}>
+             
+                <FieldDiv style={{  marginLeft: -20, height: '100%'}}>
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <LabelDiv >{'Value'}</LabelDiv>
                         <div style={{ flex: '0 1 100%' }} />

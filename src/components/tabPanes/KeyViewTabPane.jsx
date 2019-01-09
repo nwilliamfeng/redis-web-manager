@@ -43,10 +43,23 @@ class KeyViewTabPane extends Component {
         }
         return this.props.selectedKeyId !== selectedKeyId;
     }
+    
+    componentDidMount()
+    {
+        console.log('xxxx');????
+    }
+
+    componentWillUnmount(){
+        console.log('yyyy');
+    }
 
     render() {
+
         console.log('render kvtabpane');
-        const { dispatch, selectedNodeType, selectedkeyContent,isKeyDirty } = this.props;
+        const { dispatch, selectedNodeType, selectedkeyContent,isKeyDirty,visible } = this.props;
+        if(visible===false){
+            return <React.Fragment/>
+        }
         if (selectedNodeType !== nodeTypes.KEY) {
             return <React.Fragment />
         }
