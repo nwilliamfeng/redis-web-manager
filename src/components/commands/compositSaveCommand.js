@@ -1,7 +1,6 @@
  
 
 import { nodeTypes,keyType } from '../../constants'
-import { commandHelper } from './commandHelper'
 
 /**
  * 保存键命令
@@ -15,6 +14,7 @@ export const compositSaveCommand = props => {
         },
 
         execute: async () => {
+            console.log('execute!!!');
             const {saveKeyHandle} =props;
             if(saveKeyHandle!=null){
                 saveKeyHandle();

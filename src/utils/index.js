@@ -1,3 +1,4 @@
 export * from './mathUtil'
 export * from './cookieUtil'
 export * from './regexUtil'
+export * from './keyEventUtil'

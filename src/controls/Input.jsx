@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {keyEventUtil} from '../utils'
 
 export class Input extends Component {
 
@@ -12,7 +13,11 @@ export class Input extends Component {
      
         const {onKeyUp}=this.props;
         e.stopPropagation();
-        if(onKeyUp!=null){
+
+        if(keyEventUtil.checkCtrl(e)){
+            return;
+        }
+        if(onKeyUp!=null ){
             onKeyUp(this.input.value);
         }
         

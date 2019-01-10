@@ -1,27 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { commandHelper } from '../commands'
+import { commandHelper ,compositSaveCommand} from '../commands'
 import { nodeTypes, keyType } from '../../constants'
 import { StringKeyView } from './StringKeyView'
 import { keyActions } from '../../actions';
 import { HashKeyView } from './HashKeyView'
-
-
-// const StringKeyFrom = ({ redisKey,  dispatch ,errorMessage}) => {
-//     console.log(redisKey);
-//     const { connectionName, dbIdx, key, type,value,dbId } = redisKey;
-//     const form = attachMessage => {
-//         return <ModifyStringKeyPostForm formKey={{id:key,type,value}} dbIdx={dbIdx} dbId={dbId}
-//             dispatch={dispatch} connectionName={connectionName} attachMessage={attachMessage} />
-//     }
-//     return form(errorMessage);
-// }
-
-// const form = attachMessage => {
-//     return <ModifyStringKeyPostForm redisKey={redisKey} dbIdx={dbIdx} dbId={dbId}
-//         dispatch={dispatch} connectionName={connectionName} attachMessage={attachMessage} />
-// }
-
+ 
 
 class KeyViewTabPane extends Component {
    
@@ -36,40 +20,33 @@ class KeyViewTabPane extends Component {
         }
         const { selectedNodeType, selectedKeyId,isKeyDirty } = nextProps;
         if (selectedNodeType !== nodeTypes.KEY) {
-            return false;
+            return true;
         }
         if(this.props.isKeyDirty!==isKeyDirty ){
             return true;
         }
         return this.props.selectedKeyId !== selectedKeyId;
     }
+
+    onKeyDown=e=>{
+        console.log(e);
+    }
     
     componentDidMount()
     {
-        console.log('xxxx');????
+       window.addEventListener('onKeyDown',this.onKeyDown)
     }
 
     componentWillUnmount(){
         console.log('yyyy');
     }
 
-    render() {
-
-        console.log('render kvtabpane');
-        const { dispatch, selectedNodeType, selectedkeyContent,isKeyDirty,visible } = this.props;
-        if(visible===false){
-            return <React.Fragment/>
-        }
-        if (selectedNodeType !== nodeTypes.KEY) {
-            return <React.Fragment />
-        }
-        const redisKey = commandHelper.getSelectedKey(this.props);
-        if (redisKey == null) {
-            return <React.Fragment />
-        }
+    renderView=redisKey=>{
+        const { dispatch, selectedkeyContent,isKeyDirty } = this.props;
+       
         switch (redisKey.type) {
             case keyType.STRING:
-                return <StringKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} setSaveHandle={this.setSaveHandle} redisKey={{ ...redisKey, content: selectedkeyContent }}  />
+                return <StringKeyView  dispatch={dispatch} isKeyDirty={isKeyDirty} setSaveHandle={this.setSaveHandle} redisKey={{ ...redisKey, content: selectedkeyContent }}  />
 
             case keyType.HASH:
                 return <HashKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} redisKey={{ ...redisKey, content: selectedkeyContent }} setSaveHandle={this.setSaveHandle}  />
@@ -78,6 +55,35 @@ class KeyViewTabPane extends Component {
                 return <React.Fragment />
         }
 
+    }
+
+    handleKeyDown=(e)=>{
+        if(e.ctrlKey===true && (e.key==='s'|| e.key==='S')){
+            const cmd =compositSaveCommand(this.props);
+            if(cmd.canExecute()){
+                cmd.execute();          
+            }
+            e.preventDefault();
+        }
+        
+    }
+
+    render() {
+
+        console.log('render kvtabpane');
+        const {  visible,selectedNodeType } = this.props;
+        if(visible===false || selectedNodeType!==nodeTypes.KEY){
+            return <React.Fragment/>
+        }
+
+        const redisKey = commandHelper.getSelectedKey(this.props);
+        if (redisKey == null) {
+            return <React.Fragment />
+        }
+     
+        return <div tabIndex={0}  style={{height:'100%'}} onKeyDown={this.handleKeyDown}>
+            {this.renderView(redisKey)}
+            </div>
     }
 }
 

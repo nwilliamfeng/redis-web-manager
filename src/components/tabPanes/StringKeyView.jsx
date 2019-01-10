@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Input } from '../Input'
+import { Input } from '../../controls/Input'
 import { isEqual } from 'lodash'
-import { TextArea } from '../TextArea'
+import { TextArea } from '../../controls/TextArea'
 import { Div, FieldDiv, LabelDiv, getStyle } from './part'
 import { commandHelper } from '../commands'
 import { keyActions } from '../../actions';
@@ -11,7 +11,7 @@ export class StringKeyView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { newKeyId: null, newKeyValue: null,isDirty:false, }
+        this.state = { newKeyId: null, newKeyValue: null, isDirty: false, }
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -21,22 +21,23 @@ export class StringKeyView extends Component {
         return !isEqual(this.props.redisKey, nextProps.redisKey);
     }
 
-    checkDirty=()=>{
-        const {isDirty} =this.state;
-        if(isDirty!==true){
-            const {dispatch} =this.props;
+    checkDirty = () => {
+        const { isDirty } = this.state;
+        if (isDirty !== true) {
+            const { dispatch } = this.props;
             dispatch(keyActions.setKeyDirty());
         }
     }
 
     handleKeyIdChange = newKeyId => {
         this.checkDirty();
-        this.setState({ newKeyId,isDirty:true })
+        this.setState({ newKeyId, isDirty: true })
     }
 
     handleKeyValueChange = newKeyValue => {
+
         this.checkDirty();
-        this.setState({ newKeyValue,isDirty:true })
+        this.setState({ newKeyValue, isDirty: true });
     }
 
     getSaveHandle = () => {
@@ -45,7 +46,7 @@ export class StringKeyView extends Component {
         const { key, type, connectionName, dbId, dbIdx, content } = redisKey;
         if (newKeyValue != null || newKeyId != null) {
             const pValue = newKeyValue ? newKeyValue : content;
-            if (newKeyId != null) {              
+            if (newKeyId != null) {
                 dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), newKeyId, pValue, key));
             }
             else {
@@ -54,8 +55,8 @@ export class StringKeyView extends Component {
         }
     }
 
-    clearState=()=>{
-        this.setState({newKeyId:null,newKeyValue:null,isDirty:false});
+    clearState = () => {
+        this.setState({ newKeyId: null, newKeyValue: null, isDirty: false });
     }
 
     componentDidMount() {
@@ -64,12 +65,12 @@ export class StringKeyView extends Component {
         setSaveHandle(this.getSaveHandle);
     }
 
-    componentWillReceiveProps(nextProps,nextContext){
-       
-        if(this.state.isDirty!==nextProps.isKeyDirty){
-            this.setState({isDirty:false});
+    componentWillReceiveProps(nextProps, nextContext) {
+
+        if (this.state.isDirty !== nextProps.isKeyDirty) {
+            this.setState({ isDirty: false });
         }
-        if(!isEqual( this.props.redisKey,nextProps.redisKey)){
+        if (!isEqual(this.props.redisKey, nextProps.redisKey)) {
             this.clearState();
         }
     }
@@ -87,7 +88,7 @@ export class StringKeyView extends Component {
                 </FieldDiv>
                 <FieldDiv>
                     <LabelDiv>{'键名称'}</LabelDiv>
-                    <Input style={getStyle(27, 220)} value={key?key:''} onKeyUp={this.handleKeyIdChange} />
+                    <Input style={getStyle(27, 220)} value={key ? key : ''} onKeyUp={this.handleKeyIdChange} />
                 </FieldDiv>
             </div>
 
@@ -97,7 +98,7 @@ export class StringKeyView extends Component {
                     <div style={{ flex: '0 1 100%' }} />
                 </div>
 
-                <TextArea style={getStyle('100%', '100%')} value={content?content:''} onKeyUp={this.handleKeyValueChange} />
+                <TextArea style={getStyle('100%', '100%')} value={content ? content : ''} onKeyUp={this.handleKeyValueChange} />
             </FieldDiv>
         </Div>
     }

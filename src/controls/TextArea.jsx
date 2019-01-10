@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {keyEventUtil} from '../utils'
 
 export class TextArea extends Component {
 
@@ -11,6 +12,9 @@ export class TextArea extends Component {
     keyHandle = e => {
         const {onKeyUp}=this.props;
         e.stopPropagation();
+        if(keyEventUtil.checkCtrl(e)){
+            return ;
+        }
         if(onKeyUp!=null){
             onKeyUp(this.input.value);
         }
