@@ -1,19 +1,11 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
 import { Input } from '../../controls/Input'
 import { TextArea } from '../../controls/TextArea'
 import { isEqual } from 'lodash'
 import { entityState } from '../../constants'
 import { keyActions } from '../../actions'
 import { commandHelper } from '../commands'
-import { Div, FieldDiv, LabelDiv, getStyle, Td, Tr, Table, Button } from './part'
-
-const HDiv = styled.div`
-    width:100%;
-    display:flex;
-    height:200px;
-    padding-bottom:10px;
-`
+import { Div, FieldDiv, LabelDiv, getStyle,KeysDiv, TableContainer, Td, Tr, Table, Button } from './part'
 
 export class HashKeyView extends Component {
 
@@ -22,25 +14,8 @@ export class HashKeyView extends Component {
         this.state = { keys: [], selectedKey: null };
     }
 
-    // shouldComponentUpdate(nextProps, nextState, nextContext) {
-    //     if (nextProps == null) {
-    //         return false;
-    //     }
-    //     if (isEqual(this.props.redisKey, nextProps.redisKey)) {
-    //         if (this.state.selectedKey !== nextState.selectedKey) {
-    //             return true;
-    //         }
-    //         if (isEqual(this.state.modifyKeys, nextState.modifyKeys)) {
-    //             return true;
-    //         }
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
     isDirty = () => {
         const { keys } = this.state;
-        console.log(keys);
         return keys.some(x => x.state !== entityState.NONE);
     }
 
@@ -121,8 +96,8 @@ export class HashKeyView extends Component {
 
     renderTable = () => {
         const { keys } = this.state;
-         return <div className='scollContainer' style={{ height: '100%', overflowX: 'hidden', overflowY: 'auto', width: '100%', minHeight: '50%' }}>
-             <Table>
+        return <TableContainer className='scollContainer' >
+            <Table>
                 <thead>
                     <tr>
                         <th>序号</th>
@@ -133,7 +108,7 @@ export class HashKeyView extends Component {
                 </thead>
                 <tbody>{keys.filter(x => x.state !== entityState.DELETED).map((x, idx) => this.renderKeyRow(x, idx, this.handleRowClick))}</tbody>
             </Table>
-       </div>
+        </TableContainer>
     }
 
     initizeKeys = props => {
@@ -217,21 +192,21 @@ export class HashKeyView extends Component {
                     <Input style={getStyle(27, 220)} readOnly={true} value={key} />
                 </FieldDiv>
             </div>
-            <HDiv>
+            <KeysDiv>
                 {this.renderTable(content)}
                 <div>
                     <Button onClick={this.handleAddRow} >{'添加行'}</Button>
                     <Button onClick={this.handleDeleteRow} style={{ marginTop: 10 }} disabled={selectedKey == null}>{'删除行'}</Button>
                 </div>
-            </HDiv>
+            </KeysDiv>
 
-             <div style={{ height: 'calc(100% - 300px)'}}>
-                <FieldDiv style={{  marginBottom: 15, marginLeft: -20 }}>
+            <div style={{ height: 'calc(100% - 300px)' }}>
+                <FieldDiv style={{ marginBottom: 15, marginLeft: -20 }}>
                     <LabelDiv >{'Key'}</LabelDiv>
                     <Input onKeyUp={this.handleKeyChange} readOnly={selectedKey == null} style={getStyle(27, 250)} value={selectedKey ? this.getSelectedDisplayKey() : ''} />
                 </FieldDiv>
-             
-                <FieldDiv style={{  marginLeft: -20, height: '100%'}}>
+
+                <FieldDiv style={{ marginLeft: -20, height: '100%' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <LabelDiv >{'Value'}</LabelDiv>
                         <div style={{ flex: '0 1 100%' }} />

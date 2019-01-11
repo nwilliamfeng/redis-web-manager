@@ -90,7 +90,7 @@ class RedisToolbar extends Component {
             <ToolbarButton title='配置连接' disabled={!this.canModifyConnection()} onClick={this.handleModifyConnectionClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.CONNECTION_CONFIG_IMG}></ToolbarButton>
             <Seperator />
             <ToolbarButton title='加载' disabled={!this.canOpen()} onClick={this.handleOpenClick} height={'18px'} width={'18px'} backgroundImage={imgSrc.CONNECT_IMG}></ToolbarButton>
-            <ToolbarButton title='保存键设置' disabled={!this.canSaveKey()} onClick={this.handleSaveKeyClick} height={'21px'} width={'21px'} backgroundImage={imgSrc.SAVE_IMG}></ToolbarButton>
+            <ToolbarButton title='保存键设置(Ctrl+S)' disabled={!this.canSaveKey()} onClick={this.handleSaveKeyClick} height={'21px'} width={'21px'} backgroundImage={imgSrc.SAVE_IMG}></ToolbarButton>
 
             <ToolbarButton title='刷新' disabled={!this.canRefresh()} onClick={this.handleRefreshClick} height={'22px'} width={'22px'} backgroundImage={imgSrc.REFRESH_IMG}></ToolbarButton>
            

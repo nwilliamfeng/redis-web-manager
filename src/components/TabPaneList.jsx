@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { commandAction } from '../actions'
-import {commandHelper} from './commands'
+import { commandHelper } from './commands'
 import { FolderIcon, SettingIcon, KeyIcon } from './icons'
 import { tabPaneIds } from '../constants'
 import { TabPanes, withScroll, IconList } from '../controls'
-import { ListViewTabPane, SettingTabPane ,KeyViewTabPane} from './tabPanes'
- 
+import { ListViewTabPane, SettingTabPane, KeyViewTabPane } from './tabPanes'
+
 
 
 const Container = styled.div`
@@ -60,9 +60,9 @@ class TabPaneList extends Component {
   }
 
   getTabPaneTitle = tabPane => {
-    const redisKey= commandHelper.getSelectedKey(this.props);
-    const {isKeyDirty} =this.props;
-    const keyTitle=redisKey? isKeyDirty===true?'*'+redisKey.key:redisKey.key:'键';
+    const redisKey = commandHelper.getSelectedKey(this.props);
+    const { isKeyDirty } = this.props;
+    const keyTitle = redisKey ? isKeyDirty === true ? '*' + redisKey.key : redisKey.key : '键';
     switch (tabPane) {
       case tabPaneIds.LIST_VIEW_PANE:
         return '列表视图';
@@ -94,10 +94,10 @@ class TabPaneList extends Component {
         {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane />}
         {this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE) && <KeyViewTabPane />} */}
 
-          {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane />}
+        {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane />}
         {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane />}
-          <KeyViewTabPane visible={this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE)}/> 
-        
+        <KeyViewTabPane visible={this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE)&&activeTabPane ===tabPaneIds.KEY_SETTING_VIEW_PANE } />
+
       </TabPanel>
 
     </Container>
@@ -106,9 +106,9 @@ class TabPaneList extends Component {
 }
 
 const mapStateToProps = state => {
-  const { tabPanes, activeTabPane ,selectedNodeType } = state.state;
-   
-  return { tabPanes, activeTabPane,selectedNodeType,...state.key };
+  const { tabPanes, activeTabPane, selectedNodeType } = state.state;
+
+  return { tabPanes, activeTabPane, selectedNodeType, ...state.key };
 }
 
 const list = connect(mapStateToProps)(TabPaneList)

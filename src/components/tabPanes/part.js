@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 export const getStyle = (height = 27, width = '100%') => {
 
-    return { borderRadius: 1, height, width, padding: '1px 5px', fontSize: 13,minHeight:height };
+    return { borderRadius: 1, height, width, padding: '1px 5px', fontSize: 13, minHeight: height };
 }
 export const errorStyle = {
     borderColor: 'red',
@@ -50,6 +50,7 @@ export const Tr = styled.tr`
 `
 
 export const Table = styled.table`
+
     width:100%;
 `
 
@@ -82,4 +83,24 @@ export const Td = styled.td`
     width:${props => props.width ? props.width : 'auto'};
     max-width:${props => props.width ? props.width : 'auto'};
     border:1px solid #eeee;
+    border-right:none;
+    &:first-child{
+        border-left:none;
+    }
+`
+
+export const TableContainer = styled.div`
+    border: 1px solid #eeee;
+    height:  100%;
+    overflow-x:  hidden;
+    overflow-y:  auto;
+    width: 100%;
+    min-height: '50%'  ;
+`
+
+export const KeysDiv = styled.div`
+    width:100%;
+    display:flex;
+    height:200px;
+    padding-bottom:10px;
 `
