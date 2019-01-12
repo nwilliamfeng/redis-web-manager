@@ -4,7 +4,7 @@ import { commandHelper, compositSaveCommand } from '../commands'
 import { nodeTypes, keyType } from '../../constants'
 import { StringKeyView } from './StringKeyView'
 import { keyActions } from '../../actions';
-import { HashKeyView } from './HashKeyView'
+import { AggregateKeyView } from './AggregateKeyView'
 
 
 class KeyViewTabPane extends Component {
@@ -18,7 +18,7 @@ class KeyViewTabPane extends Component {
         if (nextProps == null) {
             return false;
         }
-        const { selectedNodeType, selectedKeyId, isKeyDirty, visible } = nextProps;
+        const { selectedNodeType, selectedKeyId, isKeyDirty, visible,selectedkeyContent } = nextProps;
         if (this.props.visible !== visible) {
             return true
         }
@@ -28,7 +28,10 @@ class KeyViewTabPane extends Component {
         if (this.props.isKeyDirty !== isKeyDirty) {
             return true;
         }
-        return this.props.selectedKeyId !== selectedKeyId;
+        if (this.props.selectedKeyId !== selectedKeyId){
+            return true;
+        }
+        return this.props.selectedkeyContent !==selectedkeyContent;
     }
 
 
@@ -40,7 +43,10 @@ class KeyViewTabPane extends Component {
                 return <StringKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} setSaveHandle={this.setSaveHandle} redisKey={{ ...redisKey, content: selectedkeyContent }} />
 
             case keyType.HASH:
-                return <HashKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} redisKey={{ ...redisKey, content: selectedkeyContent }} setSaveHandle={this.setSaveHandle} />
+            case keyType.ZSET:
+            case keyType.LIST:
+            case keyType.SET:
+                return <AggregateKeyView dispatch={dispatch} isKeyDirty={isKeyDirty} redisKey={{ ...redisKey, content: selectedkeyContent }} setSaveHandle={this.setSaveHandle} />
 
             default:
                 return <React.Fragment />

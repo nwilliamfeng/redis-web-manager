@@ -55,7 +55,7 @@ function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) 
     return async dispatch => {
         try {
             await redisApi.deleteKey(oldKey, connectionName, dbIdx);
-            await redisApi.edit(type, key, null, value, connectionName, dbIdx);
+            await redisApi.setKeyItem(type, key, null, value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
 
@@ -67,18 +67,67 @@ function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) 
 }
 
 
-function modifyKey(connectionName, dbIdx, dbId, type, id, keys = []) {
+// function modifyKey(connectionName, dbIdx, type, id, keys = []) {
+//     return async dispatch => {
+//         try {
+//             keys.forEach(async x => {
+//                 const { key, displayKey, value, state } = x;
+//                 switch (state) {
+//                     case entityState.MODIFIED:
+//                         if (displayKey !== key) { //如果不同说明key已经被更改，需要删除旧的key
+//                             console.log(1);
+//                             await redisApi.deleteKeyItem(key, type, id, connectionName, dbIdx);
+//                             console.log(2);
+//                             await redisApi.setKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+//                             console.log(3);
+//                         }
+//                         else {
+//                             await redisApi.editKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+//                         }
+//                         break;
+//                     case entityState.NEW:
+//                         await redisApi.setKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+//                         break;
+//                     case entityState.DELETED:
+//                         await redisApi.deleteKeyItem(key, type, id, connectionName, dbIdx);
+//                         break;
+//                     default:
+//                         break;
+//                 }
+//             });
+//             console.log(4);
+//             const keyContent = await redisApi.getKeyItems(connectionName, dbIdx, type, id);
+//             console.log(5);
+//             console.log(keyContent);
+//             dispatch({ type: keyConstants.RELOAD_KEY_CONTENT, keyContent });
+//         }
+//         catch (error) {
+//             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })
+//         }
+//     }
+// }
+
+function modifyKey(connectionName, dbIdx, type, id, keys = []) {
     return async dispatch => {
         try {
-            keys.forEach(async x => {
+
+            for (let x of keys) {
                 const { key, displayKey, value, state } = x;
                 switch (state) {
                     case entityState.MODIFIED:
-                    case entityState.NEW:
                         if (displayKey !== key) { //如果不同说明key已经被更改，需要删除旧的key
+                            console.log(1);
                             await redisApi.deleteKeyItem(key, type, id, connectionName, dbIdx);
+                            console.log(2);
+                            await redisApi.setKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+                            console.log(3);
                         }
-                        await redisApi.edit(type, id, displayKey, value, connectionName, dbIdx);
+                        else {
+                            await redisApi.editKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+                        }
+                        break;
+                    case entityState.NEW:
+                        await redisApi.setKeyItem(type, id, displayKey, value, connectionName, dbIdx);
                         break;
                     case entityState.DELETED:
                         await redisApi.deleteKeyItem(key, type, id, connectionName, dbIdx);
@@ -86,11 +135,12 @@ function modifyKey(connectionName, dbIdx, dbId, type, id, keys = []) {
                     default:
                         break;
                 }
-            });
-
-            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
-
+            };
+            console.log(4);
+            const keyContent = await redisApi.getKeyItems(connectionName, dbIdx, type, id);
+            console.log(5);
+            console.log(keyContent);
+            dispatch({ type: keyConstants.RELOAD_KEY_CONTENT, keyContent });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })

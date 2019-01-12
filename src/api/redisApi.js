@@ -51,7 +51,7 @@ class RedisApi {
         return Code === 1;
     }
 
-    async deleteKeyItem(key,type,id, connectionName, dbIdx) {
+    async deleteKeyItem(key, type, id, connectionName, dbIdx) {
         const json = await ApiHelper.get(`/redis/delitem?name=${connectionName}&dbindex=${dbIdx}&type=${type}&id=${id}&key=${key}`);
         const { Message, Code } = json;
         if (Code === 2)
@@ -59,16 +59,30 @@ class RedisApi {
         return Code === 1;
     }
 
-    /**
-    * 编辑键
-    */
-    async edit(type, id, key, value, connectionName, dbIdx) {
-        const url = `/redis/set?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;
+
+    async editOrSetKeyItem(opName, type, id, key, value, connectionName, dbIdx) {
+        const url = `/redis/${opName}?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;
         const json = await ApiHelper.get(key == null ? url : url + `&Key=${key}`);
         const { Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
         return Code === 1;
+    }
+
+    /**
+    * 编辑子键
+    */
+    async editKeyItem(type, id, key, value, connectionName, dbIdx) {
+        return await this.editOrSetKeyItem('edit',type, id, key, value, connectionName, dbIdx);
+    }
+
+
+
+   /**
+   * 编辑子键
+   */
+    async setKeyItem(type, id, key, value, connectionName, dbIdx) {
+        return await this.editOrSetKeyItem('set',type, id, key, value, connectionName, dbIdx);
     }
 
 
@@ -77,11 +91,11 @@ class RedisApi {
         const { Data, Message, Code } = json;
         if (Code === 2)
             throw new Error(Message);
-      
+
         return Data;
     }
 
-    
+
 
 
     /**
@@ -92,7 +106,7 @@ class RedisApi {
         const json = await ApiHelper.get(`/redis/connect?name=${name}`);
         const { Data, Message, Code } = json;
         if (Code === 2)
-            throw new Error(Message);   
+            throw new Error(Message);
         return Data.map(x => { return { id: `${name}-${x}`, dbIdx: x, connectionName: name, dbState: dbStates.NONE, } });
     }
 

@@ -34,8 +34,7 @@ export const keyReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedKeyId: existSelect ? oldSelectedKeyId : null,
-                keys: action.keyList,
-                
+                keys: action.keyList,             
                 isKeyDirty: false,
             }
 
@@ -71,15 +70,19 @@ export const keyReducer = (state = defaultState, action) => {
                 isKeyDirty: false,
             }
         case nodeTypes.KEY:
-            const needClearSaveHandle = !checkIfSameKeyType(action.keyId, state);
             return {
                 ...state,
                 selectedKeyId: action.keyId,
                 keys: [...keyCache.filter(x => x.connectionName === action.connectionId && x.dbId === action.dbId)],
                 selectedkeyContent: action.keyContent,
-                saveKeyHandle: needClearSaveHandle === true ? null : state.saveKeyHandle,
                 isKeyDirty: false,
             }
+        case keyConstants.RELOAD_KEY_CONTENT:
+        return{
+            ...state,
+            selectedkeyContent:action.keyContent,
+            isKeyDirty: false,
+        }
 
         default:
             return state;
