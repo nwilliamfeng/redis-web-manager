@@ -4,19 +4,21 @@ import { KeySearch } from '../KeySearch'
 import { imgSrc } from '../imgSrc'
 import { Button } from '../../controls'
 import {RedisToolbar} from './RedisToolbar'
+import {Navigator} from '../Navigator'
 
 
 const ToolbarDiv = styled.div`
-    background:#eee;
+    background:#f5f5f5;
     display:flex;
     padding:4px 10px 4px 0px;
     width:100%;
     align-items:center;
     border-bottom:1px solid lightgray;
+    
 `
 
 const ButtonDiv = styled.div`
-    flex:0 1 100%;
+    
     height:100%; 
     margin-left:5px;
     align-items:center;
@@ -42,6 +44,7 @@ const ToolbarButton = styled(Button)`
 
 
 
+
  export class Toolbars extends Component {
     render() {
         return <ToolbarDiv>
@@ -51,7 +54,8 @@ const ToolbarButton = styled(Button)`
                 <Seperator />
                  <RedisToolbar/>
             </ButtonDiv>
-            <KeySearch searchBoxStyle={{ height: 26, width: 200,borderRadius:0 }} />
+            <div style={{flex:'0 1 100%',padding:'0px 10px'}}><Navigator/></div>
+            <KeySearch searchBoxStyle={{ height: 24, width: 200,borderRadius:0,fontSize:12, }} />
         </ToolbarDiv>
     }
 }

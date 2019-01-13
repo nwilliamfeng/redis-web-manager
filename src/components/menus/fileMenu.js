@@ -1,6 +1,6 @@
 import {menuIds} from './menuIds'
 import {spliter} from './spliter'
-import {commandHelper,addConnectionCommand,addKeyCommand,compositRefreshCommand,refreshConnectionsCommand,compositOpenCommand} from '../commands'
+import {commandHelper,addConnectionCommand,addKeyCommand,compositRefreshCommand,refreshConnectionsCommand,compositOpenCommand, compositSaveCommand} from '../commands'
 import {dbStates} from '../../constants'
 
 
@@ -58,11 +58,24 @@ const newKey ={
 }
 
 
+const saveKey ={
+    isTopMenu:false,
+    title:'保存',
+    id: menuIds.SAVE_MENU,
+    disableHandle:props=>{
+       return !compositSaveCommand(props).canExecute();
+    },
+    command:props=>{
+        compositSaveCommand(props).execute();
+    },
+}
+
+
 export const fileMenu={
     isTopMenu:true,
     title:'文件(F)',
     id: menuIds.FILE_MENU,
-    subItems:[load, spliter(), newConnection,newKey,spliter(),refreshConnections,spliter(),refresh],
+    subItems:[load, spliter(), newConnection,newKey,spliter(),saveKey,spliter(),refreshConnections,spliter(),refresh],
 }
 
   

@@ -9,7 +9,7 @@ require('../assets/styles/scrollbar.css')
 
 const SearchIcon = styled.i`
     color: gray;
-    margin-top: -5px;`
+    margin-top: -7px;`
 
 /**
  * 菜单样式

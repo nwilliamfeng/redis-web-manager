@@ -10,7 +10,6 @@ export const LiIcon = styled.img`
 
 export const Ul = styled.ul`
     list-style: none;
-  
     width:100%;`
 
 export const Li = styled.li`

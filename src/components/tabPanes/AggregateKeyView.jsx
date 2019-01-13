@@ -79,7 +79,6 @@ export class AggregateKeyView extends Component {
         if (redisKey !== null) {
             const { content, type } = redisKey;
             const getKeyName = array => {
-
                 if (type === keyType.HASH ||type === keyType.LIST ) {
                     return array[0];
                 }
@@ -87,13 +86,15 @@ export class AggregateKeyView extends Component {
                     return array[1];
                 }
                 else if (type === keyType.ZSET) {
-                    return array[1].Score;
-                }
-              
-            }
-           
-            const keys = Object.entries(content).map(x => ({ key: getKeyName(x), value:type === keyType.ZSET?x[1].Value:x[1], type, state: entityState.NONE, displayKey: getKeyName(x) }));
-          console.log( Object.entries(content));
+                    return array[1].Value;
+                }          
+            }           
+            const keys = Object.entries(content).map(x => (
+                { key: getKeyName(x), 
+                    value:type === keyType.ZSET?x[1].Value:x[1], 
+                    type, state: entityState.NONE, 
+                    displayKey:type === keyType.ZSET?x[1].Score: getKeyName(x), 
+                }));
             this.setState({ keys, selectedKey: null });
         }
     }
@@ -124,14 +125,15 @@ export class AggregateKeyView extends Component {
 
     handleAddRow = () => {
         const { keys } = this.state;
-        let keyName = `newKey${keys.filter(x => x.state === entityState.NEW).length + 1}`;
-        const setKeyName = () => {
-            if (keys.some(x => x.key === keyName)) {
-                keyName += '_1';
-                setKeyName();
-            }
-        }
-        setKeyName();
+         const keyName=this.props.redisKey.type===keyType.ZSET?'0':null;
+        // let keyName = `newKey${keys.filter(x => x.state === entityState.NEW).length + 1}`;
+        // const setKeyName = () => {
+        //     if (keys.some(x => x.key === keyName)) {
+        //         keyName += '_1';
+        //         setKeyName();
+        //     }
+        // }
+       // setKeyName();
         const newKey = { key: keyName, type: this.props.redisKey.type, displayKey: keyName, value: '', state: entityState.NEW };
         this.setState({ keys: [...keys, newKey], selectedKey: keyName });
         this.notifyDirty();
@@ -156,7 +158,6 @@ export class AggregateKeyView extends Component {
     }
 
     render() {
-        console.log('render aggregator key view');
         const { redisKey } = this.props;
         const { key, type, content } = redisKey;
         const { selectedKey } = this.state;
@@ -178,13 +179,11 @@ export class AggregateKeyView extends Component {
                     <Button onClick={this.handleDeleteRow} style={{ marginTop: 10 }} disabled={selectedKey == null}>{'删除行'}</Button>
                 </div>
             </KeysDiv>
-
             <div style={{ height: 'calc(100% - 300px)' }}>
                {(type===keyType.HASH || type===keyType.ZSET) && <FieldDiv style={{ marginBottom: 15, marginLeft: -20 }}>
                     <LabelDiv >{type===keyType.HASH? 'Key':'Score'}</LabelDiv>
-                    <Input onKeyUp={this.handleKeyChange} readOnly={selectedKey == null} style={getStyle(27, 250)} value={selectedKey ? this.getSelectedDisplayKey() : ''} />
+                    <Input type={type===keyType.ZSET?'number':'input'} onKeyUp={this.handleKeyChange} readOnly={selectedKey == null} style={getStyle(27, 250)} value={selectedKey ? this.getSelectedDisplayKey() : ''} />
                 </FieldDiv>}
-
                 <FieldDiv style={{ marginLeft: -20, height: '100%' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <LabelDiv >{'Value'}</LabelDiv>

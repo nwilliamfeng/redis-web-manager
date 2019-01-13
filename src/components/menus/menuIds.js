@@ -17,6 +17,8 @@ export const menuIds={
      */
     NEW_KEY:'NEW_KEY',
 
+    SAVE_MENU:'SAVE_MENU',
+
     DELETE_KEY:'DELETE_KEY',
 
     MODIFY_KEY:'MODIFY_KEY',

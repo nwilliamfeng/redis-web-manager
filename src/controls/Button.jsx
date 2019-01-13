@@ -9,7 +9,8 @@ export const Button = styled.button`
         opacity:0.9;
     }
     &:active{
-        background-color:lightgray;
+        /* background-color:lightgray; */
+        opacity:0.7;
     }
     &:disabled{
         opacity:0.3;

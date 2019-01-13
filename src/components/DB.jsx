@@ -30,7 +30,6 @@ const ExpandContent = compose(withSelectByClick, withSimpleExpand)(props => <Con
 class DB extends Component {
 
     constructor(props) {
-        console.log('create db ' + props.dbIdx);
         super(props);
         this.state = { keys: [] };
     }
@@ -99,34 +98,25 @@ class DB extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const { id, isVisible } = this.props;
-
-
         if (nextProps == null) {
             return false;
         }
-
         if (nextProps.isVisible !== isVisible) { //处理折叠
             return true;
         }
-
         if (nextProps.dbState !== this.props.dbState) {
             return true;
         }
-
         if (this.props.selectedDbId === this.props.id) {
             if (!isEqual(this.props.keys, nextProps.keys)) { //检查keys的状态是否变化，比如刷新键
                 return true;
             }
         }
-
         const currConnectionName = this.props.connectionName;
-
         const { selectedNodeType, selectedConnectionId, selectedDbId, selectedKeyId } = nextProps;
-
         switch (selectedNodeType) {
             case nodeTypes.CONNECTION:
                 return this.isSelected() || this.containSelectKey();
-
             case nodeTypes.KEY:
                 if (currConnectionName !== selectedConnectionId || id !== selectedDbId) {
                     return this.isSelected() || this.containSelectKey();
@@ -135,7 +125,6 @@ class DB extends Component {
                     return this.containKey(selectedKeyId);
                 }
                 return false;
-
             case nodeTypes.DB:
                 if (this.containSelectKey()) {
                     return true;
@@ -144,20 +133,15 @@ class DB extends Component {
                     return id !== selectedDbId;
                 }
                 return id === selectedDbId;
-
             default:
                 return false;
-
         }
     }
 
-
     render() {
         const {  id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
-        const { keys } = this.state;
-      
-        console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
-
+        const { keys } = this.state;    
+       // console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
         return <React.Fragment>
              {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
                 <ExpandContent name={dbIdx}
@@ -193,9 +177,7 @@ function mapStateToProps(state) {
     const { selectedDbId } = state.db;
     const { selectedConnectionId } = state.connection;
     return { selectedNodeType, selectedDbId, selectedConnectionId, ...state.key };
-   
 }
-
 
 const db = connect(mapStateToProps)(DB)
 

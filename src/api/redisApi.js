@@ -59,6 +59,14 @@ class RedisApi {
         return Code === 1;
     }
 
+    async deleteZSetItem(value, type, id, connectionName, dbIdx) {
+        const json = await ApiHelper.get(`/redis/delitem?name=${connectionName}&dbindex=${dbIdx}&type=${type}&id=${id}&value=${value}`);
+        const { Message, Code } = json;
+        if (Code === 2)
+            throw new Error(Message);
+        return Code === 1;
+    }
+
 
     async editOrSetKeyItem(opName, type, id, key, value, connectionName, dbIdx) {
         const url = `/redis/${opName}?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;

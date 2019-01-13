@@ -18,7 +18,7 @@ const CloseIconDiv = styled.div`
 const TabPaneDiv = styled.div`
     cursor:pointer;     
     border:${props => props.isSelected === true ? '1px solid  #d3cfcf' : '1px solid transparent'};   
-    border-radius:${props => props.isSelected === true ? '0px 18px 0px 0px' : '0px'};
+    /* border-radius:${props => props.isSelected === true ? '0px 18px 0px 0px' : '0px'}; */
     border-top:none;
     border-bottom:${props => props.isSelected === true ? '1px solid transparent' : '1px solid #d3cfcf'}; 
     margin-left:${props => props.isSelected === true ? '-2px' : '0px'};
@@ -100,7 +100,7 @@ const TabPaneListDiv = styled.div`
     width:100%;
     border-bottom:${props=>props.hasTabs===true?'1px solid #d3cfcf':'none'} ;
     flex-wrap:wrap;
-    background:#eee;
+    background:#f5f5f5;
 `
 
 export class TabPanes extends Component {
@@ -133,7 +133,6 @@ export class TabPanes extends Component {
     }
 
     render() {
-        console.log('render tabpanes');
         const { selectedTabId } = this.state;
        
         const { items } = this.props;

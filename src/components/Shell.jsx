@@ -6,7 +6,8 @@ import { ConnectionList } from './ConnectionList'
 import { Toolbars } from './toolbar'
 import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
-import {Dialog} from './Dialog'
+import { Dialog } from './Dialog'
+import  {connect} from 'react-redux'
 
 
 const ShellDiv = styled.div`
@@ -56,17 +57,24 @@ const MenuBarDiv = styled.div`
 
 const OutListDiv = styled.div`
      height:100%;
-    padding:0px 1px 0px 0px; 
+    padding:0px; 
+    outline:0;
 `
 
 const ListContainer = withScroll(props => <div {...props} />)
 
 const VerticalSplit = withSplit()
 
+ class Shell extends Component {
 
+    handleKeyDown = e => {
+        console.log(e.key);
+    }
 
+    shouldComponentUpdate(nextProps,nextState,nextContext){
+        return false;
+    }
 
-export class Shell extends Component {
     render() {
         return <ShellDiv>
             <Background img={BackgroundImg} />
@@ -75,23 +83,28 @@ export class Shell extends Component {
                     <Menubar />
                 </MenuBarDiv>
 
-                <Toolbars/>
+                <Toolbars />
                 <VerticalSplit size={240} minSize={240} maxSize={290}>
-                    <OutListDiv>
+                    <OutListDiv tabIndex={0} onKeyDown={this.handleKeyDown}>
                         <ListContainer>
                             <ConnectionList />
                         </ListContainer>
                     </OutListDiv>
-
-
                     <TabDiv>
                         <TabPaneList />
                     </TabDiv>
                 </VerticalSplit>
             </Container>
-            <Dialog/>
-
+            <Dialog />
         </ShellDiv>
     }
 }
+
+const mapStateToProps=state=>{
+    return state;
+}
+
+const shell =connect(mapStateToProps)(Shell);
+
+export {shell as Shell};
 

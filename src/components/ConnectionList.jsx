@@ -22,6 +22,7 @@ class ConnectionList extends Component {
         return !isEqual(this.props.connections, nextProps.connections)  ;           
     }
 
+    
     render() {
         console.log('render connection-list');
         const { connections } = this.props;

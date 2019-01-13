@@ -36,8 +36,8 @@ export class Input extends Component {
     }
 
     render() {
-        const {  style, placeholder,readOnly } = this.props;
-        return <input ref={el => this.input = el} 
+        const {  style, placeholder,readOnly,type } = this.props;
+        return <input type={type} ref={el => this.input = el} 
         className='form-control' 
         value={this.state.value}  
         readOnly={readOnly}

@@ -54,7 +54,8 @@ class KeyViewTabPane extends Component {
 
     }
 
-    handleKeyDown = (e) => {
+
+    handleKeyDown=e=>{
         if (e.ctrlKey === true && (e.key === 's' || e.key === 'S')) {
             const cmd = compositSaveCommand(this.props);
             if (cmd.canExecute()) {
@@ -62,6 +63,14 @@ class KeyViewTabPane extends Component {
             }
             e.preventDefault();
         }
+    }
+
+    componentDidMount(){
+        window.addEventListener('keydown',this.handleKeyDown);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('keydown',this.handleKeyDown);
     }
 
     render() {
@@ -77,7 +86,7 @@ class KeyViewTabPane extends Component {
             return <React.Fragment />
         }
 
-        return <div tabIndex={0} style={{ height: '100%' }} onKeyDown={this.handleKeyDown}>
+        return <div  style={{ height: '100%' }} >
             {this.renderView(redisKey)}
         </div>
     }
