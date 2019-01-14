@@ -15,6 +15,12 @@ export const imgSrc={
 
     DELETE_IMG:require('../assets/imgs/delete_item.png'),
 
+    REDIS_IMG:require('../assets/imgs/redis.png'),
+
+    REDIS_DB_IMG:require('../assets/imgs/redisDB.png'),
+    
+    KEY_IMG:require('../assets/imgs/key.png'),
+
     REFRESH_IMG:require('../assets/imgs/refresh.png'),
 
     CONNECT_IMG:require('../assets/imgs/connect.png'),

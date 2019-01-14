@@ -182,14 +182,14 @@ export class AggregateKeyView extends Component {
             <div style={{ height: 'calc(100% - 300px)' }}>
                {(type===keyType.HASH || type===keyType.ZSET) && <FieldDiv style={{ marginBottom: 15, marginLeft: -20 }}>
                     <LabelDiv >{type===keyType.HASH? 'Key':'Score'}</LabelDiv>
-                    <Input type={type===keyType.ZSET?'number':'input'} onKeyUp={this.handleKeyChange} readOnly={selectedKey == null} style={getStyle(27, 250)} value={selectedKey ? this.getSelectedDisplayKey() : ''} />
+                    <Input type={type===keyType.ZSET?'number':'input'} onValueChange={this.handleKeyChange} readOnly={selectedKey == null} style={getStyle(27, 250)} value={selectedKey ? this.getSelectedDisplayKey() : ''} />
                 </FieldDiv>}
                 <FieldDiv style={{ marginLeft: -20, height: '100%' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <LabelDiv >{'Value'}</LabelDiv>
                         <div style={{ flex: '0 1 100%' }} />
                     </div>
-                    <TextArea style={getStyle('100%', '100%')} readOnly={selectedKey == null} value={this.getSelectedKeyValue()} onKeyUp={this.handleValueChange} />
+                    <TextArea style={getStyle('100%', '100%')} readOnly={selectedKey == null} value={this.getSelectedKeyValue()} onValueChange={this.handleValueChange} />
                 </FieldDiv>
             </div>
         </Div>

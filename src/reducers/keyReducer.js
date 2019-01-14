@@ -89,10 +89,3 @@ export const keyReducer = (state = defaultState, action) => {
     }
 }
 
-function checkIfSameKeyType(selectedKeyId, state) {
-    const oldKeyId = state.selectedKeyId;
-    if (oldKeyId == null) {
-        return false;
-    }
-    return state.keys.find(x => x.id === oldKeyId).type === keyCache.find(x => x.id === selectedKeyId).type;
-}

@@ -11,16 +11,22 @@ export class Input extends Component {
     
     keyHandle = e => {
      
-        const {onKeyUp}=this.props;
+        const {onValueChange}=this.props;
         e.stopPropagation();
 
         if(keyEventUtil.checkCtrl(e)){
             return;
         }
-        if(onKeyUp!=null ){
-            onKeyUp(this.input.value);
+        if(onValueChange!=null ){
+            onValueChange(this.input.value);
         }
         
+    }
+
+    handleKeyPress =e=>{
+        if(this.props.onKeyPress!=null){
+            this.props.onKeyPress(e);
+        }
     }
 
     componentWillReceiveProps(nextProps,nextContext){
@@ -43,6 +49,7 @@ export class Input extends Component {
         readOnly={readOnly}
         onChange={this.handleChange} 
         onKeyUp={this.keyHandle} 
+        onKeyPress={this.handleKeyPress}
         style={style} 
         placeholder={placeholder} />
     }

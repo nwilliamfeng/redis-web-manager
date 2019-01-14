@@ -9,22 +9,42 @@ class CommandHelper {
         return dbs.find(x => x.id === selectedDbId);
     }
 
-    getKey(props,keyId){
+    getKey(props, keyId) {
         return props.keys.find(x => x.id === keyId);
+    }
+
+    getFullPath(props) {
+        const { selectedNodeType } = props;
+        switch (selectedNodeType) {
+            case nodeTypes.CONNECTION:
+                const conn = this.getSelectedConnection(props);
+                return conn ? conn.name : '';
+            case nodeTypes.DB:
+                const db = this.getSelectedDb(props);
+                return db ? `${db.connectionName}\\db${db.dbIdx}` : '';
+            case nodeTypes.KEY:
+                const key = this.getSelectedKey(props);
+                if (key == null) {
+                    return '';
+                }
+                return `${key.connectionName}\\db${key.dbIdx}\\${key.key}`;
+            default:
+                return null;
+        }
     }
 
     getSelectedKey = props => {
 
-          const { selectedKeyId, keys , selectedNodeType } = props;
-         if(selectedNodeType!==nodeTypes.KEY){
-             return null;
-         }
+        const { selectedKeyId, keys, selectedNodeType } = props;
+        if (selectedNodeType !== nodeTypes.KEY) {
+            return null;
+        }
 
         return keys.find(x => x.id === selectedKeyId);
     }
 
     getSelectedConnection = props => {
-        const { selectedConnectionId, connections } =  props;
+        const { selectedConnectionId, connections } = props;
         return selectedConnectionId == null ? null : connections.find(x => x.id === selectedConnectionId);
     }
 

@@ -88,7 +88,7 @@ export class StringKeyView extends Component {
                 </FieldDiv>
                 <FieldDiv>
                     <LabelDiv>{'键名称'}</LabelDiv>
-                    <Input style={getStyle(27, 220)} value={key ? key : ''} onKeyUp={this.handleKeyIdChange} />
+                    <Input style={getStyle(27, 220)} value={key ? key : ''} onValueChange={this.handleKeyIdChange} />
                 </FieldDiv>
             </div>
 
@@ -98,7 +98,7 @@ export class StringKeyView extends Component {
                     <div style={{ flex: '0 1 100%' }} />
                 </div>
 
-                <TextArea style={getStyle('100%', '100%')} value={content ? content : ''} onKeyUp={this.handleKeyValueChange} />
+                <TextArea style={getStyle('100%', '100%')} value={content ? content : ''} onValueChange={this.handleKeyValueChange} />
             </FieldDiv>
         </Div>
     }

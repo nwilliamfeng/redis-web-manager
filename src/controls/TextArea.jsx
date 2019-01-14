@@ -10,13 +10,13 @@ export class TextArea extends Component {
     }
     
     keyHandle = e => {
-        const {onKeyUp}=this.props;
+        const {onValueChange}=this.props;
         e.stopPropagation();
         if(keyEventUtil.checkCtrl(e)){
             return ;
         }
-        if(onKeyUp!=null){
-            onKeyUp(this.input.value);
+        if(onValueChange!=null){
+            onValueChange(this.input.value);
         }
         
     }
