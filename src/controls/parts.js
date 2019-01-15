@@ -14,6 +14,7 @@ export const Ul = styled.ul`
 
 export const Li = styled.li`
     outline:none;
+    list-style:none;
     text-align:left;
     margin-left:-40px;
 `
@@ -43,7 +44,7 @@ export const FlexDiv = styled.div`
 
 export const HoverDiv = styled.div`
     &:hover{
-        background-color: #DEDBDA;
+        background-color: #eeee;
         color:black;
     };
 

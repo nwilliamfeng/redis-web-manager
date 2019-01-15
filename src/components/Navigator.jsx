@@ -40,13 +40,23 @@ class Navigator extends Component {
                     dispatch(connectionActions.selectConnection(strs[0]));
                     break;
                 case 2:
-                    dispatch(dbActions.selectDB(strs[0],`${strs[0]}-${strs[1]}`));
+                    dispatch(dbActions.selectDB(strs[0], `${strs[0]}-${this.getDbIdx(strs[1])}`));
+                    break;
+                case 3:
+             
+                    const keyId=`${strs[0]}-${this.getDbIdx(strs[1])}-${strs[2]}`
+                    const redisKey= commandHelper.getKey(this.props, keyId);
+                    dispatch(keyActions.selectKey (redisKey));
                     break;
                 default:
                     break;
             }
         }
 
+    }
+
+    getDbIdx=dbIdxStr=>{
+        return dbIdxStr.length > 2 ? dbIdxStr.substring(2) : dbIdxStr;
     }
 
     handleValueChange = value => {

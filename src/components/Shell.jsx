@@ -67,7 +67,7 @@ const VerticalSplit = withSplit()
 
  class Shell extends Component {
 
-    handleKeyDown = e => {
+    handleNavigateKeyDown = e => {
         console.log(e.key);
     }
 
@@ -85,7 +85,7 @@ const VerticalSplit = withSplit()
 
                 <Toolbars />
                 <VerticalSplit size={240} minSize={240} maxSize={290}>
-                    <OutListDiv tabIndex={0} onKeyDown={this.handleKeyDown}>
+                    <OutListDiv tabIndex={0} onKeyDown={this.handleNavigateKeyDown}>
                         <ListContainer>
                             <ConnectionList />
                         </ListContainer>

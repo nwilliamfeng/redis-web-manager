@@ -18,7 +18,8 @@ export const compositRefreshCommand = props => {
                 return false;
             }
             if (selectedDbId != null) {
-                return commandHelper.getSelectedDb(props).dbState === dbStates.KEY_LOAD_SUCCESS;
+                const selectedDb=commandHelper.getSelectedDb(props);
+                return selectedDb? selectedDb.dbState === dbStates.KEY_LOAD_SUCCESS :false;
             }
             const conn = commandHelper.getSelectedConnection(props);
             return conn?conn.connectionState === connectionStates.CONNECTED:false;

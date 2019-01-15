@@ -30,7 +30,7 @@ class ConnectionList extends Component {
         return <React.Fragment>
             {connections &&
                 <Ul>
-                    {connections.map(x => <Connection key={x.name} item={x} />)}
+                    {connections.map(x => <Connection key={x.name} item={x} />)}         
                 </Ul>}
             <ConnectionContextMenu />
             <DbContextMenu />

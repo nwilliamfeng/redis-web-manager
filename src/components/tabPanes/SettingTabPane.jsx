@@ -80,25 +80,7 @@ const ConnectedMenu = connectMenu(MENU_TYPE)(DynamicMenu);
 
         return (
             <div>
-                <h3>Dynamic Menu</h3>
-                <p>This demo shows usage of dynamically created menu on multiple targets.</p>
-                <div className='pure-g'>
-                    {targets.map((item, i) => (
-                        <div key={i} className='pure-u-1-6'>
-                            <ContextMenuTrigger
-                                id={MENU_TYPE} holdToDisplay={1000}
-                                  onItemClick={this.handleClick}
-                                allowRemoval2={i % 2 === 0}
-                                collect={collect} attributes={attributes}>
-                                {item.name}
-                            </ContextMenuTrigger>
-                        </div>
-                    ))}
-                </div>
-                <div>
-                    {this.state.logs.map((log, i) => <p key={i}>{log}</p>)}
-                </div>
-                <ConnectedMenu />
+               {'to be continued'}
             </div>
         );
     }

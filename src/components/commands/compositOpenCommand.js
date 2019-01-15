@@ -11,7 +11,8 @@ export const compositOpenCommand = props => {
                 return false;
             }
             if (selectedDbId != null) {
-                return commandHelper.getSelectedDb(props).dbState === dbStates.NONE;
+                const selectedDb=commandHelper.getSelectedDb(props);
+                return selectedDb? selectedDb.dbState === dbStates.NONE :false;
             }
             else {
                 const conn = commandHelper.getSelectedConnection(props);
