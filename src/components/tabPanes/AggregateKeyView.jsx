@@ -4,7 +4,7 @@ import { TextArea } from '../../controls/TextArea'
 import { isEqual } from 'lodash'
 import { entityState, keyType } from '../../constants'
 import { keyActions } from '../../actions'
-import { commandHelper } from '../commands'
+import {  locator } from '../../utils'
 import { Div, FieldDiv, LabelDiv, getStyle, KeysDiv, Button } from './part'
 import { KeyTable } from './KeyTable';
 
@@ -105,7 +105,7 @@ export class AggregateKeyView extends Component {
         const sKeys = this.state.keys.filter(x => x.state !== entityState.NONE);
         const { dispatch, redisKey } = this.props;
         const { key, type, connectionName,  dbIdx } = redisKey;     
-        dispatch(keyActions.modifyKey(connectionName, dbIdx,  commandHelper.getKeyTypeValue(type), key, sKeys));
+        dispatch(keyActions.modifyKey(connectionName, dbIdx,  locator.getKeyTypeValue(type), key, sKeys));
     }
 
     componentDidMount() {

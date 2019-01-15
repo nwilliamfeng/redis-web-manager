@@ -5,7 +5,6 @@ import { dbActions } from '../../../actions'
  * @param {*} param0 
  */
 export const refreshDbCommand=({ dispatch, dbIdx, connectionName, dbId } )=>{
-    console.log({ dispatch, dbIdx, connectionName, dbId });
     dispatch(dbActions.getKeyList(connectionName, dbIdx, dbId));
 }
 

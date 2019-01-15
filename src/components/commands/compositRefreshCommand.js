@@ -1,4 +1,4 @@
-import { commandHelper } from './commandHelper'
+import {  locator } from '../../utils'
 import { refreshConnectionCommand,refreshConnectionsCommand } from './connection'
 import {dbStates,connectionStates,nodeTypes} from '../../constants'
 import { refreshDbCommand } from './db'
@@ -18,10 +18,10 @@ export const compositRefreshCommand = props => {
                 return false;
             }
             if (selectedDbId != null) {
-                const selectedDb=commandHelper.getSelectedDb(props);
+                const selectedDb=locator.getSelectedDb(props);
                 return selectedDb? selectedDb.dbState === dbStates.KEY_LOAD_SUCCESS :false;
             }
-            const conn = commandHelper.getSelectedConnection(props);
+            const conn = locator.getSelectedConnection(props);
             return conn?conn.connectionState === connectionStates.CONNECTED:false;
         },
 
@@ -32,7 +32,7 @@ export const compositRefreshCommand = props => {
                 return;
             }
             if (selectedDbId != null) {
-                const db = commandHelper.getSelectedDb(props);
+                const db = locator.getSelectedDb(props);
                 refreshDbCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });
             }
             else {

@@ -1,6 +1,7 @@
 import {menuIds} from './menuIds'
 import {spliter} from './spliter'
-import {commandHelper,addConnectionCommand,addKeyCommand,compositRefreshCommand,refreshConnectionsCommand,compositOpenCommand, compositSaveCommand} from '../commands'
+import {addConnectionCommand,addKeyCommand,compositRefreshCommand,refreshConnectionsCommand,compositOpenCommand, compositSaveCommand} from '../commands'
+import {locator} from '../../utils'
 import {dbStates} from '../../constants'
 
 
@@ -50,7 +51,7 @@ const newKey ={
     id: menuIds.NEW_KEY,
     disableHandle:props=>{
         const {selectedDbId}=props;
-        return selectedDbId==null || commandHelper.getSelectedDb(props).dbState !== dbStates.KEY_LOAD_SUCCESS ;
+        return selectedDbId==null || locator.getSelectedDb(props).dbState !== dbStates.KEY_LOAD_SUCCESS ;
     },
     command:props=>{
         addKeyCommand(props);

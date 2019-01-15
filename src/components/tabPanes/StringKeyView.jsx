@@ -3,7 +3,7 @@ import { Input } from '../../controls/Input'
 import { isEqual } from 'lodash'
 import { TextArea } from '../../controls/TextArea'
 import { Div, FieldDiv, LabelDiv, getStyle } from './part'
-import { commandHelper } from '../commands'
+import {  locator } from '../../utils'
 import { keyActions } from '../../actions';
 
 export class StringKeyView extends Component {
@@ -47,10 +47,10 @@ export class StringKeyView extends Component {
         if (newKeyValue != null || newKeyId != null) {
             const pValue = newKeyValue ? newKeyValue : content;
             if (newKeyId != null) {
-                dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), newKeyId, pValue, key));
+                dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, locator.getKeyTypeValue(type), newKeyId, pValue, key));
             }
             else {
-                dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, commandHelper.getKeyTypeValue(type), key, pValue));
+                dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId, locator.getKeyTypeValue(type), key, pValue));
             }
         }
     }

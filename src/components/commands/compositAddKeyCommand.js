@@ -1,5 +1,5 @@
 import { dbStates } from '../../constants'
-import { commandHelper } from './commandHelper'
+import { locator } from '../../utils'
 
 import { addKeyCommand } from './key'
 
@@ -14,12 +14,12 @@ export const compositAddKeyCommand = props => {
             if (selectedDbId == null) {
                 return false;
             }
-            const db = commandHelper.getSelectedDb(props);
+            const db = locator.getSelectedDb(props);
             return db == null ? false : db.dbState === dbStates.KEY_LOAD_SUCCESS;
         },
 
         execute: () => {
-            const db = commandHelper.getSelectedDb(props);
+            const db = locator.getSelectedDb(props);
             const { dispatch } = props;
             const { dbIdx, connectionName, id } = db;
             addKeyCommand({ dispatch, dbIdx, connectionName, dbId: id });

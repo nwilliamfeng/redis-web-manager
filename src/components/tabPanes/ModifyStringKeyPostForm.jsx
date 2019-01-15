@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { FormField } from '../../controls'
 import { ResetButton, SubmitButton } from '../controlParts'
  
-import {commandHelper} from '../commands/commandHelper'
+import {locator} from '../../utils'
 
 /**
  * 验证模板
@@ -28,7 +28,7 @@ export const ModifyStringKeyPostForm = ({ formKey, dispatch, dbIdx, dbId, connec
         validationSchema={validationSchema}
         onSubmit={values => {
             const oldKey =formKey.id;
-             dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId,commandHelper.getKeyTypeValue( values.type), values.id,  values.value,oldKey));
+             dispatch(keyActions.modifyStringKey(connectionName, dbIdx, dbId,locator.getKeyTypeValue( values.type), values.id,  values.value,oldKey));
            
         }}
         render={({ values, errors, isSubmitting }) => (<div style={{ padding: 10 }}>

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { commandHelper, compositSaveCommand } from '../commands'
+import {  compositSaveCommand } from '../commands'
 import { nodeTypes, keyType } from '../../constants'
 import { StringKeyView } from './StringKeyView'
 import { keyActions } from '../../actions';
 import { AggregateKeyView } from './AggregateKeyView'
+import {locator} from '../../utils'
 
 
 class KeyViewTabPane extends Component {
@@ -81,7 +82,7 @@ class KeyViewTabPane extends Component {
             return <React.Fragment />
         }
 
-        const redisKey = commandHelper.getSelectedKey(this.props);
+        const redisKey = locator.getSelectedKey(this.props);
         if (redisKey == null) {
             return <React.Fragment />
         }

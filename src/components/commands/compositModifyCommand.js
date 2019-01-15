@@ -1,7 +1,7 @@
  
 import { modifyConnectionCommand } from './connection'
 import { nodeTypes } from '../../constants'
-import { commandHelper } from './commandHelper'
+import { locator } from '../../utils'
 
 /**
  * 修改键命令
@@ -28,7 +28,7 @@ export const compositModifyCommand = props => {
         execute: async () => {
             const { dispatch,  selectedNodeType } = props;
             if (selectedNodeType === nodeTypes.CONNECTION) {
-                const connection=commandHelper.getSelectedConnection(props);
+                const connection=locator.getSelectedConnection(props);
                 const {ip,name,password,port}=connection;
                 modifyConnectionCommand({dispatch,...{ip,name,password,port},oldName:name});          
             }

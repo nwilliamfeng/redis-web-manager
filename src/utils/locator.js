@@ -1,6 +1,6 @@
-import { nodeTypes } from "../../constants";
+import { nodeTypes, connectionStates } from "../constants";
 
-class CommandHelper {
+class Locator {
     getSelectedDb = props => {
         const { selectedDbId, dbs } = props;
         if (selectedDbId == null) {
@@ -48,6 +48,67 @@ class CommandHelper {
         return selectedConnectionId == null ? null : connections.find(x => x.id === selectedConnectionId);
     }
 
+    getNextConnection = props => {
+        const { selectedConnectionId, connections } = props;
+        if(selectedConnectionId==null){
+            return null;
+        }
+        const idx= connections.findIndex(x=>x.id===selectedConnectionId);
+        if(idx===connections.length-1){
+            return connections[0];
+        }
+        else{
+            return connections[idx+1];
+        }
+    }
+
+    getPreviousConnection = props => {
+        const { selectedConnectionId, connections } = props;
+        if(selectedConnectionId==null){
+            return null;
+        }
+        const idx= connections.findIndex(x=>x.id===selectedConnectionId);
+        if(idx===0){
+            return connections[connections.length-1];
+        }
+        else{
+            return connections[idx-1];
+        }
+    }
+
+    getNextNode = props => {
+        const {selectedNodeType,dbs } = props;
+        if(selectedNodeType===nodeTypes.CONNECTION){
+           let conn =this.getSelectedConnection(props);
+           if(conn==null){
+               return null;
+           }
+           else{
+               const {connectionState} =conn;
+               if(connectionState===connectionStates.CONNECTED){
+                   return {nodeType:dbs.length>0?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
+               }
+           }
+        }
+        else if (selectedNodeType===nodeTypes.DB){
+            const db=this.getNextDB(props);
+        ???    return  {nodeType:db!=null?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
+        }
+       
+    }
+
+    getNextDB=props=>{
+        const {  dbs } = props;
+        if(dbs.length===0){
+            return null;
+        }
+        const idx= connections.findIndex(x=>x.id===selectedDBId);
+        if( idx===dbs.length-1){
+            return null;
+        }
+        return dbs[idx+1];
+    }
+
     getKeyTypeName = keyValue => {
         switch (keyValue) {
             case 1:
@@ -84,4 +145,4 @@ class CommandHelper {
 }
 
 
-export const commandHelper = new CommandHelper();
+export const locator = new Locator();

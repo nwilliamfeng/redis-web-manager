@@ -7,8 +7,9 @@ import { Toolbars } from './toolbar'
 import { Menubar } from './Menubar'
 import { TabPaneList } from './TabPaneList'
 import { Dialog } from './Dialog'
-import  {connect} from 'react-redux'
-
+import { connect } from 'react-redux'
+import { navigateAction } from '../actions'
+import {compositOpenCommand} from '../components/commands'
 
 const ShellDiv = styled.div`
     display:flex;
@@ -65,13 +66,24 @@ const ListContainer = withScroll(props => <div {...props} />)
 
 const VerticalSplit = withSplit()
 
- class Shell extends Component {
+class Shell extends Component {
 
     handleNavigateKeyDown = e => {
-        console.log(e.key);
+        if (e.key === 'ArrowDown') {
+            this.props.dispatch(navigateAction.selectByArrow(this.props));
+        }
+        else if (e.key === 'ArrowUp') {
+            this.props.dispatch(navigateAction.selectByArrow(this.props,false));
+        }
+        else if (e.key === 'Enter') {
+            if(compositOpenCommand(this.props).canExecute()){
+                compositOpenCommand(this.props).execute();
+            }
+        }
+       
     }
 
-    shouldComponentUpdate(nextProps,nextState,nextContext){
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
         return false;
     }
 
@@ -100,11 +112,11 @@ const VerticalSplit = withSplit()
     }
 }
 
-const mapStateToProps=state=>{
-    return state;
+const mapStateToProps = state => {
+    return { ...state.keys, ...state.state, ...state.db, ...state.connection };
 }
 
-const shell =connect(mapStateToProps)(Shell);
+const shell = connect(mapStateToProps)(Shell);
 
-export {shell as Shell};
+export { shell as Shell };
 

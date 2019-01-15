@@ -1,7 +1,7 @@
 import { nodeTypes } from '../../constants'
 import { deleteKeyCommand, multiDeleteKeyCommand } from './key'
 import {deleteConnectionCommand} from './connection'
-import {commandHelper} from './commandHelper'
+import {  locator} from '../../utils'
 
 /**
  * 修改键命令
@@ -21,7 +21,7 @@ export const compositDeleteCommand = props => {
             const { selectedKeyId, selectedDbId, selectedConnectionId, dispatch, selectedNodeType, multiSelectItems, keys } = props;
             if (multiSelectItems.length > 0) {//优先处理多选
                 if (selectedNodeType === nodeTypes.DB) {
-                    const dbIdx = commandHelper.getSelectedDb(props).dbIdx;
+                    const dbIdx = locator.getSelectedDb(props).dbIdx;
                     const keyNames = multiSelectItems.map(x => keys.find(a => a.id === x).key);
                     multiDeleteKeyCommand({ dispatch, connectionName: selectedConnectionId, dbIdx, keyNames, dbId: selectedDbId });
                 }
@@ -29,7 +29,7 @@ export const compositDeleteCommand = props => {
                 return;
             }
             if (selectedKeyId !== null) {
-                const key = commandHelper.getSelectedKey(props);
+                const key = locator.getSelectedKey(props);
                 deleteKeyCommand({ dispatch, connectionName: selectedConnectionId, dbId: selectedDbId, dbIdx: key.dbIdx, keyName: key.key });
             }
             else {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { commandAction } from '../actions'
-import { commandHelper } from './commands'
+import { locator } from '../utils'
 import { FolderIcon, SettingIcon, KeyIcon } from './icons'
 import { tabPaneIds } from '../constants'
 import { TabPanes, withScroll, IconList } from '../controls'
@@ -60,7 +60,7 @@ class TabPaneList extends Component {
   }
 
   getTabPaneTitle = tabPane => {
-    const redisKey = commandHelper.getSelectedKey(this.props);
+    const redisKey = locator.getSelectedKey(this.props);
     const { isKeyDirty } = this.props;
     const keyTitle = redisKey ? isKeyDirty === true ? '*' + redisKey.key : redisKey.key : '键';
     switch (tabPane) {

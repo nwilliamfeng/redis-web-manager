@@ -4,7 +4,7 @@ import { nodeTypes } from '../constants'
 import { keyActions, dbActions, connectionActions } from '../actions'
 import { imgSrc } from './imgSrc'
 import { Input } from '../controls'
-import { commandHelper } from './commands'
+import { locator } from '../utils'
 
 const getInputvStyle = nodeType => {
     const img = nodeType === nodeTypes.KEY ? imgSrc.KEY_IMG : nodeType === nodeTypes.DB ? imgSrc.REDIS_DB_IMG : imgSrc.REDIS_IMG;
@@ -45,7 +45,7 @@ class Navigator extends Component {
                 case 3:
              
                     const keyId=`${strs[0]}-${this.getDbIdx(strs[1])}-${strs[2]}`
-                    const redisKey= commandHelper.getKey(this.props, keyId);
+                    const redisKey= locator.getKey(this.props, keyId);
                     dispatch(keyActions.selectKey (redisKey));
                     break;
                 default:
@@ -64,7 +64,7 @@ class Navigator extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const nwPath = commandHelper.getFullPath(nextProps);
+        const nwPath = locator.getFullPath(nextProps);
         this.setState({ path: nwPath ? nwPath : '' });
     }
 

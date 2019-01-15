@@ -6,7 +6,7 @@ import { connectionActions, multiNodeAction, dbActions, keyActions } from '../..
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
-import { commandHelper} from '../commands'
+import { locator} from '../../utils'
 import { imgSrc } from '../imgSrc'
 
 const Div = styled.div`
@@ -181,7 +181,7 @@ class ListViewTabPane extends Component {
 
     handleKeyNodeClick = key => {
         const { dispatch } = this.props;
-        const rk =commandHelper.getKey(this.props,key);     
+        const rk =locator.getKey(this.props,key);     
       dispatch(keyActions.selectKey(rk));
     }
 
