@@ -20,9 +20,13 @@ export const connectionActions = {
     addConnection,
 
     modifyConnection,
+
+    updateSelectExpandState,
 }
 
-
+function updateSelectExpandState( isExpand){
+    return {type:connectionConstants.EXPAND_STATE,isExpand}
+}
 
 function loadConnectionList() {
     return async dispatch => {

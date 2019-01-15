@@ -35,10 +35,13 @@ export const withSimpleExpand = WrapperComponent => class extends Component {
     }
 
     handleDoubleClick = () => {
-        const { children } = this.props;
+        const { children ,onExpandChange} = this.props;
         if (children) {
             const { isExpand } = this.state;
             this.setState({ isExpand: !isExpand });
+            if(onExpandChange!=null){
+                onExpandChange(!isExpand);
+            }
         }
 
     }

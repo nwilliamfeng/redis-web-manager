@@ -1,4 +1,4 @@
-import { nodeTypes, connectionStates } from "../constants";
+import { nodeTypes, connectionStates, dbStates } from "../constants";
 
 class Locator {
     getSelectedDb = props => {
@@ -50,63 +50,84 @@ class Locator {
 
     getNextConnection = props => {
         const { selectedConnectionId, connections } = props;
-        if(selectedConnectionId==null){
+        if (selectedConnectionId == null) {
             return null;
         }
-        const idx= connections.findIndex(x=>x.id===selectedConnectionId);
-        if(idx===connections.length-1){
+        const idx = connections.findIndex(x => x.id === selectedConnectionId);
+        if (idx === connections.length - 1) {
             return connections[0];
         }
-        else{
-            return connections[idx+1];
+        else {
+            return connections[idx + 1];
         }
     }
 
     getPreviousConnection = props => {
         const { selectedConnectionId, connections } = props;
-        if(selectedConnectionId==null){
+        if (selectedConnectionId == null) {
             return null;
         }
-        const idx= connections.findIndex(x=>x.id===selectedConnectionId);
-        if(idx===0){
-            return connections[connections.length-1];
+        const idx = connections.findIndex(x => x.id === selectedConnectionId);
+        if (idx === 0) {
+            return connections[connections.length - 1];
         }
-        else{
-            return connections[idx-1];
+        else {
+            return connections[idx - 1];
         }
     }
 
-    getNextNode = props => {
-        const {selectedNodeType,dbs } = props;
-        if(selectedNodeType===nodeTypes.CONNECTION){
-           let conn =this.getSelectedConnection(props);
-           if(conn==null){
-               return null;
-           }
-           else{
-               const {connectionState} =conn;
-               if(connectionState===connectionStates.CONNECTED){
-                   return {nodeType:dbs.length>0?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
-               }
-           }
+    // getNextNode = props => {
+    //     const {selectedNodeType,dbs } = props;
+    //     if(selectedNodeType===nodeTypes.CONNECTION){
+    //        let conn =this.getSelectedConnection(props);
+    //        if(conn==null){
+    //            return null;
+    //        }
+    //        else{
+    //            const {connectionState} =conn;
+    //            if(connectionState===connectionStates.CONNECTED){
+    //                return {nodeType:dbs.length>0?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
+    //            }
+    //        }
+    //     }
+    //     else if (selectedNodeType===nodeTypes.DB){
+    //         const db=this.getNextDB(props);
+    //       return  {nodeType:db!=null?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
+    //     }
+
+    // }
+
+    getNextNodeFromConnection = props => {
+        const { dbs,isSelectedConnectionExpanded } = props;
+        let conn = this.getSelectedConnection(props);
+        if (conn == null) {
+            return null;
         }
-        else if (selectedNodeType===nodeTypes.DB){
-            const db=this.getNextDB(props);
-        ???    return  {nodeType:db!=null?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
+        else {
+            const { connectionState } = conn;
+            if (connectionState === connectionStates.CONNECTED && dbs.length > 0 && isSelectedConnectionExpanded===true) {
+                return { nodeType: nodeTypes.DB, node: dbs[0] };
+            }
+            return { nodeType: nodeTypes.CONNECTION, node: this.getNextConnection(props) };
         }
-       
     }
 
-    getNextDB=props=>{
-        const {  dbs } = props;
-        if(dbs.length===0){
+    getNextNodeFromDb = props => {
+        const { dbs, selectedDbId, keys ,isSelectedDbExpanded} = props;
+        if (dbs.length === 0 || selectedDbId == null) {
             return null;
         }
-        const idx= connections.findIndex(x=>x.id===selectedDBId);
-        if( idx===dbs.length-1){
-            return null;
+
+        const selectedDb=this.getSelectedDb(props);
+        if(selectedDb.dbState===dbStates.KEY_LOAD_SUCCESS && keys.length>0 && isSelectedDbExpanded===true){
+            return { nodeType: nodeTypes.KEY, node: keys[0] };
         }
-        return dbs[idx+1];
+        const idx = dbs.findIndex(x => x.id === selectedDbId);
+        if(idx===dbs.length-1){
+            return { nodeType: nodeTypes.CONNECTION, node:this.getNextConnection(props)};
+        }
+        return { nodeType: nodeTypes.DB, node:dbs[idx + 1]};
+        
     }
 
     getKeyTypeName = keyValue => {

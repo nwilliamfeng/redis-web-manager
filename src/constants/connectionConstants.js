@@ -7,6 +7,7 @@ export const connectionConstants={
      */
     LOAD_CONNECTION_LIST :'LOAD_CONNECTION_LIST',
 
+    EXPAND_STATE:'EXPAND_STATE',
 
     /**
      * 更新

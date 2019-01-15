@@ -31,7 +31,7 @@ class DB extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { keys: [] };
+        this.state = { keys: [],isExpand:false };
     }
 
     handleClick = () => {
@@ -138,9 +138,18 @@ class DB extends Component {
         }
     }
 
+    handleExpand = isExpand => {
+        this.setState({ isExpand });
+        console.log(isExpand);
+        const { selectedDbId,dispatch} =this.props;
+        if( selectedDbId===this.props.id ){
+            dispatch(dbActions.updateSelectedDbExpandState(isExpand));
+        }
+    }
+
     render() {
-        const {  id,dbIdx, isVisible, dispatch, selectedDbId, selectedConnectionId, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
-        const { keys } = this.state;    
+        const {  id,dbIdx, isVisible, dispatch,  connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
+        const { keys,isExpand } = this.state;    
        // console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
         return <React.Fragment>
              {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
@@ -149,6 +158,8 @@ class DB extends Component {
                     onDoubleClick={this.handleDoubleClick}
                     isSelected={this.isSelected()}
                     handleClick={this.handleClick}
+                    onExpandChange={this.handleExpand}
+                    isExpand={isExpand}
                     isLoading={dbState === dbStates.KEY_LOADING}
                     isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS}
                     style={offSetStyle}

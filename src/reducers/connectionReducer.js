@@ -3,16 +3,22 @@ import { connectionConstants, dbConstants, nodeTypes } from '../constants';
 const defaultState = {
     connections: [],
     selectedConnectionId: null,
-
+    isSelectedConnectionExpanded:false,
 }
 
 export const connectionReducer = (state = defaultState, action) => {
     switch (action.type) {
+        case connectionConstants.EXPAND_STATE:
+            return {
+                ...state,
+                isSelectedConnectionExpanded:action.isExpand,
+            }
         case connectionConstants.LOAD_CONNECTION_LIST:
             return {
                 ...state,
                 selectedConnectionId: null,
                 connections: action.connections,
+                isSelectedConnectionExpanded:false,
             }
         case connectionConstants.UPDATE_STATE:
             return {
@@ -25,6 +31,7 @@ export const connectionReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 connections: changeState(state.connections, action.connectionId, action.connectionState),
+                isSelectedConnectionExpanded:true,
             }
 
         case nodeTypes.CONNECTION:

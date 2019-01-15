@@ -4,6 +4,7 @@ import { dbConstants, nodeTypes, dbStates, keyConstants, connectionConstants } f
 const defaultState = {
     dbs: [],
     selectedDbId: null,
+    isSelectedDbExpanded: false,
 }
 
 let dbCache = []
@@ -13,11 +14,12 @@ let dbCache = []
 export const dbReducer = (state = defaultState, action) => {
     switch (action.type) {
         case connectionConstants.LOAD_CONNECTION_LIST:
-            dbCache=[];
-            return{
+            dbCache = [];
+            return {
                 ...state,
                 selectedDbId: null,
-                dbs:[],
+                dbs: [],
+                isSelectedDbExpanded: false,
             }
         case dbConstants.LOAD_DB_LIST:
         case dbConstants.REFRESH_DB_LIST:
@@ -26,9 +28,10 @@ export const dbReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 dbs: action.dbList,
+                isSelectedDbExpanded: false,
             }
 
-      
+
 
         case nodeTypes.CONNECTION:
             return {
@@ -57,14 +60,21 @@ export const dbReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedDbId: action.dbId,
-                dbs: changeState(state.dbs,action.dbId, action.dbState),
+                dbs: changeState(state.dbs, action.dbId, action.dbState),
+            }
+
+        case dbConstants.DB_EXPAND:
+            return {
+                ...state,
+                isSelectedDbExpanded:action.isExpand,
             }
 
         case keyConstants.LOAD_KEY_LIST:
-     
+
             return {
                 ...state,
-                dbs: changeStateWithDbIdx(state.dbs,action.connectionName, action.dbIdx),
+                dbs: changeStateWithDbIdx(state.dbs, action.connectionName, action.dbIdx),
+                isSelectedDbExpanded: true,
             }
 
         default:
@@ -82,10 +92,10 @@ function changeState(dbs, id, dbState) {
     return [...dbs.slice(0, idx2), nxt, ...dbs.slice(idx2 + 1)];
 }
 
-function changeStateWithDbIdx(dbs,connectionName, dbIdx) {
+function changeStateWithDbIdx(dbs, connectionName, dbIdx) {
     const db = dbCache.find(x => x.connectionName === connectionName && x.dbIdx === dbIdx);
     if (db == null) {
         return [];
     }
-    return changeState(dbs,db.id, dbStates.KEY_LOAD_SUCCESS);
+    return changeState(dbs, db.id, dbStates.KEY_LOAD_SUCCESS);
 }

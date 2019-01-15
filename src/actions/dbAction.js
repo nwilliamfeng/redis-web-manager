@@ -13,12 +13,15 @@ export const dbActions = {
 
     getKeyList,
 
-    
+    updateSelectedDbExpandState ,
 
     addKey,
 }
 
 
+function updateSelectedDbExpandState(isExpand) {
+    return { type: dbConstants.DB_EXPAND, isExpand };
+}
 
 function updateDbState(dbId, dbState = dbStates.NONE) {
     return { type: dbConstants.UPDATE_DB_STATE, dbId, dbState };

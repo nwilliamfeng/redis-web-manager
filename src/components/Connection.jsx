@@ -106,6 +106,10 @@ class Connection extends Component {
 
     handleExpand = isExpand => {
         this.setState({ isExpand });
+        const { selectedConnectionId,item,dispatch} =this.props;
+        if( selectedConnectionId===item.id ){
+            dispatch(connectionActions.updateSelectExpandState(isExpand));
+        }
     }
 
     render() {
