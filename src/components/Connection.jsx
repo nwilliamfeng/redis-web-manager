@@ -8,7 +8,7 @@ import { compose } from 'recompose'
 import { DB } from './DB'
 import { ConnectionIcon, ConnectionSuccessIcon } from './icons'
 import { ConnectionMenuTrigger } from './contextMenus'
-import {isEqual} from 'lodash'
+import { isEqual } from 'lodash'
 
 const Content = props => {
     const { dbs, item, isLoading, isConnected } = props;
@@ -29,7 +29,7 @@ class Connection extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dbs: [], isExpand: false };
+        this.state = { dbs: [] };
     }
 
     handleClick = () => {
@@ -56,71 +56,64 @@ class Connection extends Component {
         if (nextProps.item.connectionState === connectionStates.CONNECTED) {
             const { dbs, selectedConnectionId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
             if (dbs != null && selectedConnectionId === id) {
-                this.setState({ dbs, isExpand: true });
+                this.setState({ dbs });
             }
         }
-        else if (nextProps.item.connectionState === connectionStates.CONNECTING) {
-            this.setState({ isExpand: false, });//如果是重连的话重新折叠回初始状态
-        }
         else if (nextProps.item.connectionState === connectionStates.NONE) {
-            this.setState({dbs:[], isExpand: false, });//如果是重连失败的话，则清空
+            this.setState({ dbs: [] });//如果是重连失败的话，则清空
         }
 
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-
-        if(this.props.selectedConnectionId===this.props.item.id){
-            if(!isEqual( this.props.dbs,nextProps.dbs)){ //检查dbs的状态是否变化，比如刷新键
+        if (nextProps == null) {
+            return false;
+        }
+        if (this.props.selectedConnectionId === this.props.item.id) {
+            if (!isEqual(this.props.dbs, nextProps.dbs)) { //检查dbs的状态是否变化，比如刷新键
                 return true;
             }
         }
         const { item, selectedConnectionId, selectNodeType } = this.props;
-        const { isExpand } = this.state;
-        if (nextState != null) {
-            if (nextState.isExpand !== isExpand) {
-                return true;
-            }
-        }
-        if (nextProps != null) {
-            if (nextProps.item.connectionState !== item.connectionState) {
-                return true;
-            }
 
-            if (selectedConnectionId === item.id && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
-                return true;
-            }
-            if (item.name === selectedConnectionId && nextProps.selectedConnectionId !== item.name) {
-                return true;
-            }
-            if (item.name !== selectedConnectionId && nextProps.selectedConnectionId === item.name) {
-                return true;
-            }
-            if (selectedConnectionId === item.name && nextProps.selectedNodeType !== selectNodeType) {
-                return true;
-            }
+        if (nextProps.item.isExpand !== item.isExpand) {
+            return true;
+        }
+        if (nextProps.item.connectionState !== item.connectionState) {
+            return true;
+        }
+
+        if (selectedConnectionId === item.id && nextProps.selectedNodeType !== nodeTypes.CONNECTION) {
+            return true;
+        }
+        if (item.name === selectedConnectionId && nextProps.selectedConnectionId !== item.name) {
+            return true;
+        }
+        if (item.name !== selectedConnectionId && nextProps.selectedConnectionId === item.name) {
+            return true;
+        }
+        if (selectedConnectionId === item.name && nextProps.selectedNodeType !== selectNodeType) {
+            return true;
         }
 
         return false;
     }
 
     handleExpand = isExpand => {
-        this.setState({ isExpand });
-        const { selectedConnectionId,item,dispatch} =this.props;
-        if( selectedConnectionId===item.id ){
-            dispatch(connectionActions.updateSelectExpandState(isExpand));
-        }
+        const { item, dispatch } = this.props;
+        dispatch(connectionActions.updateSelectExpandState(item.id, isExpand));
     }
 
     render() {
         const { item, selectedConnectionId, selectedNodeType, dispatch } = this.props;
-        const { dbs, isExpand } = this.state;
+        const { dbs } = this.state;
+      
         console.log('render connection ' + item.name);
         const isConnected = this.isConnected();
         const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionId === item.name;
         return <React.Fragment>
             {item && <ConnectionMenuTrigger connection={item.name} dispatch={dispatch} isConnected={isConnected} data={item} >
-                <Li tabIndex={0} title={item.name} onDoubleClick={this.handleDoubleClick}>
+                <Li  title={item.name} onDoubleClick={this.handleDoubleClick}>
                     <ExpandContent
                         handleClick={this.handleClick}
                         item={item}
@@ -129,8 +122,9 @@ class Connection extends Component {
                         dbs={dbs}
                         isLoading={item.connectionState === connectionStates.CONNECTING}
                         handleExpand={this.handleExpand}
-                        isExpand={isExpand}>
-                        {dbs && dbs.length > 0 && dbs.map(x => <DB key={x.id} id={x.id} dbIdx={x.dbIdx} dbState={x.dbState} connectionName={item.name} isVisible={isExpand} />)}
+                        isExpand={item.isExpand}>
+                        {dbs && dbs.length > 0 
+                            && dbs.map(x => <DB key={x.id} id={x.id} dbIdx={x.dbIdx} isExpand={x.isExpand} dbState={x.dbState} connectionName={item.name} isVisible={item.isExpand} />)}
                     </ExpandContent>
                 </Li>
             </ConnectionMenuTrigger>}

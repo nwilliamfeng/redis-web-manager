@@ -55,7 +55,7 @@ const ToolbarButton = styled(Button)`
                  <RedisToolbar/>
             </ButtonDiv>
             <div style={{flex:'0 1 100%',padding:'0px 10px'}}><Navigator/></div>
-            <KeySearch searchBoxStyle={{ height: 24, width: 200,borderRadius:0,fontSize:12, }} />
+            <KeySearch  />
         </ToolbarDiv>
     }
 }

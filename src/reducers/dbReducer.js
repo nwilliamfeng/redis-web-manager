@@ -4,7 +4,6 @@ import { dbConstants, nodeTypes, dbStates, keyConstants, connectionConstants } f
 const defaultState = {
     dbs: [],
     selectedDbId: null,
-    isSelectedDbExpanded: false,
 }
 
 let dbCache = []
@@ -19,7 +18,6 @@ export const dbReducer = (state = defaultState, action) => {
                 ...state,
                 selectedDbId: null,
                 dbs: [],
-                isSelectedDbExpanded: false,
             }
         case dbConstants.LOAD_DB_LIST:
         case dbConstants.REFRESH_DB_LIST:
@@ -28,7 +26,6 @@ export const dbReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 dbs: action.dbList,
-                isSelectedDbExpanded: false,
             }
 
 
@@ -38,7 +35,6 @@ export const dbReducer = (state = defaultState, action) => {
                 ...state,
                 selectedDbId: null,
                 dbs: [...dbCache.filter(x => x.connectionName === action.connectionId)],
-
             }
 
         case nodeTypes.DB:
@@ -57,24 +53,28 @@ export const dbReducer = (state = defaultState, action) => {
             }
 
         case dbConstants.UPDATE_DB_STATE:
+            const sdbs=changeState(state.dbs, action.dbId, action.dbState);
+            
+            const isExpand=action.dbState=== dbStates.KEY_LOAD_SUCCESS? true :false;
+            console.log(action.dbState+isExpand);
             return {
                 ...state,
                 selectedDbId: action.dbId,
-                dbs: changeState(state.dbs, action.dbId, action.dbState),
+                dbs: changeExpandState(sdbs, action.dbId, isExpand),
             }
 
         case dbConstants.DB_EXPAND:
             return {
                 ...state,
-                isSelectedDbExpanded:action.isExpand,
+                dbs: changeExpandState(state.dbs, action.dbId, action.isExpand),
             }
 
         case keyConstants.LOAD_KEY_LIST:
-
+            const  cdbs=changeStateWithDbIdx(state.dbs, action.connectionName, action.dbIdx);
+           const id= cdbs.find(x=>x.connectionName===action.connectionName && x.dbIdx===action.dbIdx).id;
             return {
                 ...state,
-                dbs: changeStateWithDbIdx(state.dbs, action.connectionName, action.dbIdx),
-                isSelectedDbExpanded: true,
+                dbs: changeExpandState(cdbs, id,true),
             }
 
         default:
@@ -86,6 +86,16 @@ function changeState(dbs, id, dbState) {
     const idx = dbCache.findIndex(x => x.id === id);
     const curr = dbCache[idx];
     const nxt = { ...curr, dbState };
+    dbCache = [...dbCache.slice(0, idx), nxt, ...dbCache.slice(idx + 1)];
+
+    const idx2 = dbs.findIndex(x => x.id === id);
+    return [...dbs.slice(0, idx2), nxt, ...dbs.slice(idx2 + 1)];
+}
+
+function changeExpandState(dbs, id, isExpand) {
+    const idx = dbCache.findIndex(x => x.id === id);
+    const curr = dbCache[idx];
+    const nxt = { ...curr, isExpand };
     dbCache = [...dbCache.slice(0, idx), nxt, ...dbCache.slice(idx + 1)];
 
     const idx2 = dbs.findIndex(x => x.id === id);

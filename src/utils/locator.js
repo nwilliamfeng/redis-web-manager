@@ -76,36 +76,50 @@ class Locator {
         }
     }
 
-    // getNextNode = props => {
-    //     const {selectedNodeType,dbs } = props;
-    //     if(selectedNodeType===nodeTypes.CONNECTION){
-    //        let conn =this.getSelectedConnection(props);
-    //        if(conn==null){
-    //            return null;
-    //        }
-    //        else{
-    //            const {connectionState} =conn;
-    //            if(connectionState===connectionStates.CONNECTED){
-    //                return {nodeType:dbs.length>0?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
-    //            }
-    //        }
-    //     }
-    //     else if (selectedNodeType===nodeTypes.DB){
-    //         const db=this.getNextDB(props);
-    //       return  {nodeType:db!=null?nodeTypes.DB:nodeTypes.CONNECTION, node: dbs.length>0? dbs[0] : this.getNextConnection(props)};
-    //     }
 
-    // }
+
+    getPreviousNodeFromConnection = props => {
+        const { connections, selectedConnectionId } = props;
+
+        const idx = connections.findIndex(x => x.id === selectedConnectionId);
+        if (idx === 0) {
+            return { nodeType: nodeTypes.CONNECTION, node: connections[connections.length - 1] };
+        }
+        return { nodeType: nodeTypes.CONNECTION, node: connections[idx - 1] };
+    }
+
+
+    getPreviousNodeFromDb = props => {
+        const {  dbs, selectedDbId, } = props;
+        const idx = dbs.findIndex(x => x.id === selectedDbId);
+        if (idx === 0) {
+            return { nodeType: nodeTypes.CONNECTION, node: this.getSelectedConnection(props) };
+        }
+        return { nodeType: nodeTypes.DB, node: dbs[idx - 1] };
+
+    }
+
+    getPreviousNodeFromKey = props => {
+        const {  keys, selectedKeyId} = props;
+
+        const idx = keys.findIndex(x => x.id === selectedKeyId);
+        if (idx === 0) {          
+            return { nodeType: nodeTypes.DB, node: this.getSelectedDb(props) };
+        }
+        return { nodeType: nodeTypes.KEY, node: keys[idx - 1] };
+
+    }
+
 
     getNextNodeFromConnection = props => {
-        const { dbs,isSelectedConnectionExpanded } = props;
+        const { dbs } = props;
         let conn = this.getSelectedConnection(props);
         if (conn == null) {
             return null;
         }
         else {
-            const { connectionState } = conn;
-            if (connectionState === connectionStates.CONNECTED && dbs.length > 0 && isSelectedConnectionExpanded===true) {
+            const { connectionState, isExpand } = conn;
+            if (connectionState === connectionStates.CONNECTED && dbs.length > 0 && isExpand === true) {
                 return { nodeType: nodeTypes.DB, node: dbs[0] };
             }
             return { nodeType: nodeTypes.CONNECTION, node: this.getNextConnection(props) };
@@ -113,22 +127,47 @@ class Locator {
     }
 
     getNextNodeFromDb = props => {
-        const { dbs, selectedDbId, keys ,isSelectedDbExpanded} = props;
+        const { dbs, selectedDbId, keys } = props;
         if (dbs.length === 0 || selectedDbId == null) {
             return null;
         }
 
-        const selectedDb=this.getSelectedDb(props);
-        if(selectedDb.dbState===dbStates.KEY_LOAD_SUCCESS && keys.length>0 && isSelectedDbExpanded===true){
+        const selectedDb = this.getSelectedDb(props);
+        if (selectedDb.dbState === dbStates.KEY_LOAD_SUCCESS && keys.length > 0 && selectedDb.isExpand === true) {
             return { nodeType: nodeTypes.KEY, node: keys[0] };
         }
         const idx = dbs.findIndex(x => x.id === selectedDbId);
-        if(idx===dbs.length-1){
-            return { nodeType: nodeTypes.CONNECTION, node:this.getNextConnection(props)};
+        if (idx === dbs.length - 1) {
+            return { nodeType: nodeTypes.CONNECTION, node: this.getNextConnection(props) };
         }
-        return { nodeType: nodeTypes.DB, node:dbs[idx + 1]};
-        
+        return { nodeType: nodeTypes.DB, node: dbs[idx + 1] };
     }
+
+    getNextNodeFromKey = props => {
+        const { selectedConnectionId, selectedDbId, selectedKeyId, keys, dbs, connections } = props;
+        if (keys.length === 0 || selectedKeyId == null) {
+            return null;
+        }
+        const idx = keys.findIndex(x => x.id === selectedKeyId);
+        if (idx < keys.length - 1) { //如果当前key还有他的兄弟key并且不是最后一个则处理
+            return { nodeType: nodeTypes.KEY, node: keys[idx + 1] };
+        }
+        //如果是最后一个key则要处理下个是connection或者db
+        const dbIdx = dbs.findIndex(x => x.id === selectedDbId);
+        if (dbIdx === dbs.length - 1) {
+            const connIdx = connections.findIndex(x => x.id === selectedConnectionId);
+            if (connIdx === connections.length - 1) {
+                return { nodeType: nodeTypes.CONNECTION, node: connections[0] };
+            }
+            else {
+                return { nodeType: nodeTypes.CONNECTION, node: connections[connIdx + 1] };
+            }
+
+        }
+        return { nodeType: nodeTypes.DB, node: dbs[dbIdx + 1] };
+
+    }
+
 
     getKeyTypeName = keyValue => {
         switch (keyValue) {

@@ -16,14 +16,17 @@ const Content = props => {
     </FlexDiv>
 }
 
-const Div = styled.div`margin-left:-20px;`
+const Div = styled.div`margin-left:10px;`
 
 const SelectContent =styled( withSelectByClick(props => <Content {...props} />))`padding-left:50px;`
 
-export const Key = ({id, keyName, keyType, isSelected, handleClick,dispatch,dbIdx,connectionName ,dbId}) => {
+export const Key = ({id, keyName, keyType, isSelected, handleClick,dispatch,dbIdx,connectionName ,isVisible,dbId}) => {
     const redisKey={id,key:keyName,type:keyType,dbIdx,dbId,connectionName}
     const click = () => {
         handleClick(id);
+    }
+    if(isVisible!==true){
+        return <React.Fragment/>
     }
     return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
         <KeyMenuTrigger dispatch={dispatch} redisKey={redisKey} dbIdx={dbIdx} connectionName={connectionName} keyName={keyName} dbId={dbId} keyType={keyType} >

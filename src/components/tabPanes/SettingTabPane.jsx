@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import {ContextMenuTrigger,ContextMenu,MenuItem,connectMenu} from 'react-contextmenu';
  
 
-
 const MENU_TYPE = 'DYNAMIC';
 
 const targets = [{
@@ -81,6 +80,7 @@ const ConnectedMenu = connectMenu(MENU_TYPE)(DynamicMenu);
         return (
             <div>
                {'to be continued'}
+         
             </div>
         );
     }

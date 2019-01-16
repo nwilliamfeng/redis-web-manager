@@ -13,14 +13,18 @@ export const dbActions = {
 
     getKeyList,
 
+    getKeyListByKeyword,
+
     updateSelectedDbExpandState ,
 
     addKey,
+
+
 }
 
 
-function updateSelectedDbExpandState(isExpand) {
-    return { type: dbConstants.DB_EXPAND, isExpand };
+function updateSelectedDbExpandState(dbId,isExpand) {
+    return { type: dbConstants.DB_EXPAND,dbId, isExpand };
 }
 
 function updateDbState(dbId, dbState = dbStates.NONE) {
@@ -40,12 +44,23 @@ function getKeyList(connectionName, dbIdx, dbId) {
     }
 }
 
-
+function getKeyListByKeyword(connectionName, dbIdx, dbId,keyword) {
+    return async dispatch => {
+        dispatch({ type: dbConstants.UPDATE_DB_STATE, dbId, dbState: dbStates.KEY_LOADING });
+        try {
+            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId,keyword);
+            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+        }
+    }
+}
 
 function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
     return async dispatch => {
         try {
-            await redisApi.edit(type, id, key, value, connectionName, dbIdx);
+            await redisApi.setKeyItem(type, id, key, value, connectionName, dbIdx);
             const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
             dispatch(dialogAction.closeDialog());
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });

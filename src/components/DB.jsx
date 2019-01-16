@@ -4,7 +4,7 @@ import { DbMenuTrigger } from './contextMenus'
 import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
 import { nodeTypes, dbStates } from '../constants'
-import { withSimpleExpand, withSelectByClick } from '../controls'
+import { withExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { Key } from './Key'
 import { DBIcon } from './icons'
@@ -24,14 +24,14 @@ const Content = props => {
 
 const offSetStyle = { marginLeft: -40, width: 'calc(100% + 40px)' }
 
-const ExpandContent = compose(withSelectByClick, withSimpleExpand)(props => <Content {...props} />)
+const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
 
 
 class DB extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { keys: [],isExpand:false };
+        this.state = { keys: [] };
     }
 
     handleClick = () => {
@@ -42,10 +42,10 @@ class DB extends Component {
     }
 
     handleKeyItemClick = keyId => {
-        const { dispatch,  selectedKeyId, selectedNodeType } = this.props;
+        const { dispatch, selectedKeyId, selectedNodeType } = this.props;
         if (!(keyId === selectedKeyId) || selectedNodeType !== nodeTypes.KEY) {
-            const redisKey=this.state.keys.find(x=>x.id===keyId); 
-             dispatch(keyActions.selectKey(redisKey));
+            const redisKey = this.state.keys.find(x => x.id === keyId);
+            dispatch(keyActions.selectKey(redisKey));
         }
     }
 
@@ -62,6 +62,7 @@ class DB extends Component {
         if (nextProps == null) {
             return;
         }
+
         if (nextProps.dbState === dbStates.KEY_LOAD_SUCCESS) {
             const { keys, selectedDbId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
             if (keys != null && selectedDbId === this.props.id) {
@@ -97,9 +98,12 @@ class DB extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { id, isVisible } = this.props;
+        const { id, isVisible ,isExpand} = this.props;
         if (nextProps == null) {
             return false;
+        }
+        if (nextProps.isExpand !==  isExpand) { //处理折叠
+            return true;
         }
         if (nextProps.isVisible !== isVisible) { //处理折叠
             return true;
@@ -139,26 +143,22 @@ class DB extends Component {
     }
 
     handleExpand = isExpand => {
-        this.setState({ isExpand });
-        console.log(isExpand);
-        const { selectedDbId,dispatch} =this.props;
-        if( selectedDbId===this.props.id ){
-            dispatch(dbActions.updateSelectedDbExpandState(isExpand));
-        }
+        const {  dispatch } = this.props;
+        dispatch(dbActions.updateSelectedDbExpandState(this.props.id, isExpand));
     }
 
     render() {
-        const {  id,dbIdx, isVisible, dispatch,  connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
-        const { keys,isExpand } = this.state;    
-       // console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
+        const { id, dbIdx, isExpand, isVisible, dispatch, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
+        const { keys } = this.state;
+        // console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
         return <React.Fragment>
-             {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState===dbStates.KEY_LOAD_SUCCESS} >
+            {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS} >
                 <ExpandContent name={dbIdx}
                     title={`DB${dbIdx}`}
                     onDoubleClick={this.handleDoubleClick}
                     isSelected={this.isSelected()}
                     handleClick={this.handleClick}
-                    onExpandChange={this.handleExpand}
+                    handleExpand={this.handleExpand}
                     isExpand={isExpand}
                     isLoading={dbState === dbStates.KEY_LOADING}
                     isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS}
@@ -168,6 +168,7 @@ class DB extends Component {
                         keys.map(x => <Key
                             keyName={x.key}
                             id={x.id}
+                            isVisible={isExpand}
                             isSelected={x.id === selectedKeyId && selectedNodeType === nodeTypes.KEY}
                             keyType={x.type}
                             key={x.key}

@@ -68,7 +68,7 @@ class RedisApi {
     }
 
 
-    async editOrSetKeyItem(opName, type, id, key, value, connectionName, dbIdx) {
+    async _editOrSetKeyItem(opName, type, id, key, value, connectionName, dbIdx) {
         const url = `/redis/${opName}?Name=${connectionName}&DBIndex=${dbIdx}&Id=${id}&Type=${type}&Value=${value}`;
         const json = await ApiHelper.get(key == null ? url : url + `&Key=${key}`);
         const { Message, Code } = json;
@@ -81,7 +81,7 @@ class RedisApi {
     * 编辑子键
     */
     async editKeyItem(type, id, key, value, connectionName, dbIdx) {
-        return await this.editOrSetKeyItem('edit',type, id, key, value, connectionName, dbIdx);
+        return await this._editOrSetKeyItem('edit',type, id, key, value, connectionName, dbIdx);
     }
 
 
@@ -90,7 +90,7 @@ class RedisApi {
    * 编辑子键
    */
     async setKeyItem(type, id, key, value, connectionName, dbIdx) {
-        return await this.editOrSetKeyItem('set',type, id, key, value, connectionName, dbIdx);
+        return await this._editOrSetKeyItem('set',type, id, key, value, connectionName, dbIdx);
     }
 
 

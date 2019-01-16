@@ -8,6 +8,7 @@ export const navigateAction = {
 
 const getSelectValue = data => {
     if (data.node == null) {
+        console.log('sds');
         return { type: '' };
     }
     switch (data.nodeType) {
@@ -36,12 +37,16 @@ function selectByArrow(props, isArrowDown = true) {
 
 
     if (selectedNodeType === nodeTypes.CONNECTION) {
-        const nxd = locator.getNextNodeFromConnection(props);
-        return getSelectValue(nxd);
+        const nd =isArrowDown===true?  locator.getNextNodeFromConnection(props) : locator.getPreviousNodeFromConnection(props);
+        return getSelectValue(nd);
     }
     else if (selectedNodeType === nodeTypes.DB) {
-        const nxd = locator.getNextNodeFromDb(props);
-        return getSelectValue(nxd);
+        const nd =isArrowDown===true? locator.getNextNodeFromDb(props):locator.getPreviousNodeFromDb(props);
+        return getSelectValue(nd);
+    }
+    else if (selectedNodeType === nodeTypes.KEY) {
+        const nd = isArrowDown===true? locator.getNextNodeFromKey(props):locator.getPreviousNodeFromKey(props);
+        return getSelectValue(nd);
     }
 
     console.log('return empty');

@@ -24,8 +24,8 @@ export const connectionActions = {
     updateSelectExpandState,
 }
 
-function updateSelectExpandState( isExpand){
-    return {type:connectionConstants.EXPAND_STATE,isExpand}
+function updateSelectExpandState(connectionId, isExpand){
+    return {type:connectionConstants.EXPAND_STATE,connectionId, isExpand}
 }
 
 function loadConnectionList() {

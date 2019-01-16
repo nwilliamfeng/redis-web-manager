@@ -1,72 +1,66 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
-import { withSearchBox } from '../controls'
-import { connectionActions } from '../actions'
+import { keyActions, dbActions, connectionActions } from '../actions'
+import { imgSrc } from './imgSrc'
+import { Input } from '../controls'
+import { locator } from '../utils'
 
 
-const MenuItemDiv = styled.div`
- display:flex;
- flex-direction:row;
- background-color:${props => props.highlighted ? '#eee' : 'transparent'};
- padding:5px;`
 
-const Avata=styled.img`
-    max-width:24px;
-    max-height:24px;
-    margin-right:8px;`
-
-const MenuItem = (item, highlighted) => <MenuItemDiv key={item.id} highlighted={highlighted}>
-    <Avata src={item.avata}/>
-    {item.label}
-</MenuItemDiv>
+const SearchIcon = styled.i`
+    color: gray;
+    margin-top: -7px;`
 
 
-const SearchBox = withSearchBox(null,props=><MenuItem {...props}/>)
-
-
-/** 
- * 搜索框组件 
- */
 class KeySearch extends Component {
 
     constructor(props) {
-        super(props);
-        this.state = {
-            value: '',
+        super(props);  
+    }
+
+     
+
+    getDbIdx = dbIdxStr => {
+        return dbIdxStr.length > 2 ? dbIdxStr.substring(2) : dbIdxStr;
+    }
+
+    handleValueChange = value => {
+        this.setState({ path: value })
+    }
+
+    handleKeyUp=e=>{
+   
+        if(e.key==='Enter'){
+            const {selectedDbId,selectedConnectionId,dispatch} =this.props;
+            dispatch(dbActions.getKeyListByKeyword(selectedConnectionId,selectedDbId,this.input.value));
+            console.log(this.input.value);
         }
     }
- 
 
-    getKeyTypes = () => {
-        
-            return []
-      //  return relationMappingList.map(x => { return { id: x.CustomerId, label: x.CustomerName,avata:x.CustomerAvataUrl } })
+
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        const nwPath = locator.getFullPath(nextProps);
+        this.setState({ path: nwPath ? nwPath : '' });
     }
-
-    handleSelectItem = item => {
-        // console.log(item);
-        // const { dispatch, relationMappingList } = this.props
-        // if (relationMappingList == null)
-        //     return       
-        // const customer=relationMappingList.find(x=>x.CustomerId===item.id) 
-        // dispatch(chatActions.chatWithMyCustomer(customer))
-    }
-
 
     render() {
-        return <SearchBox  getMenuItems={this.getKeyTypes} onSelectItem={this.handleSelectItem} {...this.props}/>
+        return <div className="right-inner-addon" >
+            <SearchIcon aria-hidden="true"><FontAwesomeIcon icon={faSearch} /></SearchIcon>
+            <input type="search" ref={el=>this.input=el} className="form-control input-xs" placeholder="键值" 
+            onKeyUp={this.handleKeyUp}
+            style={{ height: 24, width: 200, borderRadius: 0, fontSize: 12, }} />
+        </div>
     }
-
 }
 
 function mapStateToProps(state) {
-    return state;
+    return { ...state.connection, ...state.db, ...state.key };
 }
 
-const page = connect(mapStateToProps, null)(KeySearch);
+const nav = connect(mapStateToProps)(KeySearch)
 
-/**
- * SearchBox实例
- */
-export { page as KeySearch }; 
+export { nav as KeySearch }
