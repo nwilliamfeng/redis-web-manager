@@ -8,7 +8,6 @@ export const navigateAction = {
 
 const getSelectValue = data => {
     if (data.node == null) {
-        console.log('sds');
         return { type: '' };
     }
     switch (data.nodeType) {

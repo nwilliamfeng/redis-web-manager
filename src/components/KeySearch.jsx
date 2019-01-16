@@ -7,6 +7,7 @@ import { keyActions, dbActions, connectionActions } from '../actions'
 import { imgSrc } from './imgSrc'
 import { Input } from '../controls'
 import { locator } from '../utils'
+import { connectionStates } from '../constants';
 
 
 
@@ -17,9 +18,9 @@ const SearchIcon = styled.i`
 
 class KeySearch extends Component {
 
-    constructor(props) {
-        super(props);  
-    }
+    // constructor(props) {
+    //     super(props);  
+    // }
 
      
 
@@ -27,16 +28,13 @@ class KeySearch extends Component {
         return dbIdxStr.length > 2 ? dbIdxStr.substring(2) : dbIdxStr;
     }
 
-    handleValueChange = value => {
-        this.setState({ path: value })
-    }
-
+   
     handleKeyUp=e=>{
    
         if(e.key==='Enter'){
-            const {selectedDbId,selectedConnectionId,dispatch} =this.props;
-            dispatch(dbActions.getKeyListByKeyword(selectedConnectionId,selectedDbId,this.input.value));
-            console.log(this.input.value);
+            const {selectedDbId, selectedConnectionId,dispatch} =this.props;
+            const dbIdx=locator.getSelectedDb(this.props).dbIdx;
+            dispatch(dbActions.getKeyListByKeyword(selectedConnectionId,dbIdx,selectedDbId,this.input.value));
         }
     }
 
@@ -47,10 +45,21 @@ class KeySearch extends Component {
         this.setState({ path: nwPath ? nwPath : '' });
     }
 
-    render() {
+    isEnable=()=>{
+        const {selectedDbId} =this.props;
+       
+        if(selectedDbId==null){
+            return false;
+        }
+        return locator.getSelectedConnection(this.props).connectionState=== connectionStates.CONNECTED
+ 
+    }
+
+    render() {  
         return <div className="right-inner-addon" >
             <SearchIcon aria-hidden="true"><FontAwesomeIcon icon={faSearch} /></SearchIcon>
-            <input type="search" ref={el=>this.input=el} className="form-control input-xs" placeholder="键值" 
+            <input disabled={!this.isEnable()}  type="search" ref={el=>this.input=el} className="form-control input-xs" 
+            placeholder="查找键值"
             onKeyUp={this.handleKeyUp}
             style={{ height: 24, width: 200, borderRadius: 0, fontSize: 12, }} />
         </div>

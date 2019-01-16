@@ -9,7 +9,7 @@ import { TabPaneList } from './TabPaneList'
 import { Dialog } from './Dialog'
 import { connect } from 'react-redux'
 import { navigateAction } from '../actions'
-import {compositOpenCommand} from '../components/commands'
+import {compositOpenCommand, compositDeleteCommand} from '../components/commands'
 
 const ShellDiv = styled.div`
     display:flex;
@@ -81,7 +81,11 @@ class Shell extends Component {
                 compositOpenCommand(this.props).execute();
             }
         }
-       
+        else if (e.key === 'Delete') {
+            if(compositDeleteCommand(this.props).canExecute()){
+                compositDeleteCommand(this.props).execute();
+            }
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {

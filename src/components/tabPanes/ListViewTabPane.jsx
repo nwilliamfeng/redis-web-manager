@@ -6,10 +6,12 @@ import { connectionActions, multiNodeAction, dbActions, keyActions } from '../..
 import { ListView, IconList, ContextMenuTriggerRegists } from '../../controls'
 import { DBIcon, KeyIcon, ConnectionIcon, ConnectionSuccessIcon } from '../icons'
 import { ConnectionMenuTrigger, DbMenuTrigger, KeyMenuTrigger } from '../contextMenus'
-import { locator} from '../../utils'
+import { locator } from '../../utils'
 import { imgSrc } from '../imgSrc'
+import { compositDeleteCommand } from '../commands';
 
 const Div = styled.div`
+    outline:none;
     width:100%;
     height:100%;
     padding:1px;
@@ -109,7 +111,7 @@ class ListViewTabPane extends Component {
     }
 
     mapConnectionToItem = connection => {
-        const {isSmallIcon}=this.state;
+        const { isSmallIcon } = this.state;
         //格式必须包括listviewitem的所需数据和快捷菜单的数据 
         return {
             iconId: connection.connectionState === connectionStates.CONNECTED ? iconKeys.CONNECTION_SUCCESS_ICON : iconKeys.CONNECTION_DEFAULT_ICON,
@@ -128,7 +130,7 @@ class ListViewTabPane extends Component {
     }
 
     mapDBToItem = db => {
-        const {isSmallIcon}=this.state;
+        const { isSmallIcon } = this.state;
         return {
             iconId: iconKeys.DB_ICON,
             title: `db${db.dbIdx}`,
@@ -147,9 +149,9 @@ class ListViewTabPane extends Component {
     }
 
     mapKeyToItem = key => {
-      
-        const {isSmallIcon}=this.state;
-     
+
+        const { isSmallIcon } = this.state;
+
         return {
             iconId: iconKeys.KEY_ICON,
             title: key.key,
@@ -163,8 +165,10 @@ class ListViewTabPane extends Component {
                 keyType: key.type,
                 dbId: key.dbId,
                 dbIdx: key.dbIdx,
+                keys: this.props.keys,
                 dispatch: this.props.dispatch,
-                redisKey:key,
+                redisKey: key,
+
             },
         }
     }
@@ -181,8 +185,8 @@ class ListViewTabPane extends Component {
 
     handleKeyNodeClick = key => {
         const { dispatch } = this.props;
-        const rk =locator.getKey(this.props,key);     
-      dispatch(keyActions.selectKey(rk));
+        const rk = locator.getKey(this.props, key);
+        dispatch(keyActions.selectKey(rk));
     }
 
     handleSelectItemsChange = selectedItems => {
@@ -192,15 +196,25 @@ class ListViewTabPane extends Component {
         }
     }
 
-    handleSmallIconToggleClick = () =>  this.setState({ isSmallIcon: true })
+    handleSmallIconToggleClick = () => this.setState({ isSmallIcon: true })
 
-    handleLargeIconToggleClick = () =>  this.setState({ isSmallIcon: false })
+    handleLargeIconToggleClick = () => this.setState({ isSmallIcon: false })
+
+    handleKeyDown = e => {
+        
+        if(e.key==='Delete'  ){
+            if(compositDeleteCommand(this.props).canExecute()){
+                compositDeleteCommand(this.props).execute();
+            }
+        }
+        
+    }
 
     render() {
         console.log('render listviewpane');
         const items = this.getListViewItems();
         const { isSmallIcon } = this.state;
-        return <Div>
+        return <Div tabIndex={1} onKeyDown={this.handleKeyDown}>
             <ListView items={items} onSelectItemsChange={this.handleSelectItemsChange} style={{ height: '100%' }} />
             <Footer>
                 {`共 ${items.length} 项`}
