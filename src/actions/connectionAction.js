@@ -22,6 +22,8 @@ export const connectionActions = {
     modifyConnection,
 
     updateSelectExpandState,
+
+    selectRoot,
 }
 
 function updateSelectExpandState(connectionId, isExpand){
@@ -90,6 +92,10 @@ function updateConnectionState(connectionId, connectionState = connectionStates.
 
 function selectConnection(connectionId) {
     return { type: nodeTypes.CONNECTION, connectionId};
+}
+
+function selectRoot() {
+    return { type: nodeTypes.ROOT};
 }
 
 function addConnection(name,ip,port,password){

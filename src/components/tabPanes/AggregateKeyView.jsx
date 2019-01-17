@@ -95,7 +95,9 @@ export class AggregateKeyView extends Component {
                     type, state: entityState.NONE, 
                     displayKey:type === keyType.ZSET?x[1].Score: getKeyName(x), 
                 }));
-            this.setState({ keys, selectedKey: null });
+            const oldSelectedKey= this.state.selectedKey;
+          
+            this.setState({ keys, selectedKey: keys.some(k=>k.key===oldSelectedKey)?oldSelectedKey:null });
         }
     }
 

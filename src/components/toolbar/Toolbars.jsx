@@ -46,11 +46,17 @@ const ToolbarButton = styled(Button)`
 
 
  export class Toolbars extends Component {
+
+    canMoveToParent = () => ????(this.props).canExecute();
+
+   
+    handleMoveToParentClick = () => compositRefreshCommand(this.props).execute();
+
     render() {
         return <ToolbarDiv>
             <ButtonDiv>
-                <ToolbarButton title='返回' height={'16px'} width={'16px'} backgroundImage={imgSrc.PREVIOUS_IMG}></ToolbarButton>
-                <ToolbarButton title='返回上级' height={'16px'} width={'16px'} backgroundImage={imgSrc.UP_IMG}></ToolbarButton>
+                <ToolbarButton title='返回'  height={'16px'} width={'16px'} backgroundImage={imgSrc.PREVIOUS_IMG}></ToolbarButton>
+                <ToolbarButton title='返回上级'  disabled={!this.canMoveToParent()} onClick={this.handleMoveToParentClick} height={'16px'} width={'16px'} backgroundImage={imgSrc.UP_IMG}></ToolbarButton>
                 <Seperator />
                  <RedisToolbar/>
             </ButtonDiv>

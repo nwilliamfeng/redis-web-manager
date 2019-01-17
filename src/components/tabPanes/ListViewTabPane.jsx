@@ -201,13 +201,13 @@ class ListViewTabPane extends Component {
     handleLargeIconToggleClick = () => this.setState({ isSmallIcon: false })
 
     handleKeyDown = e => {
-        
-        if(e.key==='Delete'  ){
-            if(compositDeleteCommand(this.props).canExecute()){
+
+        if (e.key === 'Delete') {
+            if (compositDeleteCommand(this.props).canExecute()) {
                 compositDeleteCommand(this.props).execute();
             }
         }
-        
+       
     }
 
     render() {

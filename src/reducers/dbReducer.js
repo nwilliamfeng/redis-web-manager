@@ -53,10 +53,8 @@ export const dbReducer = (state = defaultState, action) => {
             }
 
         case dbConstants.UPDATE_DB_STATE:
-            const sdbs=changeState(state.dbs, action.dbId, action.dbState);
-            
+            const sdbs=changeState(state.dbs, action.dbId, action.dbState);          
             const isExpand=action.dbState=== dbStates.KEY_LOAD_SUCCESS? true :false;
-            console.log(action.dbState+isExpand);
             return {
                 ...state,
                 selectedDbId: action.dbId,

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { CheckBox } from './CheckBox'
 import { ContextMenuTrigger } from "react-contextmenu"
 import { IconList } from './IconList'
-import {isEqual} from 'lodash'
+import { isEqual } from 'lodash'
 import { ContextMenuTriggerRegists } from './ContextMenuTriggerRegists'
 import { ConnectionMenuTrigger, ConnectionContextMenu } from '../components/contextMenus'
 
@@ -18,6 +18,7 @@ const ItemBase = styled.div`
 `
 
 const Div = styled.div`
+    outline:none;
     display:flex;
     width:100%;
     height:100%;
@@ -111,18 +112,18 @@ const SmallWordDiv = styled.div`
 
 
 const Trigger = (props) => {
-    const { contextMenuProps} = props;
-    if(contextMenuProps==null){
-       return <div >{props.children}</div>
+    const { contextMenuProps } = props;
+    if (contextMenuProps == null) {
+        return <div >{props.children}</div>
     }
     const regist = ContextMenuTriggerRegists.find(x => x.key === contextMenuProps.contextMenuTriggerId);
     if (regist == null) {
         return <div >{props.children}</div>
     }
     const ItemTrigger = regist.trigger;
-   
+
     return <ItemTrigger  {...contextMenuProps}>
-       {props.children}  
+        {props.children}
     </ItemTrigger>
 
 }
@@ -132,7 +133,7 @@ const ListViewItem = props => {
     const { id, iconId, title, onClick, onDoubleClick, isSelected = false, isSmallIcon = false } = props
     const handleClick = e => {
         if (onClick != null) {
-           onClick(id);
+            onClick(id);
         }
     }
 
@@ -172,7 +173,7 @@ const ListViewItem = props => {
         </Trigger>
     </React.Fragment>
 
-    
+
 }
 
 export class ListView extends Component {
@@ -183,16 +184,16 @@ export class ListView extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(!isEqual( this.props,nextProps)){ 
+        if (!isEqual(this.props, nextProps)) {
             this.setState({ selectedItemIds: [] });
             this.notifyItemsSelect([]);
         }
 
     }
 
-    notifyItemsSelect=ids=>{
-        const {onSelectItemsChange} =this.props;
-        if(onSelectItemsChange!=null){
+    notifyItemsSelect = ids => {
+        const { onSelectItemsChange } = this.props;
+        if (onSelectItemsChange != null) {
             onSelectItemsChange(ids);
         }
     }
@@ -207,23 +208,71 @@ export class ListView extends Component {
         const idx = selectedItemIds.findIndex(x => x === id);
         if (idx >= 0) {
             if (isSelected === false) {
-                const sids= [...selectedItemIds.slice(0, idx), ...selectedItemIds.slice(idx + 1)];
-                this.setState({ selectedItemIds:sids });
+                const sids = [...selectedItemIds.slice(0, idx), ...selectedItemIds.slice(idx + 1)];
+                this.setState({ selectedItemIds: sids });
                 this.notifyItemsSelect(sids);
             }
         }
         else if (isSelected === true) {
-            const sids= [...selectedItemIds, id];
-            this.setState({ selectedItemIds: sids });      
+            const sids = [...selectedItemIds, id];
+            this.setState({ selectedItemIds: sids });
             this.notifyItemsSelect(sids);
         }
-        
+
+    }
+
+    getNextItemIdx = id => {
+        const { items } = this.props;
+        const idx = items.findIndex(x => x.id === id);
+        return idx === items.length - 1 ? 0 : idx + 1;
+    }
+
+    getPreviousItemIdx = id => {
+        const { items } = this.props;
+        const idx = items.findIndex(x => x.id === id);
+        return idx === 0 ? items.length - 1 : idx - 1;
+    }
+
+    handleKeyDown = e => {
+
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            const { items, } = this.props;
+            if (items.length === 0) {
+                return;
+            }
+            const { selectedItemIds } = this.state;
+            switch (e.key) {
+                case 'ArrowRight':
+                    const idx = selectedItemIds.length === 0 ? 0 : this.getNextItemIdx(selectedItemIds[selectedItemIds.length - 1]);
+                    if (e.shiftKey === true) {
+                        this.setState({ selectedItemIds: [...selectedItemIds, items[idx].id] });
+                    }
+                    else {
+                        this.setState({ selectedItemIds: [items[idx].id] });
+                    }
+                    break;
+                case 'ArrowLeft':
+                    const idx2 = selectedItemIds.length === 0 ? 0 : this.getPreviousItemIdx(selectedItemIds[0]);
+                    if (e.shiftKey === true) {
+                        this.setState({ selectedItemIds: [items[idx2].id,...selectedItemIds] });
+                    }
+                    else {
+                        this.setState({ selectedItemIds: [items[idx2].id] });
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+
     }
 
     render() {
         const { items } = this.props;
         const { selectedItemIds } = this.state;
-        return <Div>
+        return <Div tabIndex={2} onKeyDown={this.handleKeyDown}>
             {items && items.map(x => <ListViewItem key={x.id} {...x} onClick={this.handleItemClick} isSelected={selectedItemIds.findIndex(id => id === x.id) >= 0} />)}
         </Div>
     }
