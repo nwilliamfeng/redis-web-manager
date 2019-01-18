@@ -1,4 +1,4 @@
-import { nodeTypes, commandConstants, tabPaneIds, multiNodeConstants,connectionConstants } from '../constants';
+import { nodeTypes, commandConstants, tabPaneIds, multiNodeConstants, connectionConstants } from '../constants';
 import { findIndex } from 'lodash';
 
 const defaultState = {
@@ -10,13 +10,9 @@ const defaultState = {
 
 export const stateReducer = (state = defaultState, action) => {
     switch (action.type) {
-        case nodeTypes.CONNECTION:
-            return {
-                ...state,
-                selectedNodeType: action.type,
-                multiSelectItems: [],
-            }
 
+        case nodeTypes.ROOT:
+        case nodeTypes.CONNECTION:
         case nodeTypes.DB:
             return {
                 ...state,
@@ -24,12 +20,13 @@ export const stateReducer = (state = defaultState, action) => {
                 multiSelectItems: [],
             }
 
+       
         case nodeTypes.KEY:
             return {
-                ...doOpenTabPane(state,tabPaneIds.KEY_SETTING_VIEW_PANE),
+                ...doOpenTabPane(state, tabPaneIds.KEY_SETTING_VIEW_PANE),
                 selectedNodeType: action.type,
                 multiSelectItems: [],
-               
+
             }
 
         case multiNodeConstants.MULTI_SELECT:

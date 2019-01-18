@@ -1,7 +1,5 @@
 import { locator } from '../../utils'
-import { refreshConnectionCommand, refreshConnectionsCommand } from './connection'
-import { dbStates, connectionStates, nodeTypes } from '../../constants'
-import { refreshDbCommand } from './db'
+import {nodeTypes} from '../../constants'
 import { connectionActions } from '../../actions';
 
 export const moveToParentNodeCommand = props => {
@@ -22,6 +20,7 @@ export const moveToParentNodeCommand = props => {
                     break;
 
                 default:
+                
                     break;
             }
         },

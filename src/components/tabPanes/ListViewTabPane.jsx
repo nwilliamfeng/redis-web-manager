@@ -97,6 +97,7 @@ class ListViewTabPane extends Component {
 
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
+            console.log(this.props);
                 return connections.map(x => { return this.mapConnectionToItem(x) });
             case nodeTypes.CONNECTION:
                 return dbs.map(x => { return this.mapDBToItem(x) });
@@ -104,7 +105,7 @@ class ListViewTabPane extends Component {
                 return keys.map(x => { return this.mapKeyToItem(x) });
             case nodeTypes.KEY:
                 return [];
-
+        
             default:
                 return [];
         }
@@ -149,9 +150,7 @@ class ListViewTabPane extends Component {
     }
 
     mapKeyToItem = key => {
-
         const { isSmallIcon } = this.state;
-
         return {
             iconId: iconKeys.KEY_ICON,
             title: key.key,
@@ -168,7 +167,6 @@ class ListViewTabPane extends Component {
                 keys: this.props.keys,
                 dispatch: this.props.dispatch,
                 redisKey: key,
-
             },
         }
     }
@@ -201,13 +199,9 @@ class ListViewTabPane extends Component {
     handleLargeIconToggleClick = () => this.setState({ isSmallIcon: false })
 
     handleKeyDown = e => {
-
-        if (e.key === 'Delete') {
-            if (compositDeleteCommand(this.props).canExecute()) {
-                compositDeleteCommand(this.props).execute();
-            }
+        if (e.key === 'Delete' && compositDeleteCommand(this.props).canExecute()) {
+            compositDeleteCommand(this.props).execute();
         }
-       
     }
 
     render() {
