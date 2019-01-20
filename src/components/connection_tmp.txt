@@ -1,52 +1,30 @@
 import React, { Component } from 'react'
-import { SelectableLi, Li, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg } from '../controls/parts'
+import { Li, NameDiv, FlexDiv, FlexContainerDiv, LoadingImg } from '../controls/parts'
 import { connectionActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
 import { nodeTypes, connectionStates } from '../constants'
-import { withSelectByClick } from '../controls'
+import { withExpand, withSelectByClick } from '../controls'
 import { compose } from 'recompose'
 import { DB } from './DB'
 import { ConnectionIcon, ConnectionSuccessIcon } from './icons'
 import { ConnectionMenuTrigger } from './contextMenus'
 import { isEqual } from 'lodash'
 
-const Content = ({ dbs, item, isLoading, isConnected}) => {
-   
-    return   <FlexDiv>
-            <FlexContainerDiv >
-                {isConnected === false && <ConnectionIcon />}
-                {isConnected === true && <ConnectionSuccessIcon />}
-                <NameDiv>{item.name}</NameDiv>
-                {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
-            </FlexContainerDiv>
-            <div>{isLoading === true && <LoadingImg />}</div>
-        </FlexDiv>
-
+const Content = props => {
+    const { dbs, item, isLoading, isConnected } = props;
+    return <FlexDiv>
+        <FlexContainerDiv >
+            {isConnected === false && <ConnectionIcon />}
+            {isConnected === true && <ConnectionSuccessIcon />}
+            <NameDiv>{item.name}</NameDiv>
+            {dbs && dbs.length > 0 && <div>{`[${dbs.length}项]`}</div>}
+        </FlexContainerDiv>
+        <div>{isLoading === true && <LoadingImg />}</div>
+    </FlexDiv>
 }
 
-const withExpand = WrapperComponent => class extends Component {
-    handleClick=()=>{
-        console.log('dddx');
-        const {isExpand,handleExpand} =this.props;
-        if(handleExpand!=null){
-            handleExpand(!isExpand);
-        }
-    }
-    render() {
-        const {isExpand} =this.props;
-        return    <FlexDiv >
-                <div onClick={this.handleClick}>{isExpand===true?'v':'>'}</div>
-               
-        <WrapperComponent {...this.props}/>
-
-            </FlexDiv>
-
-    }
-}
-
-// const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
-const ExpandContent = withExpand(props => <Content {...props}/>)
- 
+const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
+const DD=withSelectByClick(props=><Li {...props}/>);
 
 class Connection extends Component {
 
@@ -130,24 +108,14 @@ class Connection extends Component {
     render() {
         const { item, selectedConnectionId, selectedNodeType, dispatch } = this.props;
         const { dbs } = this.state;
-
+      
         console.log('render connection ' + item.name);
         const isConnected = this.isConnected();
         const isSelected = selectedNodeType === nodeTypes.CONNECTION && selectedConnectionId === item.name;
         return <React.Fragment>
             {item && <ConnectionMenuTrigger connection={item.name} dispatch={dispatch} isConnected={isConnected} data={item} >
-                <SelectableLi title={item.name} 
-            
-                onClick={this.handleClick} 
-                onDoubleClick={this.handleDoubleClick}    
-                isSelected={isSelected}>
-                <ExpandContent   
-                dbs={dbs} item={item}  
-                isExpand={item.isExpand}
-                handleExpand={this.handleExpand}
-                isLoading={item.connectionState === connectionStates.CONNECTING}  
-                isConnected={isConnected} />
-                    {/* <ExpandContent
+                <Li  title={item.name} onDoubleClick={this.handleDoubleClick}>
+                    <ExpandContent
                         handleClick={this.handleClick}
                         item={item}
                         isSelected={isSelected}
@@ -158,12 +126,10 @@ class Connection extends Component {
                         isExpand={item.isExpand}>
                         {dbs && dbs.length > 0 
                             && dbs.map(x => <DB key={x.id} id={x.id} dbIdx={x.dbIdx} isExpand={x.isExpand} dbState={x.dbState} connectionName={item.name} isVisible={item.isExpand} />)}
-                    </ExpandContent> */}
-                </SelectableLi>
-                {dbs && dbs.length > 0 
-                            && dbs.map(x => <DB key={x.id} id={x.id} dbIdx={x.dbIdx} isExpand={x.isExpand} dbState={x.dbState} connectionName={item.name} isVisible={item.isExpand} />)}
+                    </ExpandContent>
+                </Li>
             </ConnectionMenuTrigger>}
-
+           
         </React.Fragment>
     }
 }

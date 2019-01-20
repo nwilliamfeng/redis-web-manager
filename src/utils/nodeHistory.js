@@ -11,7 +11,6 @@ class NodeHistory{
             return;
         }
         if(this._currentNode!=null){
-            console.log(this._currentNode);
             this._history.push(this._currentNode);
         }
         this._currentNode={nodeType,nodeValue};

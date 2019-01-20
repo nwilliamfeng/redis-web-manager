@@ -17,6 +17,15 @@ export const Li = styled.li`
     list-style:none;
     text-align:left;
     margin-left:-40px;
+    &:hover{
+        background-color: #eeee;
+        color:black;
+    };
+`
+
+export const SelectableLi = styled(Li)`
+    background-color:${props => props.isSelected === true ? '#DEDBDA' : 'transparent'};
+    color: ${props => props.isSelected === true ? 'black' : 'gray'};
 `
 
 export const NameDiv = styled.div`

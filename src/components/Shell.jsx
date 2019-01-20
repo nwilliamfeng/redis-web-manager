@@ -69,7 +69,7 @@ const VerticalSplit = withSplit()
 class Shell extends Component {
 
     handleNavigateKeyDown = e => {     
-        e.preventDefault();
+      //   e.preventDefault();
         if (e.key === 'ArrowDown') {
             this.props.dispatch(navigateAction.selectByArrow(this.props));
         }

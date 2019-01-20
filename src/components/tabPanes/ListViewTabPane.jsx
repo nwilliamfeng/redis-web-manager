@@ -97,7 +97,6 @@ class ListViewTabPane extends Component {
 
         switch (selectedNodeType) {
             case nodeTypes.ROOT:
-            console.log(this.props);
                 return connections.map(x => { return this.mapConnectionToItem(x) });
             case nodeTypes.CONNECTION:
                 return dbs.map(x => { return this.mapDBToItem(x) });
