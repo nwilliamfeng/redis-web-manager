@@ -1,6 +1,6 @@
 import { connectionConstants, nodeTypes, connectionStates, dbConstants, dialogConstants } from '../constants';
 import { redisApi } from '../api'
-import { deleteKeyCommand } from '../components/commands';
+import { nodeHistory } from '../utils';
 
 
 export const connectionActions = {
@@ -91,10 +91,12 @@ function updateConnectionState(connectionId, connectionState = connectionStates.
 }
 
 function selectConnection(connectionId) {
+    nodeHistory.push({nodeType:nodeTypes.CONNECTION,nodeValue:connectionId});
     return { type: nodeTypes.CONNECTION, connectionId};
 }
 
 function selectRoot() {
+    nodeHistory.push({nodeType:nodeTypes.ROOT,nodeValue:null});
     return { type: nodeTypes.ROOT};
 }
 

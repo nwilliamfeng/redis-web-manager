@@ -6,8 +6,23 @@ import { imgSrc } from './imgSrc'
 import { Input } from '../controls'
 import { locator } from '../utils'
 
+const getImg = nodeType => {
+    switch (nodeType) {
+        case nodeTypes.CONNECTION:
+            return imgSrc.REDIS_IMG;
+        case nodeTypes.DB:
+            return imgSrc.REDIS_DB_IMG;
+        case nodeTypes.ROOT:
+            return imgSrc.HOME_IMG;
+        case nodeTypes.KEY:
+            return imgSrc.KEY_IMG;
+        default:
+            return null;
+    }
+}
+
 const getInputvStyle = nodeType => {
-    const img = nodeType === nodeTypes.KEY ? imgSrc.KEY_IMG : nodeType === nodeTypes.DB ? imgSrc.REDIS_DB_IMG : imgSrc.REDIS_IMG;
+    const img =  getImg(nodeType);
     return {
         width: '100%',
         height: 24,
@@ -15,7 +30,7 @@ const getInputvStyle = nodeType => {
         paddingLeft: 25,
         backgroundImage: `url(${img})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 14,
+        backgroundSize: nodeType===nodeTypes.ROOT? 16:14,
         backgroundPositionY: 3,
         backgroundPositionX: 3,
     }
@@ -43,10 +58,10 @@ class Navigator extends Component {
                     dispatch(dbActions.selectDB(strs[0], `${strs[0]}-${this.getDbIdx(strs[1])}`));
                     break;
                 case 3:
-             
-                    const keyId=`${strs[0]}-${this.getDbIdx(strs[1])}-${strs[2]}`
-                    const redisKey= locator.getKey(this.props, keyId);
-                    dispatch(keyActions.selectKey (redisKey));
+
+                    const keyId = `${strs[0]}-${this.getDbIdx(strs[1])}-${strs[2]}`
+                    const redisKey = locator.getKey(this.props, keyId);
+                    dispatch(keyActions.selectKey(redisKey));
                     break;
                 default:
                     break;
@@ -55,7 +70,7 @@ class Navigator extends Component {
 
     }
 
-    getDbIdx=dbIdxStr=>{
+    getDbIdx = dbIdxStr => {
         return dbIdxStr.length > 2 ? dbIdxStr.substring(2) : dbIdxStr;
     }
 
@@ -70,7 +85,7 @@ class Navigator extends Component {
 
     render() {
         const { selectedNodeType } = this.props;
-        return <Input ref style={getInputvStyle(selectedNodeType)} value={this.state.path}
+        return <Input style={getInputvStyle(selectedNodeType)} value={this.state.path}
             onValueChange={this.handleValueChange}
             onKeyPress={this.handleKeyPress} />
     }

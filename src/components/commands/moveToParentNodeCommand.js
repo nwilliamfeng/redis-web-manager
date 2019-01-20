@@ -1,6 +1,6 @@
 import { locator } from '../../utils'
-import {nodeTypes} from '../../constants'
-import { connectionActions } from '../../actions';
+import { nodeTypes } from '../../constants'
+import { connectionActions, dbActions } from '../../actions';
 
 export const moveToParentNodeCommand = props => {
     return {
@@ -10,7 +10,7 @@ export const moveToParentNodeCommand = props => {
         },
 
         execute: () => {
-            const { dispatch, selectedDbId, selectedConnectionId, selectedNodeType } = props;
+            const { dispatch, selectedConnectionId, selectedNodeType,selectedDbId } = props;
             switch (selectedNodeType) {
                 case nodeTypes.CONNECTION:
                     dispatch(connectionActions.selectRoot());
@@ -18,9 +18,10 @@ export const moveToParentNodeCommand = props => {
                 case nodeTypes.DB:
                     dispatch(connectionActions.selectConnection(selectedConnectionId));
                     break;
-
+                case nodeTypes.KEY:
+                    dispatch(dbActions.selectDB(selectedConnectionId,selectedDbId));
+                    break;
                 default:
-                
                     break;
             }
         },

@@ -3,9 +3,7 @@ import { connect } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
-import { keyActions, dbActions, connectionActions } from '../actions'
-import { imgSrc } from './imgSrc'
-import { Input } from '../controls'
+import { dbActions } from '../actions'
 import { locator } from '../utils'
 import { connectionStates } from '../constants';
 
@@ -17,12 +15,6 @@ const SearchIcon = styled.i`
 
 
 class KeySearch extends Component {
-
-    // constructor(props) {
-    //     super(props);  
-    // }
-
-     
 
     getDbIdx = dbIdxStr => {
         return dbIdxStr.length > 2 ? dbIdxStr.substring(2) : dbIdxStr;
@@ -51,7 +43,9 @@ class KeySearch extends Component {
         if(selectedDbId==null){
             return false;
         }
-        return locator.getSelectedConnection(this.props).connectionState=== connectionStates.CONNECTED
+        const conn=locator.getSelectedConnection(this.props);
+
+        return conn==null?false:conn.connectionState=== connectionStates.CONNECTED;
  
     }
 
@@ -61,7 +55,7 @@ class KeySearch extends Component {
             <input disabled={!this.isEnable()}  type="search" ref={el=>this.input=el} className="form-control input-xs" 
             placeholder="查找键值"
             onKeyUp={this.handleKeyUp}
-            style={{ height: 24, width: 200, borderRadius: 0, fontSize: 12, }} />
+            style={{ height: 24, width: 240, borderRadius: 0, fontSize: 12, }} />
         </div>
     }
 }

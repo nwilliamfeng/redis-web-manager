@@ -1,6 +1,7 @@
 import { nodeTypes, dbStates, dbConstants, keyConstants, dialogConstants } from '../constants';
 import { dialogAction } from './dialogAction'
 import { redisApi } from '../api'
+import { nodeHistory } from '../utils';
 
 export const dbActions = {
 
@@ -74,6 +75,7 @@ function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
 
 
 function selectDB(connectionId, dbId) {
+    nodeHistory.push({ nodeType: nodeTypes.DB,nodeValue:{ connectionId, dbId} });
     return { type: nodeTypes.DB, connectionId, dbId };
 }
 

@@ -12,7 +12,7 @@ const ToolbarDiv = styled.div`
     background:#f5f5f5;
     display:flex;
     padding:4px 10px 4px 0px;
-    width:100%;
+    
     align-items:center;
     border-bottom:1px solid lightgray;
     

@@ -1,5 +1,6 @@
-import { keyConstants, dialogConstants, keyType, keyHelper, entityState, keyTypeValue } from '../constants';
+import { keyConstants, dialogConstants, keyType, keyHelper, entityState, keyTypeValue, nodeTypes } from '../constants';
 import { redisApi } from '../api'
+import { nodeHistory } from '../utils';
 
 
 export const keyActions = {
@@ -121,6 +122,7 @@ function setKeyDirty() {
 }
 
 function selectKey(redisKey) {
+    nodeHistory.push({nodeType:nodeTypes.KEY,nodeValue:redisKey});
     return async dispatch => {
         try {
             let keyContent;

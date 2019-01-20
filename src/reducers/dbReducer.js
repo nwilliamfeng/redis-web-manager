@@ -1,6 +1,5 @@
 import { dbConstants, nodeTypes, dbStates, keyConstants, connectionConstants } from '../constants';
 
-
 const defaultState = {
     dbs: [],
     selectedDbId: null,
