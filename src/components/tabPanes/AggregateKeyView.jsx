@@ -4,10 +4,9 @@ import { TextArea } from '../../controls/TextArea'
 import { isEqual } from 'lodash'
 import { entityState, keyType } from '../../constants'
 import { keyActions } from '../../actions'
-import { locator } from '../../utils'
+import { locator, mathUtil } from '../../utils'
 import { Div, FieldDiv, LabelDiv, getStyle, KeysDiv, Button } from './part'
 import { KeyTable } from './KeyTable';
-
 
 export class AggregateKeyView extends Component {
 
@@ -22,29 +21,20 @@ export class AggregateKeyView extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        console.log(this.isDirty());
-        console.log(nextProps);
         if (nextProps.isKeyDirty === false && this.isDirty()) {
             return true;
         }
-        if(!isEqual(this.state,nextState)){
+        if (!isEqual(this.state, nextState)) {
             return true;
         }
         return !isEqual(this.props.redisKey, nextProps.redisKey);
     }
 
-    // componentWillReceiveProps(nextProps, nextContext) {
-    //     if (this.isDirty() !== nextProps.isKeyDirty) {
-    //         const { keys } = this.state;
-    //         if (keys.some(x => x.state !== entityState.NONE) !== false) {
-    //             const hkeys = keys.filter(x => x.state !== entityState.DELETED);
-    //             hkeys.forEach(x => x.state = entityState.NONE);
-    //             this.setState({ keys: hkeys });
-    //         }
-    //     }
-    
-    // }
-
+    componentWillReceiveProps(nextProps, nextContext) {
+        if ((this.isDirty() && nextProps.isKeyDirty === false) ||  !isEqual(this.props.redisKey,  nextProps.redisKey)) {
+            this.initizeKeys(nextProps);
+        }
+    }
 
     handleKeyChange = value => {
         const { selectedKey, keys } = this.state;
@@ -77,7 +67,6 @@ export class AggregateKeyView extends Component {
         dispatch(keyActions.setKeyDirty());
     }
 
-
     handleRowClick = key => this.setState({ selectedKey: key })
 
     renderTable = () => {
@@ -100,20 +89,20 @@ export class AggregateKeyView extends Component {
                     return array[1].Value;
                 }
             }
-            const keys = Object.entries(content).map(x => (
+            const keys =content? Object.entries(content).map(x => (
                 {
                     key: getKeyName(x),
                     value: type === keyType.ZSET ? x[1].Value : x[1],
                     type, state: entityState.NONE,
                     displayKey: type === keyType.ZSET ? x[1].Score : getKeyName(x),
-                }));
+                })) :[];
             const oldSelectedKey = this.state ? this.state.selectedKey : null;
             const data = { keys, selectedKey: keys.some(k => k.key === oldSelectedKey) ? oldSelectedKey : null };
             if (this.state == null) {
                 this.state = data;
             }
             else {
-                this.setState({...data});
+                this.setState({ ...data });
             }
         }
     }
@@ -123,8 +112,8 @@ export class AggregateKeyView extends Component {
     getSaveHandle = () => {
         const sKeys = this.state.keys.filter(x => x.state !== entityState.NONE);
         const { dispatch, redisKey } = this.props;
-        const { key, type, connectionName, dbIdx } = redisKey;
-        dispatch(keyActions.modifyKey(connectionName, dbIdx, locator.getKeyTypeValue(type), key, sKeys));
+        const { key, type, connectionName, dbIdx,dbId } = redisKey;
+        dispatch(keyActions.modifyKey(connectionName,dbId, dbIdx, locator.getKeyTypeValue(type), key, sKeys));
     }
 
     componentDidMount() {
@@ -142,16 +131,8 @@ export class AggregateKeyView extends Component {
 
     handleAddRow = () => {
         const { keys } = this.state;
-        const keyName = this.props.redisKey.type === keyType.ZSET ? '0' : null;
-        // let keyName = `newKey${keys.filter(x => x.state === entityState.NEW).length + 1}`;
-        // const setKeyName = () => {
-        //     if (keys.some(x => x.key === keyName)) {
-        //         keyName += '_1';
-        //         setKeyName();
-        //     }
-        // }
-        // setKeyName();
-        const newKey = { key: keyName, type: this.props.redisKey.type, displayKey: keyName, value: '', state: entityState.NEW };
+        const keyName = this.props.redisKey.type === keyType.ZSET ? '0' : mathUtil.guid();
+        const newKey = { key: keyName, type: this.props.redisKey.type, displayKey: '', value: '', state: entityState.NEW };
         this.setState({ keys: [...keys, newKey], selectedKey: keyName });
         this.notifyDirty();
     }
@@ -165,6 +146,21 @@ export class AggregateKeyView extends Component {
         return sKey ? sKey.value : '';
     }
 
+    handleKeyDown=e=>{
+        if(e.key==='ArrowDown' || e.key==='ArrowUp'){
+            const { selectedKey, keys } = this.state;
+            if(keys.length!==0){
+                const idx =keys.findIndex(x=>x.key===selectedKey)
+                if((e.key==='ArrowDown') && (idx<keys.length-1)){
+                    this.setState({selectedKey:keys[idx+1].key});
+                }
+                else if((e.key==='ArrowUp') && (idx>0)){
+                    this.setState({selectedKey:keys[idx-1].key});
+                }  
+            }           
+        }      
+    }
+
     getSelectedDisplayKey = () => {
         const { selectedKey, keys } = this.state;
         if (selectedKey == null) {
@@ -175,11 +171,9 @@ export class AggregateKeyView extends Component {
     }
 
     render() {
-        const { redisKey } = this.props;
-        const { key, type } = redisKey;
-
+        const { key, type } = this.props.redisKey;
         const { selectedKey } = this.state;
-        return <Div>
+        return <Div tabIndex={0} onKeyDown={this.handleKeyDown}>
             <div style={{ display: 'flex', marginLeft: -20, minHeight: 40 }}>
                 <FieldDiv>
                     <LabelDiv >{'键类型'}</LabelDiv>

@@ -89,12 +89,7 @@ export const keyReducer = (state = defaultState, action) => {
                 selectedkeyContent: action.keyContent,
                 isKeyDirty: false,
             }
-        case keyConstants.RELOAD_KEY_CONTENT:
-            return {
-                ...state,
-                selectedkeyContent: action.keyContent,
-                isKeyDirty: false,
-            }
+      
 
         default:
             return state;

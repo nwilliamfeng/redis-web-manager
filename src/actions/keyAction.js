@@ -58,7 +58,7 @@ function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) 
         try {
             await redisApi.deleteKey(oldKey, connectionName, dbIdx);
             await redisApi.setKeyItem(type, key, null, value, connectionName, dbIdx);
-            doRefreshKey(dispatch, { connectionName, dbIdx, dbId, key })
+            await doRefreshKey(dispatch, { connectionName, dbIdx, dbId, key })
 
         }
         catch (error) {
@@ -69,7 +69,7 @@ function modifyStringKey(connectionName, dbIdx, dbId, type, key, value, oldKey) 
 
 
 
-function modifyKey(connectionName, dbIdx, type, id, keys = []) {
+function modifyKey(connectionName,dbId, dbIdx, type, id, keys = []) {
     return async dispatch => {
         try {
 
@@ -92,7 +92,9 @@ function modifyKey(connectionName, dbIdx, type, id, keys = []) {
                         }
                         break;
                     case entityState.NEW:
-                        await redisApi.setKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+                        if (displayKey != null && displayKey !== '') {
+                            await redisApi.setKeyItem(type, id, displayKey, value, connectionName, dbIdx);
+                        }
                         break;
                     case entityState.DELETED:
                         if (type === keyTypeValue.ZSET) {
@@ -107,8 +109,8 @@ function modifyKey(connectionName, dbIdx, type, id, keys = []) {
                         break;
                 }
             };
-            const keyContent = await redisApi.getKeyItems(connectionName, dbIdx, type, id);
-            dispatch({ type: keyConstants.RELOAD_KEY_CONTENT, keyContent });
+            await doRefreshKey(dispatch, { connectionName, dbIdx, dbId, key:id })
+      
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message })
@@ -148,7 +150,7 @@ function getKeyValue(redisKey) {
 function refreshKey(redisKey) {
     return async dispatch => {
         try {
-            doRefreshKey(dispatch,redisKey);
+            doRefreshKey(dispatch, redisKey);
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
@@ -156,11 +158,10 @@ function refreshKey(redisKey) {
     }
 }
 
-async function  doRefreshKey(dispatch, redisKey) {
+async function doRefreshKey(dispatch, redisKey) {
     const { connectionName, dbIdx, dbId, key } = redisKey;
     const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId, key);
     const rkey = keyList.length > 0 ? keyList[0] : null;
-
     const keyContent = rkey ? await getKeyValue(rkey) : null;
     dispatch({ type: keyConstants.REFRESH_KEY, key: rkey, connectionName, dbIdx, oldKeyName: key, keyContent: keyContent });
 }

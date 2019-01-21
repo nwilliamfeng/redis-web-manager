@@ -14,6 +14,7 @@ export const errorStyle = {
 }
 
 export const Div = styled.div`
+    outline:none;
     display:flex;
     flex-direction:column;
     padding:15px;

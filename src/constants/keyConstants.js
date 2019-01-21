@@ -4,7 +4,7 @@ export const keyConstants={
 
     LOAD_KEY_LIST :'LOAD_KEY_LIST',
 
-    RELOAD_KEY_CONTENT:'RELOAD_KEY_CONTENT',
+
 
     SELECT_KEY:'SELECT_KEY',
 
