@@ -73,11 +73,8 @@ function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
 }
 
 
-
 function selectDB(connectionId, dbId) {
     nodeHistory.push({ nodeType: nodeTypes.DB,nodeValue:{ connectionId, dbId} });
     return { type: nodeTypes.DB, connectionId, dbId };
 }
 
-
-//function selectDBs(c/\)

@@ -15,10 +15,11 @@ export class StringKeyView extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        if (nextProps == null) {
-            return false;
-        }
-        return !isEqual(this.props.redisKey, nextProps.redisKey);
+
+         if(nextProps.isKeyDirty===false && this.state.isDirty===true){
+             return true;
+         }
+         return !isEqual(this.props.redisKey, nextProps.redisKey);
     }
 
     checkDirty = () => {

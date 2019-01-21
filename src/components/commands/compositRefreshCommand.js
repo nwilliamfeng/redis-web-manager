@@ -2,20 +2,22 @@ import {  locator } from '../../utils'
 import { refreshConnectionCommand,refreshConnectionsCommand } from './connection'
 import {dbStates,connectionStates,nodeTypes} from '../../constants'
 import { refreshDbCommand } from './db'
+import { refreshKeyCommand } from './key'
 
 export const compositRefreshCommand = props => {
     return {
         canExecute: () => {
-            const { selectedDbId, selectedConnectionId,selectedNodeType } =  props;
+            const { selectedDbId, selectedConnectionId,selectedNodeType,selectedKeyId } =  props;
             if(selectedNodeType===nodeTypes.ROOT){
                 return true;
             }
-            if(selectedNodeType!== nodeTypes.CONNECTION && selectedNodeType!==nodeTypes.DB){
-                return false;
-            }
+         
            
             if (selectedDbId == null && selectedConnectionId == null) {
                 return false;
+            }
+            if(selectedNodeType===nodeTypes.KEY && selectedKeyId!=null){
+                return true;
             }
             if (selectedDbId != null) {
                 const selectedDb=locator.getSelectedDb(props);
@@ -27,6 +29,11 @@ export const compositRefreshCommand = props => {
 
         execute: () => {
             const { dispatch, selectedDbId, selectedConnectionId,selectedNodeType  } = props;
+            if(selectedNodeType===nodeTypes.KEY){
+                const redisKey = locator.getSelectedKey(props);
+                refreshKeyCommand({dispatch,redisKey});
+                return;
+            }
             if(selectedNodeType===nodeTypes.ROOT){
                 refreshConnectionsCommand({dispatch});
                 return;

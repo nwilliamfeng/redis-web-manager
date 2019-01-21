@@ -52,8 +52,8 @@ export const dbReducer = (state = defaultState, action) => {
             }
 
         case dbConstants.UPDATE_DB_STATE:
-            const sdbs=changeState(state.dbs, action.dbId, action.dbState);          
-            const isExpand=action.dbState=== dbStates.KEY_LOAD_SUCCESS? true :false;
+            const sdbs = changeState(state.dbs, action.dbId, action.dbState);
+            const isExpand = action.dbState === dbStates.KEY_LOAD_SUCCESS ? true : false;
             return {
                 ...state,
                 selectedDbId: action.dbId,
@@ -67,13 +67,14 @@ export const dbReducer = (state = defaultState, action) => {
             }
 
         case keyConstants.LOAD_KEY_LIST:
-            const  cdbs=changeStateWithDbIdx(state.dbs, action.connectionName, action.dbIdx);
-           const id= cdbs.find(x=>x.connectionName===action.connectionName && x.dbIdx===action.dbIdx).id;
+            const cdbs = changeStateWithDbIdx(state.dbs, action.connectionName, action.dbIdx);
+            const id = cdbs.find(x => x.connectionName === action.connectionName && x.dbIdx === action.dbIdx).id;
             return {
                 ...state,
-                dbs: changeExpandState(cdbs, id,true),
+                dbs: changeExpandState(cdbs, id, true),
             }
 
+        
         default:
             return state;
     }

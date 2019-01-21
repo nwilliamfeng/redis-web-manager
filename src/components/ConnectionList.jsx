@@ -26,7 +26,6 @@ class ConnectionList extends Component {
     render() {
         console.log('render connection-list');
         const { connections } = this.props;
-
         return <React.Fragment>
             {connections &&
                 <Ul>

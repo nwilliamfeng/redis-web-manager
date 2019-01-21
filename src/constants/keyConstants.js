@@ -14,4 +14,6 @@ export const keyConstants={
 
     SET_KEY_NONE_STATE:'SET_KEY_NONE_STATE',
 
+    REFRESH_KEY:'REFRESH_KEY',
+
 }

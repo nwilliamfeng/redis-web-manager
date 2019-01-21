@@ -17,7 +17,7 @@ export const keyReducer = (state = defaultState, action) => {
                 ...state,
                 isKeyDirty: true,
             }
-      
+
 
         case keyConstants.SET_KEY_SAVE_HANDLE:
             return {
@@ -34,7 +34,19 @@ export const keyReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedKeyId: existSelect ? oldSelectedKeyId : null,
-                keys: action.keyList,             
+                keys: action.keyList,
+                isKeyDirty: false,
+            }
+
+        case keyConstants.REFRESH_KEY:
+            const idx = keyCache.findIndex(x => x.connectionName === action.connectionName && x.dbIdx === action.dbIdx && x.key === action.oldKeyName);
+            keyCache = action.key ? [...keyCache.slice(0, idx), action.key, ...keyCache.slice(idx + 1)] : [...keyCache.slice(0, idx), ...keyCache.slice(idx + 1)];
+            const keys = keyCache.filter(x => x.connectionName === action.connectionName && x.dbIdx === action.dbIdx);
+            return {
+                ...state,
+                selectedKeyId: keyCache.some(x => x.id === state.selectedKeyId) === true ? state.selectedKeyId : null,
+                selectedkeyContent:action.keyContent,
+                keys,
                 isKeyDirty: false,
             }
 
@@ -78,11 +90,11 @@ export const keyReducer = (state = defaultState, action) => {
                 isKeyDirty: false,
             }
         case keyConstants.RELOAD_KEY_CONTENT:
-        return{
-            ...state,
-            selectedkeyContent:action.keyContent,
-            isKeyDirty: false,
-        }
+            return {
+                ...state,
+                selectedkeyContent: action.keyContent,
+                isKeyDirty: false,
+            }
 
         default:
             return state;

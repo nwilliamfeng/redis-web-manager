@@ -1,38 +1,42 @@
 import React from 'react'
 import styled from 'styled-components'
-import { withSelectByClick } from '../controls'
 import { KeyMenuTrigger } from './contextMenus'
-import { NameDiv, FlexDiv, FlexContainerDiv, HoverDiv } from '../controls/parts'
-import {KeyIcon} from './icons'
+import { NameDiv, FlexDiv, FlexContainerDiv, SelectableLi } from '../controls/parts'
+import { KeyIcon } from './icons'
 
 const Content = props => {
     const { keyName } = props;
-    
+
     return <FlexDiv >
         <FlexContainerDiv>
-            <KeyIcon/>
+            <KeyIcon />
             <NameDiv>{keyName}</NameDiv>
         </FlexContainerDiv>
     </FlexDiv>
 }
 
-const Div = styled.div`margin-left:10px;`
+const KeyLi = styled(SelectableLi)`
+    padding-left:35px;
+`
 
-const SelectContent =styled( withSelectByClick(props => <Content {...props} />))`padding-left:50px;`
-
-export const Key = ({id, keyName, keyType, isSelected, handleClick,dispatch,dbIdx,connectionName ,isVisible,dbId}) => {
-    const redisKey={id,key:keyName,type:keyType,dbIdx,dbId,connectionName}
+ 
+export const Key = ({ id, keyName, keyType, isSelected, handleClick, dispatch, dbIdx, connectionName, isVisible, dbId }) => {
+    const redisKey = { id, key: keyName, type: keyType, dbIdx, dbId, connectionName }
     const click = () => {
         handleClick(id);
     }
-    if(isVisible!==true){
-        return <React.Fragment/>
+    if (isVisible !== true) {
+        return <React.Fragment />
     }
-    return <Div title={`Key:${keyName}, Type:${keyType}`}  onClick={click}>
-        <KeyMenuTrigger dispatch={dispatch} redisKey={redisKey} dbIdx={dbIdx} connectionName={connectionName} keyName={keyName} dbId={dbId} keyType={keyType} >
-            <HoverDiv>
-                <SelectContent isSelected={isSelected} handleClick={handleClick} keyName={keyName}    />
-            </HoverDiv>
-        </KeyMenuTrigger>
-    </Div>
+    return <KeyMenuTrigger dispatch={dispatch}
+        redisKey={redisKey}
+        dbIdx={dbIdx}
+        connectionName={connectionName}
+        keyName={keyName}
+        dbId={dbId}
+        keyType={keyType} >
+        <KeyLi title={`Key:${keyName}, Type:${keyType}`} onClick={click} isSelected={isSelected}>
+             <Content keyName={keyName}/>
+        </KeyLi>
+    </KeyMenuTrigger>
 }

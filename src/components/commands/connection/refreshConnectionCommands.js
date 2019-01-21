@@ -12,7 +12,3 @@ export const refreshConnectionCommand=({ dispatch, connectionId } )=>{
 export const refreshConnectionsCommand=({ dispatch } )=>{
     dispatch(connectionActions.loadConnectionList());
 }
-
- 
- 
- 

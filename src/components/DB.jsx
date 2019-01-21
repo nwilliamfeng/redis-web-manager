@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
-import { NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, } from '../controls/parts'
+import { NameDiv, FlexDiv, FlexContainerDiv, LoadingImg, SelectableLi, } from '../controls/parts'
 import { DbMenuTrigger } from './contextMenus'
 import { keyActions, dbActions } from '../actions'
 import { connect } from 'react-redux'
 import { nodeTypes, dbStates } from '../constants'
-import { withExpand, withSelectByClick } from '../controls'
-import { compose } from 'recompose'
+import { withExpand } from '../controls'
+import styled from 'styled-components'
 import { Key } from './Key'
 import { DBIcon } from './icons'
 import { isEqual } from 'lodash'
 
-const Content = props => {
-    const { name, isLoading, keys } = props;
+const Content = ({ name, isLoading, keys }) => {
     return <FlexDiv>
         <FlexContainerDiv>
             <DBIcon />
@@ -22,10 +21,11 @@ const Content = props => {
     </FlexDiv>
 }
 
-const offSetStyle = { marginLeft: -40, width: 'calc(100% + 40px)' }
+const DBLi = styled(SelectableLi)`
+    padding-left:10px;
+`
 
-const ExpandContent = compose(withSelectByClick, withExpand)(props => <Content {...props} />)
-
+const LiContent = withExpand(props => <Content {...props} />)
 
 class DB extends Component {
 
@@ -49,7 +49,6 @@ class DB extends Component {
         }
     }
 
-
     handleDoubleClick = () => {
         const { dbIdx, connectionName, id, dbState } = this.props;
         if (dbState === dbStates.NONE) {
@@ -62,7 +61,6 @@ class DB extends Component {
         if (nextProps == null) {
             return;
         }
-
         if (nextProps.dbState === dbStates.KEY_LOAD_SUCCESS) {
             const { keys, selectedDbId } = nextProps;  //如果是连接成功了则缓存db集合，并且折叠展开
             if (keys != null && selectedDbId === this.props.id) {
@@ -72,7 +70,6 @@ class DB extends Component {
         else if (nextProps.dbState === dbStates.NONE) {
             this.setState({ keys: [] });
         }
-
     }
 
     isSelected = () => {
@@ -98,11 +95,11 @@ class DB extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { id, isVisible ,isExpand} = this.props;
+        const { id, isVisible, isExpand } = this.props;
         if (nextProps == null) {
             return false;
         }
-        if (nextProps.isExpand !==  isExpand) { //处理折叠
+        if (nextProps.isExpand !== isExpand) { //处理折叠
             return true;
         }
         if (nextProps.isVisible !== isVisible) { //处理折叠
@@ -143,43 +140,50 @@ class DB extends Component {
     }
 
     handleExpand = isExpand => {
-        const {  dispatch } = this.props;
+        const { dispatch } = this.props;
         dispatch(dbActions.updateSelectedDbExpandState(this.props.id, isExpand));
     }
 
     render() {
         const { id, dbIdx, isExpand, isVisible, dispatch, connectionName, selectedNodeType, dbState, selectedKeyId } = this.props;
         const { keys } = this.state;
-        // console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${selectedDbId}  selectedConnection: ${selectedConnectionId} connection: ${connectionName}`);
+       // console.log(`render db:dbIdx ${dbIdx} dbState:${dbState} selectedDbId: ${this.props.selectedDbId}  selectedConnection: ${this.props.selectedConnectionId} connection: ${connectionName}`);
         return <React.Fragment>
-            {isVisible && <DbMenuTrigger connectionName={connectionName} dbId={id} dbIdx={dbIdx} dispatch={dispatch} isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS} >
-                <ExpandContent name={dbIdx}
-                    title={`DB${dbIdx}`}
+            {isVisible && <DbMenuTrigger
+                connectionName={connectionName}
+                dbId={id}
+                dbIdx={dbIdx}
+                dispatch={dispatch}
+                isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS} >
+                <DBLi title={`DB${dbIdx}`}
+                    onClick={this.handleClick}
                     onDoubleClick={this.handleDoubleClick}
-                    isSelected={this.isSelected()}
-                    handleClick={this.handleClick}
-                    handleExpand={this.handleExpand}
-                    isExpand={isExpand}
-                    isLoading={dbState === dbStates.KEY_LOADING}
-                    isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS}
-                    style={offSetStyle}
-                    paddingLeft={30}>
-                    {keys && keys.length > 0 &&
-                        keys.map(x => <Key
-                            keyName={x.key}
-                            id={x.id}
-                            isVisible={isExpand}
-                            isSelected={x.id === selectedKeyId && selectedNodeType === nodeTypes.KEY}
-                            keyType={x.type}
-                            key={x.key}
-                            handleClick={this.handleKeyItemClick}
-                            dbIdx={dbIdx}
-                            dbId={id}
-                            connectionName={connectionName}
-                            dispatch={dispatch}
-                        />)}
-                </ExpandContent>
+                    isSelected={this.isSelected()}>
+                    <LiContent
+                        name={`${dbIdx}`}
+                        keys={keys}
+                        isExpand={isExpand}
+                        handleExpand={this.handleExpand}
+                        hasChilds={keys.length > 0}
+                        isLoading={dbState === dbStates.KEY_LOADING}
+                        isKeyLoaded={dbState === dbStates.KEY_LOAD_SUCCESS} />
+                </DBLi>
             </DbMenuTrigger>}
+            {isVisible && <React.Fragment>
+                {keys && keys.length > 0 && keys.map(x => <Key
+                    keyName={x.key}
+                    id={x.id}
+                    isVisible={isExpand}
+                    isSelected={x.id === selectedKeyId && selectedNodeType === nodeTypes.KEY}
+                    keyType={x.type}
+                    key={x.key}
+                    handleClick={this.handleKeyItemClick}
+                    dbIdx={dbIdx}
+                    dbId={id}
+                    connectionName={connectionName}
+                    dispatch={dispatch}
+                />)}
+            </React.Fragment>}
         </React.Fragment>
     }
 }
