@@ -45,6 +45,9 @@ class Connection extends Component {
             const { dispatch, item } = this.props;
             dispatch(connectionActions.getDbList(item.name));
         }
+        else {
+            this.handleExpand(!this.props.item.isExpand);
+        }
     }
 
     isConnected = () => {

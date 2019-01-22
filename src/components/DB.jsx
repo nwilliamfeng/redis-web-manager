@@ -55,6 +55,11 @@ class DB extends Component {
             const { dispatch } = this.props;
             dispatch(dbActions.getKeyList(connectionName, dbIdx, id));
         }
+        else if (dbState === dbStates.KEY_LOAD_SUCCESS){
+            const { dispatch } = this.props;
+            const isExpand =!this.props.isExpand ;
+            dispatch(dbActions.updateSelectedDbExpandState(this.props.id, isExpand));
+        }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {

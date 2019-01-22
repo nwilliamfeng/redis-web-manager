@@ -77,6 +77,16 @@ class RedisApi {
         return Code === 1;
     }
 
+    // async _editOrSetKeyItem(opName, type, id, key, value, connectionName, dbIdx) {
+    //     const url = `/redis/${opName}`;
+    //     const data=key? {name:connectionName,dbindex:dbIdx,id,type,value,key}:{name:connectionName,dbindex:dbIdx,id,type,value};
+    //     const json = await ApiHelper.postByForm(url,data);
+    //     const { Message, Code } = json;
+    //     if (Code === 2)
+    //         throw new Error(Message);
+    //     return Code === 1;
+    // }
+
     /**
     * 编辑子键
     */

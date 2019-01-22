@@ -23,11 +23,11 @@ class App extends Component {
     const {isLoading}=this.state;
     return (
       <div className="App">
-        {/* {isLoading===true &&<div className="App-header">
+        {isLoading===true &&<div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>欢迎使用Redis Web Manager</h2>
           <a href='https://github.com/yswenli/SAEA'>Powered By SAEA</a>
-        </div>} */}
+        </div>}
         {isLoading===false && <Shell />}
       </div>
 
