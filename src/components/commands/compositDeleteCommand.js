@@ -1,6 +1,6 @@
 import { nodeTypes } from '../../constants'
 import { deleteKeyCommand, multiDeleteKeyCommand } from './key'
-import {deleteConnectionCommand} from './connection'
+import {deleteConnectionCommand,multiDeleteConnectionCommand} from './connection'
 import {  locator} from '../../utils'
 
 /**
@@ -24,6 +24,10 @@ export const compositDeleteCommand = props => {
                     const dbIdx = locator.getSelectedDb(props).dbIdx;
                     const keyNames = multiSelectItems.map(x => keys.find(a => a.id === x).key);
                     multiDeleteKeyCommand({ dispatch, connectionName: selectedConnectionId, dbIdx, keyNames, dbId: selectedDbId });
+                }
+                else if (selectedNodeType === nodeTypes.ROOT) {
+                  
+                    multiDeleteConnectionCommand({ dispatch, connectionNames:multiSelectItems });
                 }
 
                 return;

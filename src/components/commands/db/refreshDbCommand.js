@@ -8,3 +8,6 @@ export const refreshDbCommand=({ dispatch, dbIdx, connectionName, dbId } )=>{
     dispatch(dbActions.getKeyList(connectionName, dbIdx, dbId));
 }
 
+export const refreshDbsCommand=({ dispatch,   connectionName, dbs } )=>{
+    dispatch(dbActions.getKeyLists(connectionName, dbs));
+}

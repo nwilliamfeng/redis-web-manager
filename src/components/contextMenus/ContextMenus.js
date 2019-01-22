@@ -6,10 +6,15 @@ import { contextMenuIds, commandConstants, nodeTypes } from '../../constants'
 const ConnectionMenu = (props) => {
     const { id, trigger } = props;
     const handleItemClick = trigger ? trigger.onItemClick : null;
+    let openDisable = false;
+    if (trigger != null) {
+        const { selectedNodeType, multiSelectItems } = trigger;
+        openDisable = selectedNodeType === nodeTypes.ROOT && multiSelectItems.length > 1;
+    }
     return <ContextMenu id={id}>
         {trigger && trigger.isRefreshEnable === false &&
             <MenuItem onClick={handleItemClick} data={{ action: commandConstants.CONNECT_CONNECTION }}>{'连接'}</MenuItem>}
-        {trigger && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.EDIT_CONNECTION }}>{'编辑'}</MenuItem>}
+        {trigger &&  <MenuItem disabled={openDisable === true} onClick={handleItemClick} data={{ action: commandConstants.EDIT_CONNECTION }}>{'编辑'}</MenuItem>}
         {trigger && trigger.isRefreshEnable === true
             && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.REFRESH_CONNECTION }}>{'刷新'}</MenuItem>}
         {trigger && <MenuItem divider={true} />}
@@ -29,7 +34,7 @@ const DbMenu = (props) => {
     return <ContextMenu id={id}>
         {trigger && trigger.isRefreshEnable === false &&
             <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'加载键'}</MenuItem>}
-        {trigger && trigger.isRefreshEnable === true
+        {trigger && trigger.isRefreshEnable === true 
             && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'刷新'}</MenuItem>}
         {trigger && <MenuItem divider={true} />}
         <MenuItem disabled={trigger && trigger.isRefreshEnable === false} onClick={handleItemClick} data={{ action: commandConstants.ADD_KEY }}>{'添加键'}</MenuItem>

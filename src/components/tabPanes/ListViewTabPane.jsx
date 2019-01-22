@@ -188,7 +188,7 @@ class ListViewTabPane extends Component {
 
     handleSelectItemsChange = selectedItems => {
         const { dispatch, selectedNodeType } = this.props;
-        if (selectedNodeType === nodeTypes.CONNECTION || selectedNodeType === nodeTypes.DB) {
+        if (selectedNodeType===nodeTypes.ROOT || selectedNodeType === nodeTypes.CONNECTION || selectedNodeType === nodeTypes.DB) {
             dispatch(multiNodeAction.multiSelect(selectedItems));
         }
     }

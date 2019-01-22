@@ -14,9 +14,11 @@ export const dbActions = {
 
     getKeyList,
 
+    getKeyLists,
+
     getKeyListByKeyword,
 
-    updateSelectedDbExpandState ,
+    updateSelectedDbExpandState,
 
     addKey,
 
@@ -24,8 +26,8 @@ export const dbActions = {
 }
 
 
-function updateSelectedDbExpandState(dbId,isExpand) {
-    return { type: dbConstants.DB_EXPAND,dbId, isExpand };
+function updateSelectedDbExpandState(dbId, isExpand) {
+    return { type: dbConstants.DB_EXPAND, dbId, isExpand };
 }
 
 function updateDbState(dbId, dbState = dbStates.NONE) {
@@ -34,22 +36,38 @@ function updateDbState(dbId, dbState = dbStates.NONE) {
 
 function getKeyList(connectionName, dbIdx, dbId) {
     return async dispatch => {
-        dispatch({ type: dbConstants.UPDATE_DB_STATE, dbId, dbState: dbStates.KEY_LOADING });
-        try {
-            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
-            dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
-        }
-        catch (error) {
-            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
-        }
+       await doGetKeyList(dispatch,connectionName, dbIdx, dbId);
     }
 }
 
-function getKeyListByKeyword(connectionName, dbIdx, dbId,keyword) {
+async function doGetKeyList(dispatch, connectionName, dbIdx, dbId) {
+
+    dispatch({ type: dbConstants.UPDATE_DB_STATE, dbId, dbState: dbStates.KEY_LOADING });
+    try {
+        const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId);
+        dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
+    }
+    catch (error) {
+        dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+    }
+
+}
+
+function getKeyLists(connectionName, dbs=[]) {
+    return async dispatch => {
+        for(let db of dbs){
+            const {dbIdx, dbId} =db;
+           await doGetKeyList(dispatch,connectionName, dbIdx, dbId);
+        }
+       
+    }
+}
+
+function getKeyListByKeyword(connectionName, dbIdx, dbId, keyword) {
     return async dispatch => {
         dispatch({ type: dbConstants.UPDATE_DB_STATE, dbId, dbState: dbStates.KEY_LOADING });
         try {
-            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId,keyword);
+            const keyList = await redisApi.getKeyTypes(connectionName, dbIdx, dbId, keyword);
             dispatch({ type: keyConstants.LOAD_KEY_LIST, keyList, connectionName, dbIdx });
         }
         catch (error) {
@@ -74,7 +92,7 @@ function addKey(connectionName, dbIdx, dbId, type, id, key, value) {
 
 
 function selectDB(connectionId, dbId) {
-    nodeHistory.push({ nodeType: nodeTypes.DB,nodeValue:{ connectionId, dbId} });
+    nodeHistory.push({ nodeType: nodeTypes.DB, nodeValue: { connectionId, dbId } });
     return { type: nodeTypes.DB, connectionId, dbId };
 }
 

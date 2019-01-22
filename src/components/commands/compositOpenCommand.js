@@ -1,12 +1,18 @@
 import {   locator } from '../../utils'
-import { openConnectionCommand } from './connection'
-import {dbStates,connectionStates} from '../../constants'
-import { refreshDbCommand } from './db'
+import { openConnectionCommand,openConnectionsCommand } from './connection'
+import {dbStates,connectionStates, nodeTypes} from '../../constants'
+import { refreshDbCommand ,refreshDbsCommand} from './db'
 
 export const compositOpenCommand = props => {
     return {
         canExecute: () => {
-            const { selectedConnectionId, selectedDbId } = props;
+            const { selectedConnectionId, selectedDbId,multiSelectItems,selectedNodeType } = props;
+            if(selectedNodeType===nodeTypes.ROOT && multiSelectItems.length>0){
+                return true;
+            }
+            if(selectedNodeType===nodeTypes.CONNECTION && multiSelectItems.length>0){
+                return true;
+            }
             if (selectedConnectionId == null) {
                 return false;
             }
@@ -21,7 +27,21 @@ export const compositOpenCommand = props => {
         },
 
         execute: () => {
-            const { dispatch, selectedDbId, selectedConnectionId } = props;
+            const { dispatch, selectedDbId, selectedConnectionId ,selectedNodeType,multiSelectItems,dbs} = props;
+            if(selectedNodeType===nodeTypes.ROOT && multiSelectItems.length>0){
+                openConnectionsCommand({dispatch,connectionIds:multiSelectItems});
+                return;
+            }
+
+            if(selectedNodeType===nodeTypes.CONNECTION && multiSelectItems.length>0){
+                const selectedDbs=multiSelectItems.map(x=>{
+                    const db=dbs.find(d=>d.id===x);
+                    return {dbIdx:db.dbIdx,dbId:db.id};
+                })
+                refreshDbsCommand({dispatch,connectionName:selectedConnectionId,dbs:selectedDbs});
+                return;
+            }
+
             if (selectedDbId != null) {
                 const db = locator.getSelectedDb(props);
                 refreshDbCommand({ dispatch, dbIdx: db.dbIdx, connectionName: db.connectionName, dbId: db.id });

@@ -90,10 +90,6 @@ class TabPaneList extends Component {
     return <Container>
       <TabPanes items={this.getTabPanes()} onClose={this.handleCloseTab} selectedTabId={activeTabPane} onSelect={this.handleSelectTab} />
       <TabPanel>
-        {/* {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane />}
-        {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane />}
-        {this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE) && <KeyViewTabPane />} */}
-
         {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane />}
         {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane />}
         <KeyViewTabPane visible={this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE)&&activeTabPane ===tabPaneIds.KEY_SETTING_VIEW_PANE } />

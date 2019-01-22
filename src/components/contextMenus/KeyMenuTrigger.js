@@ -1,5 +1,5 @@
 import React from 'react'
-import { commandConstants, contextMenuIds, nodeTypes } from '../../constants'
+import { commandConstants, contextMenuIds } from '../../constants'
 import { withContextMenuTrigger } from './withMenuTrigger'
 import { deleteKeyCommand, multiDeleteKeyCommand } from '../commands'
 import {keyActions} from '../../actions'
