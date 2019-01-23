@@ -21,12 +21,22 @@ const openSettingKeyView={
         dispatch(commandAction.openTabPane(tabPaneIds.KEY_SETTING_VIEW_PANE));
     },
 }
+
+const openConnectionView={
+    isTopMenu:false,
+    title:'连接视图',
+    id: menuIds.OPEN_CONNECTION_VIEW_MENU,
+    command:props=>{
+        const {dispatch} =props;
+        dispatch(commandAction.openTabPane(tabPaneIds.CONNECTION_VIEW_PANE));
+    },
+}
  
 export const viewMenu={
     isTopMenu:true,
     title:'查看(V)',
     id: menuIds.VIEW_MENU,
-    subItems:[openListView,openSettingKeyView],
+    subItems:[openListView,openSettingKeyView,openConnectionView],
 }
 
   

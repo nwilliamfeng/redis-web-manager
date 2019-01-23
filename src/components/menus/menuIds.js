@@ -37,6 +37,12 @@ export const menuIds={
      */
     OPEN_LISTVIEW_MENU:'OPEN_LISTVIEW_MENU',
 
+
+    /**
+     * 打开连接列表
+     */
+    OPEN_CONNECTION_VIEW_MENU:'OPEN_CONNECTION_VIEW_MENU',
+
     /**
      * 打开设置键视图
      */

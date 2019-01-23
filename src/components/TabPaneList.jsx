@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { commandAction } from '../actions'
 import { locator } from '../utils'
-import { FolderIcon, SettingIcon, KeyIcon } from './icons'
+import { FolderIcon, SettingIcon, KeyIcon, ConnectionIcon } from './icons'
 import { tabPaneIds } from '../constants'
 import { TabPanes, withScroll, IconList } from '../controls'
-import { ListViewTabPane, SettingTabPane, KeyViewTabPane } from './tabPanes'
+import { ListViewTabPane, SettingTabPane, KeyViewTabPane, ConnectionViewTabPane } from './tabPanes'
 
 
 
@@ -36,14 +36,13 @@ class TabPaneList extends Component {
     add({ key: tabPaneIds.LIST_VIEW_PANE, icon: FolderIcon });
     add({ key: tabPaneIds.SETTING_PANE, icon: SettingIcon });
     add({ key: tabPaneIds.KEY_SETTING_VIEW_PANE, icon: KeyIcon });
+    add({ key: tabPaneIds.CONNECTION_VIEW_PANE, icon: ConnectionIcon });
   }
 
 
   handleSelectTab = tabId => {
-    // this.setState({ selectedPage: tab });
     const { dispatch } = this.props;
     dispatch(commandAction.selectTabPane(tabId));
-
   }
 
   handleCloseTab = tabId => {
@@ -60,22 +59,32 @@ class TabPaneList extends Component {
   }
 
   getTabPaneTitle = tabPane => {
-    const redisKey = locator.getSelectedKey(this.props);
-    const { isKeyDirty } = this.props;
-    const keyTitle = redisKey ? isKeyDirty === true ? '*' + redisKey.key : redisKey.key : '键';
+
     switch (tabPane) {
       case tabPaneIds.LIST_VIEW_PANE:
         return '列表视图';
       case tabPaneIds.SETTING_PANE:
         return '设置';
       case tabPaneIds.KEY_SETTING_VIEW_PANE:
-        return keyTitle;
+        return this.getKeyViewTitle();
+      case tabPaneIds.CONNECTION_VIEW_PANE:
+        return this.getConnectionViewTitle();
       default:
         return '未知';
     }
   }
 
+  getKeyViewTitle = () => {
+    const redisKey = locator.getSelectedKey(this.props);
+    const { isKeyDirty } = this.props;
+    return redisKey ? isKeyDirty === true ? '*' + redisKey.key : redisKey.key : '键';
+  }
 
+  getConnectionViewTitle = () => {
+    const connection = locator.getSelectedConnection(this.props);
+    
+    return connection ? connection.name: 'Redis连接';
+  }
 
   isTabPaneVisible = name => {
     const { tabPanes, activeTabPane } = this.props;
@@ -92,7 +101,8 @@ class TabPaneList extends Component {
       <TabPanel>
         {this.isTabPaneVisible(tabPaneIds.LIST_VIEW_PANE) && <ListViewTabPane />}
         {this.isTabPaneVisible(tabPaneIds.SETTING_PANE) && <SettingTabPane />}
-        <KeyViewTabPane visible={this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE)&&activeTabPane ===tabPaneIds.KEY_SETTING_VIEW_PANE } />
+        <KeyViewTabPane visible={this.isTabPaneVisible(tabPaneIds.KEY_SETTING_VIEW_PANE) && activeTabPane === tabPaneIds.KEY_SETTING_VIEW_PANE} />
+        <ConnectionViewTabPane visible={this.isTabPaneVisible(tabPaneIds.CONNECTION_VIEW_PANE) && activeTabPane === tabPaneIds.CONNECTION_VIEW_PANE} />
 
       </TabPanel>
 
@@ -104,7 +114,7 @@ class TabPaneList extends Component {
 const mapStateToProps = state => {
   const { tabPanes, activeTabPane, selectedNodeType } = state.state;
 
-  return { tabPanes, activeTabPane, selectedNodeType, ...state.key };
+  return { tabPanes, activeTabPane, selectedNodeType, ...state.key, ...state.connection };
 }
 
 const list = connect(mapStateToProps)(TabPaneList)
