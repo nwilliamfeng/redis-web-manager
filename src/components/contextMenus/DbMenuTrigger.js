@@ -12,7 +12,7 @@ const Trigger = withContextMenuTrigger(contextMenuIds.DB_CONTEXTMENU_ID);
             case commandConstants.LOAD_KEYS:
             const {  multiSelectItems,selectedNodeType } = props;
                 if(selectedNodeType===nodeTypes.CONNECTION && multiSelectItems.length>0){
-                    compositOpenCommand(props).execute();
+                    compositOpenCommand({...props,selectedConnectionId:props.connectionName}).execute();
                     return;
                 }
                 refreshDbCommand({ ...props });
@@ -35,7 +35,7 @@ const Trigger = withContextMenuTrigger(contextMenuIds.DB_CONTEXTMENU_ID);
 
 const mapStateToProps = state => {
     const {dbs} =state.db;
-    return { ...state.state,dbs }????
+    return { ...state.state,dbs }
 }
 
 const trigger = connect(mapStateToProps)(DbMenuTrigger);

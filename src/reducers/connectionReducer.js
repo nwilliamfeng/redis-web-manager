@@ -13,6 +13,28 @@ export const connectionReducer = (state = defaultState, action) => {
                 connections: changeExpandState(state.connections, action.connectionId, action.isExpand),
             }
 
+        case connectionConstants.ADD_CONNECTION:
+            return {
+                ...state,
+                connections: [...state.connections, action.connection],
+            }
+
+        case connectionConstants.MODIFY_CONNECTION:
+            const beforeConns=state.connections;
+            const modifyIdx =beforeConns.findIndex(x=>x.name===action.oldConnectionId);
+            return {
+                ...state,
+                connections: [...beforeConns.slice(0,modifyIdx), action.connection, ...beforeConns.slice(modifyIdx+1)],
+            }
+
+
+        case connectionConstants.DELETE_CONNECTION:
+            const exists = state.connections.filter(x => !action.connectionIds.some(id => id === x.name));
+            return {
+                ...state,
+                connections: [...exists],
+            }
+
 
         case connectionConstants.LOAD_CONNECTION_LIST:
             return {

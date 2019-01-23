@@ -80,8 +80,8 @@ function deleteConnection(connectionId) {
     return async dispatch => {
         try {
             await redisApi.deleteConnection(connectionId);
-            const connections = await redisApi.getConfigs();
-            dispatch({ type: connectionConstants.LOAD_CONNECTION_LIST, connections });
+   
+            dispatch({ type: connectionConstants.DELETE_CONNECTION, connectionIds:[connectionId] });
             dispatch({ type: dialogConstants.CLOSE_DIALOG });
         }
         catch (error) {
@@ -96,9 +96,7 @@ function deleteConnections(connectionIds = []) {
             for (let id of connectionIds) {
                 await redisApi.deleteConnection(id);
             }
-
-            const connections = await redisApi.getConfigs();
-            dispatch({ type: connectionConstants.LOAD_CONNECTION_LIST, connections });
+            dispatch({ type: connectionConstants.DELETE_CONNECTION, connectionIds });
             dispatch({ type: dialogConstants.CLOSE_DIALOG });
         }
         catch (error) {
@@ -136,18 +134,12 @@ function selectRoot() {
 }
 
 function addConnection(name, ip, port, password) {
-    return updateConnection(name, ip, port, password);
-}
-
-function updateConnection(name, ip, port, password, oldName) {
     return async dispatch => {
         try {
-            if (oldName != null && name !== oldName) {
-                await redisApi.deleteConnection(oldName);
-            }
             await redisApi.setConnection(name, ip, port, password);
             const connections = await redisApi.getConfigs();
-            dispatch({ type: connectionConstants.LOAD_CONNECTION_LIST, connections });
+            
+            dispatch({ type: connectionConstants.ADD_CONNECTION, connection:connections.find(x=>x.name===name) });
             dispatch({ type: dialogConstants.CLOSE_DIALOG });
         }
         catch (error) {
@@ -155,7 +147,21 @@ function updateConnection(name, ip, port, password, oldName) {
         }
     }
 }
+ 
 
 function modifyConnection(name, ip, port, password, oldName) {
-    return updateConnection(name, ip, port, password, oldName);
+    return async dispatch => {
+        try {
+            if ( name !== oldName) {
+                await redisApi.deleteConnection(oldName);
+            }
+            await redisApi.setConnection(name, ip, port, password);
+            const connections = await redisApi.getConfigs();
+            dispatch({ type: connectionConstants.MODIFY_CONNECTION, connection:connections.find(x=>x.name===name),oldConnectionId:oldName });
+            dispatch({ type: dialogConstants.CLOSE_DIALOG });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage: error.message });
+        }
+    }
 }
