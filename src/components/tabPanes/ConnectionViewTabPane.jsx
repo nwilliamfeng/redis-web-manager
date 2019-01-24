@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { nodeTypes, } from '../../constants'
 import {locator} from '../../utils'
+import {ConnectionChart} from './ConnectionChart'
 
 class ConnectionViewTabPane extends Component {
 
@@ -20,12 +21,6 @@ class ConnectionViewTabPane extends Component {
     }
 
 
-    renderPlot = () => {
-        return <React.Fragment>
-            {'connection'}
-        </React.Fragment>
-    }
-   
     render() {
         const { visible, selectedNodeType } = this.props;
         if (visible === false || selectedNodeType !== nodeTypes.CONNECTION) {
@@ -33,8 +28,8 @@ class ConnectionViewTabPane extends Component {
         }
 
 
-        return <div  style={{ height: '100%' }} >
-            {this.renderPlot()}
+        return <div  >
+            <ConnectionChart/>
         </div>
     }
 }
