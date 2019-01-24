@@ -1,69 +1,81 @@
-import React, { Component } from 'react'
-import { LineChart, Brush } from 'react-d3-components'
-import * as d3 from "d3";
- 
+import React, { Component } from 'react';
+import { random } from 'lodash'
+import { VictoryChart, VictoryGroup,VictoryBar, VictoryArea, VictoryAxis } from 'victory'
+import { Observable } from 'rx'
 
 
 export class ConnectionChart extends Component {
-
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state= {
-            data: {label: '', values: [
-                {x: new Date(2015, 2, 5), y: 1},
-                {x: new Date(2015, 2, 6), y: 2},
-                {x: new Date(2015, 2, 7), y: 0},
-                {x: new Date(2015, 2, 8), y: 3},
-                {x: new Date(2015, 2, 9), y: 2},
-                {x: new Date(2015, 2, 10), y: 3},
-                {x: new Date(2015, 2, 11), y: 4},
-                {x: new Date(2015, 2, 12), y: 4},
-                {x: new Date(2015, 2, 13), y: 1},
-                {x: new Date(2015, 2, 14), y: 5},
-                {x: new Date(2015, 2, 15), y: 0},
-                {x: new Date(2015, 2, 16), y: 1},
-                {x: new Date(2015, 2, 16), y: 1},
-                {x: new Date(2015, 2, 18), y: 4},
-                {x: new Date(2015, 2, 19), y: 4},
-                {x: new Date(2015, 2, 20), y: 5},
-                {x: new Date(2015, 2, 21), y: 5},
-                {x: new Date(2015, 2, 22), y: 5},
-                {x: new Date(2015, 2, 23), y: 1},
-                {x: new Date(2015, 2, 24), y: 0},
-                {x: new Date(2015, 2, 25), y: 1},
-                {x: new Date(2015, 2, 26), y: 1}
-            ]},
-            xScale: d3.scaleTime().domain([new Date(2015, 2, 5), new Date(2015, 2, 26)]).range([0, 400 - 70]),
-            xScaleBrush: d3.scaleTime().domain([new Date(2015, 2, 5), new Date(2015, 2, 26)]).range([0, 400 - 70])
-        };
+        this.state = { cpu: [] }
     }
 
-    _onChange=extent=> {
-        this.setState({xScale: d3.scaleTime().domain([extent[0], extent[1]]).range([0, 400 - 70])});
+    componentDidMount() {
+        this._subscribe = Observable.interval(1000).subscribe(() => {
+            let cpu = this.state.cpu;
+            if (cpu.length === 10) {
+                const [first, ...others] = cpu;
+                cpu = [...others];
+            }
+            const newCpu = { y: random(1, 100), x: new Date() }
+            this.setState({ cpu: [...cpu, newCpu] });
+        });
     }
+
+    componentWillUnmount() {
+        this._subscribe.dispose();
+    }
+
 
     render() {
-        return <div>
-            <LineChart
-                data={this.state.data}
-                width={800}
-                height={800}
-                margin={{ top: 10, bottom: 50, left: 50, right: 20 }}
-                xScale={this.state.xScale}
-                xAxis={{ tickValues: this.state.xScale.ticks(d3.timeDay, 2), tickFormat: d3.timeFormat("%m/%d") }}
-            />
-            <div className="brush" style={{ float: 'none' }}>
-                <Brush
-                    width={400}
-                    height={50}
-                    margin={{ top: 0, bottom: 30, left: 50, right: 20 }}
-                    xScale={this.state.xScaleBrush}
-                    extent={[new Date(2015, 2, 10), new Date(2015, 2, 12)]}
-                    onChange={this._onChange}
-                    xAxis={{ tickValues: this.state.xScaleBrush.ticks(d3.timeDay, 2), tickFormat: d3.timeFormat("%m/%d") }}
+        const { cpu, } = this.state;
+        return (
+            <VictoryChart domain={{ y: [0, 100] }} >
+                <VictoryAxis
+                    style={{
+                        axis: { stroke: 'lightgray' },
+                        axisLabel: { fontSize: 8, fill: 'gray' },
+                        ticks: { stroke: '#ccc' },
+                        tickLabels: { fontSize: 8, fill: 'gray', },
+                        grid: { stroke: '#B3E5FC', strokeWidth: 0.25 }
+                    }} dependentAxis
                 />
-            </div>
-        </div>
-    }
+                <VictoryAxis
+                    style={{
+                        axis: { stroke: 'lightgray' },
+                        axisLabel: { fontSize: 10 },
+                        ticks: { stroke: 'gray' },
+                        tickLabels: { fontSize: 0, }
+                    }}
+                />
+                <VictoryGroup style={{
+                    data: { strokeWidth: 3, fillOpacity: 0.4 },
+                }} >
 
+                    
+
+                    <VictoryArea
+                        style={{
+                            data: { fill: "cyan", stroke: "cyan", },
+                            tickLabels: { fontSize: 4, },
+                        }}
+                        labels={(d) => `${d.y}%`}
+                        data={cpu}
+                    />
+                    {/* <VictoryArea
+                        style={{
+                            data: { fill: "magenta", stroke: "magenta" }
+                        }}
+                        data={[
+                            { x: 1, y: 3 },
+                            { x: 2, y: 2 },
+                            { x: 3, y: 6 },
+                            { x: 4, y: 2 },
+                            { x: 5, y: 6 }
+                        ]}
+                    /> */}
+                </VictoryGroup>
+            </VictoryChart>
+        );
+    }
 }

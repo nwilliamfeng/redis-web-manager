@@ -29,7 +29,7 @@ class ConnectionViewTabPane extends Component {
 
 
         return <div  >
-            <ConnectionChart/>
+            <ConnectionChart width={300} height={160}/>
         </div>
     }
 }
