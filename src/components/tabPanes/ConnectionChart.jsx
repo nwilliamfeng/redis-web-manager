@@ -1,8 +1,24 @@
 import React, { Component } from 'react';
 import { random } from 'lodash'
-import { VictoryChart, VictoryGroup,VictoryBar, VictoryArea, VictoryAxis } from 'victory'
+import styled from 'styled-components'
+import { VictoryChart, VictoryGroup,  VictoryArea, VictoryAxis } from 'victory'
 import { Observable } from 'rx'
 
+const Div=styled.div`
+    padding:10px;
+`
+
+const Header=styled.div`
+    display:flex;
+    padding:18px 0px 0px 20px;
+`
+const Rect=styled.div`
+    margin-left:10px;
+    margin-right:30px;
+    width:40px;
+    height:18px;
+    background:${props=>props.fill?props.fill:'transparent'};
+`
 
 export class ConnectionChart extends Component {
     constructor(props) {
@@ -13,7 +29,7 @@ export class ConnectionChart extends Component {
     componentDidMount() {
         this._subscribe = Observable.interval(1000).subscribe(() => {
             let cpu = this.state.cpu;
-            if (cpu.length === 10) {
+            if (cpu.length === 60) {
                 const [first, ...others] = cpu;
                 cpu = [...others];
             }
@@ -30,39 +46,48 @@ export class ConnectionChart extends Component {
     render() {
         const { cpu, } = this.state;
         return (
-            <VictoryChart domain={{ y: [0, 100] }} >
-                <VictoryAxis
-                    style={{
-                        axis: { stroke: 'lightgray' },
-                        axisLabel: { fontSize: 8, fill: 'gray' },
-                        ticks: { stroke: '#ccc' },
-                        tickLabels: { fontSize: 8, fill: 'gray', },
-                        grid: { stroke: '#B3E5FC', strokeWidth: 0.25 }
-                    }} dependentAxis
-                />
-                <VictoryAxis
-                    style={{
-                        axis: { stroke: 'lightgray' },
-                        axisLabel: { fontSize: 10 },
-                        ticks: { stroke: 'gray' },
-                        tickLabels: { fontSize: 0, }
-                    }}
-                />
-                <VictoryGroup style={{
-                    data: { strokeWidth: 3, fillOpacity: 0.4 },
-                }} >
-
-                    
-
-                    <VictoryArea
+            <Div>
+                <Header>
+                    {'CPU: '}
+                    <Rect fill={'cyan'}/>
+                    {'内存: '}
+                    <Rect fill={'magenta'}/>
+                </Header>
+                <VictoryChart domain={{ y: [0, 100] }} >
+                    <VictoryAxis
+                        label='利用率%'
                         style={{
-                            data: { fill: "cyan", stroke: "cyan", },
-                            tickLabels: { fontSize: 4, },
-                        }}
-                        labels={(d) => `${d.y}%`}
-                        data={cpu}
+                            axis: { stroke: 'lightgray' },
+                            axisLabel: { fontSize: 8, fill: 'gray' },
+                            ticks: { stroke: '#ccc' },
+                            tickLabels: { fontSize: 8, fill: 'gray', },
+                            grid: { stroke: '#B3E5FC', strokeWidth: 0.25 }
+                        }} dependentAxis
                     />
-                    {/* <VictoryArea
+                    <VictoryAxis
+                        label='60秒'
+                        style={{
+                            axis: { stroke: 'lightgray' },
+                            axisLabel: { fontSize: 8, fill: 'gray' },
+                            ticks: { stroke: 'gray' },
+                            tickLabels: { fontSize: 0, }
+                        }}
+                    />
+                    <VictoryGroup style={{
+                        data: { strokeWidth: 3, fillOpacity: 0.4 },
+                    }} >
+
+
+
+                        <VictoryArea
+                            style={{
+                                data: { fill: "cyan", stroke: "cyan", },
+                                tickLabels: { fontSize: 4, },
+                            }}
+                            // labels={(d) => `${d.y}%`}
+                            data={cpu}
+                        />
+                        {/* <VictoryArea
                         style={{
                             data: { fill: "magenta", stroke: "magenta" }
                         }}
@@ -74,8 +99,10 @@ export class ConnectionChart extends Component {
                             { x: 5, y: 6 }
                         ]}
                     /> */}
-                </VictoryGroup>
-            </VictoryChart>
+                    </VictoryGroup>
+                </VictoryChart>
+            </Div>
+
         );
     }
 }

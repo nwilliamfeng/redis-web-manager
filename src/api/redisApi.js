@@ -3,6 +3,14 @@ import { connectionStates, dbStates } from '../constants'
 
 class RedisApi {
 
+    async getConnectionInfo(connectionName,isCpu=true) {
+        const json = await ApiHelper.get(`/redis/getinfo?name=${connectionName}&isCpu=${isCpu}`);
+        const { Data, Message, Code } = json;
+        if (Code === 2)
+            throw new Error(Message);
+        return  Data;
+    }
+
     /**
      * 获取配置
      */

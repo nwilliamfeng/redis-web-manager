@@ -28,10 +28,25 @@ export const connectionActions = {
     updateSelectExpandState,
 
     selectRoot,
+
+    getConnectionInfo,
 }
 
 function updateSelectExpandState(connectionId, isExpand) {
     return { type: connectionConstants.EXPAND_STATE, connectionId, isExpand }
+}
+
+function getConnectionInfo(connectionId, isCpu=true) {
+    return async dispatch => {
+        try {
+            const percent = await redisApi.getConnectionInfo(connectionId,isCpu);
+         //   dispatch({ type: connectionConstants.CONNECTION_INFO, ??? });
+        }
+        catch (error) {
+            const errorMessage = error.message.includes('Internal Server Error') ? '无法连接到服务器。' : error.message;
+            dispatch({ type: dialogConstants.SHOW_ERROR, errorMessage });
+        }
+    }
 }
 
 function loadConnectionList() {

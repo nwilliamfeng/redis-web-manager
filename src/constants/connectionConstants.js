@@ -9,6 +9,8 @@ export const connectionConstants={
 
     EXPAND_STATE:'EXPAND_STATE',
 
+    CONNECTION_INFO:'CONNECTION_INFO',
+
     /**
      * 更新
      */
