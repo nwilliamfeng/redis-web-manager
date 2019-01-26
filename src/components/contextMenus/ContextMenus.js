@@ -19,6 +19,8 @@ const ConnectionMenu = (props) => {
             && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.REFRESH_CONNECTION }}>{'刷新'}</MenuItem>}
         {trigger && <MenuItem divider={true} />}
         <MenuItem onClick={handleItemClick} data={{ action: commandConstants.DELETE_CONNECTION }}>{'删除'}</MenuItem>
+        <MenuItem divider={true} />
+         <MenuItem onClick={handleItemClick} data={{ action: commandConstants.OPEN_CONNECTION_INFO }}>{'查看'}</MenuItem> 
     </ContextMenu>
 }
 
@@ -38,6 +40,7 @@ const DbMenu = (props) => {
             && <MenuItem onClick={handleItemClick} data={{ action: commandConstants.LOAD_KEYS }}>{'刷新'}</MenuItem>}
         {trigger && <MenuItem divider={true} />}
         <MenuItem disabled={trigger && trigger.isRefreshEnable === false} onClick={handleItemClick} data={{ action: commandConstants.ADD_KEY }}>{'添加键'}</MenuItem>
+       
     </ContextMenu>
 }
 

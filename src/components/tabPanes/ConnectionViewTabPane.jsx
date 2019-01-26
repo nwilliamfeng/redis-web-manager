@@ -1,23 +1,112 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { nodeTypes, } from '../../constants'
-import {locator} from '../../utils'
-import {ConnectionChart} from './ConnectionChart'
+import styled from 'styled-components'
+import { VictoryChart, VictoryGroup, VictoryArea, VictoryAxis } from 'victory'
+import { Observable } from 'rx'
+import { connectionActions } from '../../actions';
+
+const Div = styled.div`
+    padding:10px;
+`
+
+const Header = styled.div`
+    display:flex;
+    padding:18px 0px 0px 30px;
+`
+const Rect = styled.div`
+    margin-left:10px;
+    margin-right:30px;
+    width:40px;
+    height:18px;
+    background:${props => props.fill ? props.fill : 'transparent'};
+`
+
+const CPUAreaStyle={
+    data: { fill: "cyan", stroke: "cyan", },
+    tickLabels: { fontSize: 4, },
+}
+
+const MemoryAreaStyle={
+    data: { fill: "magenta", stroke: "magenta", },
+    tickLabels: { fontSize: 4, },
+}
 
 class ConnectionViewTabPane extends Component {
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        if (nextProps == null) {
-            return false;
+    constructor(props) {
+        super(props);
+        this.state = { cpu: [] ,memory:[]}
+    }
+
+    componentDidMount() {
+     
+        this._subscribe = Observable.interval(1000).subscribe(() => {
+            const { dispatch, selectedConnectionId } = this.props;
+            if (selectedConnectionId != null) {
+                dispatch(connectionActions.getConnectionInfo(selectedConnectionId));
+            }
+        });
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        const {selectedConnectionId}=this.props;
+        if(nextProps.selectedConnectionId!==selectedConnectionId){
+            this.setState({cpu:[],memory:[]   });
+            return;
         }
-        const { selectedNodeType, selectedConnectionId,visible  } = nextProps;
-        if (this.props.visible !== visible) {
-            return true
+        const { selectedConnectionCpuUsage, selectedConnectionMemoryUsage } = nextProps;
+        const cpu=this.getNewInfoArray(this.state.cpu,selectedConnectionCpuUsage);
+        const memory=this.getNewInfoArray(this.state.memory,selectedConnectionMemoryUsage)
+        this.setState({cpu,memory   });
+    }
+
+    getNewInfoArray=(usages=[],nwValue)=>{
+        if (usages.length === 60) {
+            const [first, ...others] = usages;
+            usages = [...others];
         }
-        if (selectedNodeType !== nodeTypes.CONNECTION) {
-            return true;
-        }
-        return this.props.selectedConnectionId !== selectedConnectionId;    
+        return [...usages,  { y: nwValue, x: new Date() }];
+    }
+  
+
+    renderChart = () => {
+        const { cpu,memory } = this.state;
+        return <Div>
+            <Header>
+                {'CPU: '}
+                <Rect fill={'cyan'} />
+                {'内存: '}
+                <Rect fill={'magenta'} />
+            </Header>
+            <VictoryChart domain={{ y: [0, 100] }} >
+                <VictoryAxis
+                    label='利用率%'
+                    style={{
+                        axis: { stroke: 'lightgray' },
+                        axisLabel: { fontSize: 8, fill: 'gray' },
+                        ticks: { stroke: '#ccc' },
+                        tickLabels: { fontSize: 8, fill: 'gray', },
+                        grid: { stroke: '#B3E5FC', strokeWidth: 0.25 }
+                    }} dependentAxis
+                />
+                <VictoryAxis
+                    label='60秒'
+                    style={{
+                        axis: { stroke: 'lightgray' },
+                        axisLabel: { fontSize: 8, fill: 'gray' },
+                        ticks: { stroke: 'gray' },
+                        tickLabels: { fontSize: 0, }
+                    }}
+                />
+                <VictoryGroup style={{
+                    data: { strokeWidth: 3, fillOpacity: 0.4 },
+                }} >
+                    <VictoryArea style={CPUAreaStyle}  data={cpu} />
+                    <VictoryArea style={MemoryAreaStyle}  data={memory} />               
+                </VictoryGroup>
+            </VictoryChart>
+        </Div>
     }
 
 
@@ -28,9 +117,7 @@ class ConnectionViewTabPane extends Component {
         }
 
 
-        return <div  >
-            <ConnectionChart width={300} height={160}/>
-        </div>
+        return this.renderChart();
     }
 }
 

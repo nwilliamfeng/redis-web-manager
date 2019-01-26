@@ -25,6 +25,8 @@ export const commandConstants={
      */
     CONNECT_CONNECTION:'CONNECT_CONNECTION',
 
+    OPEN_CONNECTION_INFO:'OPEN_CONNECTION_INFO',
+
     /**
      * 删除连接
      */

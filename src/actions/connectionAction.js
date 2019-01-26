@@ -36,11 +36,11 @@ function updateSelectExpandState(connectionId, isExpand) {
     return { type: connectionConstants.EXPAND_STATE, connectionId, isExpand }
 }
 
-function getConnectionInfo(connectionId, isCpu=true) {
+function getConnectionInfo(connectionId) {
     return async dispatch => {
         try {
-            const percent = await redisApi.getConnectionInfo(connectionId,isCpu);
-         //   dispatch({ type: connectionConstants.CONNECTION_INFO, ??? });
+            const {cpuUsage,memoryUsage} = await redisApi.getConnectionInfo(connectionId);
+             dispatch({ type: connectionConstants.CONNECTION_INFO, cpuUsage,memoryUsage });
         }
         catch (error) {
             const errorMessage = error.message.includes('Internal Server Error') ? '无法连接到服务器。' : error.message;

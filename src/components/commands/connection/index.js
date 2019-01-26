@@ -3,3 +3,4 @@ export {openConnectionCommand,openConnectionsCommand} from './openConnectionComm
 export {refreshConnectionCommand,refreshConnectionsCommand} from './refreshConnectionCommands'
 export {addConnectionCommand} from './addConnectionCommand'
 export {modifyConnectionCommand} from './modifyConnectionCommand'
+export {openConnectionInfoCommand} from './openConnectionInfoCommands'

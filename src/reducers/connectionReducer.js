@@ -3,6 +3,9 @@ import { connectionConstants, dbConstants, nodeTypes, connectionStates } from '.
 const defaultState = {
     connections: [],
     selectedConnectionId: null,
+   
+    selectedConnectionCpuUsage:0,
+    selectedConnectionMemoryUsage:0,
 }
 
 export const connectionReducer = (state = defaultState, action) => {
@@ -20,11 +23,11 @@ export const connectionReducer = (state = defaultState, action) => {
             }
 
         case connectionConstants.MODIFY_CONNECTION:
-            const beforeConns=state.connections;
-            const modifyIdx =beforeConns.findIndex(x=>x.name===action.oldConnectionId);
+            const beforeConns = state.connections;
+            const modifyIdx = beforeConns.findIndex(x => x.name === action.oldConnectionId);
             return {
                 ...state,
-                connections: [...beforeConns.slice(0,modifyIdx), action.connection, ...beforeConns.slice(modifyIdx+1)],
+                connections: [...beforeConns.slice(0, modifyIdx), action.connection, ...beforeConns.slice(modifyIdx + 1)],
             }
 
 
@@ -63,6 +66,8 @@ export const connectionReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedConnectionId: action.connectionId,
+                selectedConnectionCpuUsage:0,
+                selectedConnectionMemoryUsage:0,
             }
 
         case nodeTypes.DB:
@@ -81,8 +86,14 @@ export const connectionReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 selectedConnectionId: null,
-                connections: [...state.connections],
+                connections: [...state.connections],          
+            }
 
+        case connectionConstants.CONNECTION_INFO:
+            return {
+                ...state,
+                selectedConnectionCpuUsage:action.cpuUsage,
+                selectedConnectionMemoryUsage:action.memoryUsage,
             }
 
         default:

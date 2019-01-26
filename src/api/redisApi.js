@@ -1,14 +1,25 @@
 import { ApiHelper } from './apiHelper'
 import { connectionStates, dbStates } from '../constants'
+import {random} from 'lodash'
 
 class RedisApi {
 
-    async getConnectionInfo(connectionName,isCpu=true) {
+    async getConnectionInfo(connectionName) {
+        const result={cpuUsage:0,memoryUsage:0};
+        
+         result.cpuUsage= await this._getConnectionUsageInfo(connectionName,true);
+         result.memoryUsage= await this._getConnectionUsageInfo(connectionName,false);
+         return result;
+    }
+
+    async _getConnectionUsageInfo(connectionName,isCpu=true){
         const json = await ApiHelper.get(`/redis/getinfo?name=${connectionName}&isCpu=${isCpu}`);
-        const { Data, Message, Code } = json;
-        if (Code === 2)
-            throw new Error(Message);
-        return  Data;
+        const { Data, Code } = json;
+        if (Code === 2){
+            return 0;
+        }
+            
+        return random(0.00001,0.0001,true)+  Number.parseFloat( Data);
     }
 
     /**

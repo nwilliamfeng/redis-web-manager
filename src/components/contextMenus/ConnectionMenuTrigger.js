@@ -3,7 +3,7 @@ import { commandConstants, contextMenuIds } from '../../constants'
 import { connect } from 'react-redux'
 import { withContextMenuTrigger } from './withMenuTrigger'
 import { refreshConnectionCommand, modifyConnectionCommand, openConnectionCommand, deleteConnectionCommand } from '../commands'
-import { multiDeleteConnectionCommand } from '../commands/connection';
+import { multiDeleteConnectionCommand, openConnectionInfoCommand } from '../commands/connection';
 
 
 
@@ -14,6 +14,9 @@ const ConnectionMenuTrigger = props => {
     const handleItemClick = (e, data, target) => {
         const { dispatch, connection, multiSelectItems } = props;
         switch (data.action) {
+            case commandConstants.OPEN_CONNECTION_INFO:
+                openConnectionInfoCommand ({ dispatch, connectionId: connection });
+                break;
             case commandConstants.CONNECT_CONNECTION:
                 openConnectionCommand({ dispatch, connectionId: connection });
                 break;
