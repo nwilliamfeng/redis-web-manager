@@ -8,6 +8,7 @@ import Rx from 'rx'
 
 const OutContainer = styled.div`
     height: 100%;
+    outline:none;
     position:${props => props.isAbsolute === true ? 'absolute' : 'static'};
     width:100%;
     overflow-y:auto;  overflow-x:hidden;height:whatever px;
@@ -23,7 +24,7 @@ const OutContainer = styled.div`
     }  
 `
 
-
+ 
 /**
  * 支持垂直滚动
  */
@@ -82,8 +83,8 @@ export const withScroll = InnerComponent => class extends React.Component {
     componentWillUnmount() {
         const list = ReactDOM.findDOMNode(this.container)
         if (list != null) {
-            list.removeEventListener('scroll', this.handleScroll)
-            this.handleWheel$.dispose()
+            list.removeEventListener('scroll', this.handleScroll);
+            this.handleWheel$.dispose();
         }
     }
 
@@ -98,7 +99,7 @@ export const withScroll = InnerComponent => class extends React.Component {
         }
         if (this.scrollDiv != null) {
             try {
-                this.scrollDiv.scrollIntoView(true)
+                this.scrollDiv.scrollIntoView(true);
             }
             catch (error) {
                 console.log(`scrollToBottom raise error: ${error}`)
@@ -117,10 +118,21 @@ export const withScroll = InnerComponent => class extends React.Component {
         }
     }
 
+    handleKeyDown = e => {     
+        //   e.preventDefault();
+          if (e.key === 'ArrowDown'|| e.key === 'ArrowUp') {
+           
+              this.container.scrollIntoView({ behavior: 'smooth' });
+      
+              
+          }
+      
+      }
 
     render() {
         const { isAbsolute } = this.props
-        return <OutContainer className='scollContainer' isAbsolute={isAbsolute} ref={el => this.container = el} onWheel={e => this.handleWheel$.onNext(e)}>
+        return <OutContainer className='scollContainer' tabIndex={0}  onKeyDown={this.handleKeyDown}
+         isAbsolute={isAbsolute} ref={el => this.container = el} onWheel={e => this.handleWheel$.onNext(e)}>
             <InnerComponent {...this.props} />
             {/* 注意这里必须是react自己的dom element如果用自定义的element则在滚动时会抛出 _this.scrollDiv.scrollIntoView is not a function */}
             <div ref={el => this.scrollDiv = el} />

@@ -42,8 +42,8 @@ class ConnectionViewTabPane extends Component {
     componentDidMount() {
      
         this._subscribe = Observable.interval(1000).subscribe(() => {
-            const { dispatch, selectedConnectionId } = this.props;
-            if (selectedConnectionId != null) {
+            const {visible, dispatch, selectedConnectionId } = this.props;
+            if (visible && selectedConnectionId != null) {
                 dispatch(connectionActions.getConnectionInfo(selectedConnectionId));
             }
         });

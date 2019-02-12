@@ -34,7 +34,6 @@ function selectByArrow(props, isArrowDown = true) {
         }
     }
 
-
     if (selectedNodeType === nodeTypes.CONNECTION) {
         const nd =isArrowDown===true?  locator.getNextNodeFromConnection(props) : locator.getPreviousNodeFromConnection(props);
         return getSelectValue(nd);
